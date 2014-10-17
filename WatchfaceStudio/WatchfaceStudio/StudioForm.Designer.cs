@@ -52,6 +52,10 @@
             this.menuViewWTLGW = new System.Windows.Forms.ToolStripMenuItem();
             this.menuViewWTLGWR = new System.Windows.Forms.ToolStripMenuItem();
             this.menuViewWTSamsungGL = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuViewDate = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuViewDateNow = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuViewDateCustom = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuViewDateCustomDate = new System.Windows.Forms.ToolStripTextBox();
             this.menuViewSeparator0 = new System.Windows.Forms.ToolStripSeparator();
             this.menuViewAppendixWindow = new System.Windows.Forms.ToolStripMenuItem();
             this.menuWindow = new System.Windows.Forms.ToolStripMenuItem();
@@ -198,6 +202,7 @@
             this.menuViewSmoothSeconds,
             this.menuViewUnits,
             this.menuViewWatchType,
+            this.menuViewDate,
             this.menuViewSeparator0,
             this.menuViewAppendixWindow});
             this.menuView.Name = "menuView";
@@ -282,6 +287,38 @@
             this.menuViewWTSamsungGL.Size = new System.Drawing.Size(174, 22);
             this.menuViewWTSamsungGL.Text = "Samsung Gear Live";
             this.menuViewWTSamsungGL.Click += new System.EventHandler(this.menuViewMode_Click);
+            // 
+            // menuViewDate
+            // 
+            this.menuViewDate.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuViewDateNow,
+            this.menuViewDateCustom,
+            this.menuViewDateCustomDate});
+            this.menuViewDate.Name = "menuViewDate";
+            this.menuViewDate.Size = new System.Drawing.Size(172, 22);
+            this.menuViewDate.Text = "&Date";
+            // 
+            // menuViewDateNow
+            // 
+            this.menuViewDateNow.Checked = true;
+            this.menuViewDateNow.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.menuViewDateNow.Name = "menuViewDateNow";
+            this.menuViewDateNow.Size = new System.Drawing.Size(160, 22);
+            this.menuViewDateNow.Text = "&Now";
+            this.menuViewDateNow.Click += new System.EventHandler(this.menuViewDateNow_Click);
+            // 
+            // menuViewDateCustom
+            // 
+            this.menuViewDateCustom.Name = "menuViewDateCustom";
+            this.menuViewDateCustom.Size = new System.Drawing.Size(160, 22);
+            this.menuViewDateCustom.Text = "&Custom...";
+            this.menuViewDateCustom.Click += new System.EventHandler(this.menuViewDateCustom_Click);
+            // 
+            // menuViewDateCustomDate
+            // 
+            this.menuViewDateCustomDate.Enabled = false;
+            this.menuViewDateCustomDate.Name = "menuViewDateCustomDate";
+            this.menuViewDateCustomDate.Size = new System.Drawing.Size(100, 23);
             // 
             // menuViewSeparator0
             // 
@@ -687,6 +724,10 @@
         private System.Windows.Forms.ToolStripMenuItem menuViewUnits;
         private System.Windows.Forms.ToolStripMenuItem menuViewUnitsFahrenheit;
         private System.Windows.Forms.ToolStripMenuItem menuViewUnitsCelsius;
+        private System.Windows.Forms.ToolStripMenuItem menuViewDate;
+        private System.Windows.Forms.ToolStripMenuItem menuViewDateNow;
+        private System.Windows.Forms.ToolStripMenuItem menuViewDateCustom;
+        private System.Windows.Forms.ToolStripTextBox menuViewDateCustomDate;
     }
 }
 

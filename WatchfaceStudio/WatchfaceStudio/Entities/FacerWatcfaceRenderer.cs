@@ -18,6 +18,9 @@ namespace WatchfaceStudio.Entities
         private static Regex ConditionalRegex = new Regex(@"\$([^\$]+)\$");
         public static Dictionary<FacerFont, Tuple<PrivateFontCollection, FontStyle>> FacerFontConfig;
         
+        public const float ScreenDPI = 120f;
+        public const float DefaultScreenDPI = 160f;
+
         static FacerWatcfaceRenderer()
         {
             FacerFontConfig = new Dictionary<FacerFont, Tuple<PrivateFontCollection, FontStyle>>();
@@ -137,7 +140,7 @@ namespace WatchfaceStudio.Entities
 
         private static float DpToPx(float dp)
         {
-            return (120 / (float)160) * dp;
+            return dp * ScreenDPI / DefaultScreenDPI;
         }
 
         private static StringFormat ToStringFormat(FacerTextAlignment alignment)
@@ -215,7 +218,8 @@ namespace WatchfaceStudio.Entities
             var bmp = new Bitmap(320, 320);
             using (var g = Graphics.FromImage(bmp))
             {
-                //g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                g.TextRenderingHint = TextRenderingHint.AntiAlias;
 
                 g.Clear(Color.Black);
 
@@ -342,7 +346,6 @@ namespace WatchfaceStudio.Entities
                                 case (int)FacerShapeType.Square:
                                     width = (int)Calc(layer.width);
                                     height = (int)Calc(layer.height);
-                                    alp = AlignedPoint(width, height, layer.alignment.Value);
 
                                     g.TranslateTransform(x, y);
                                     g.RotateTransform(rotation);
@@ -365,8 +368,8 @@ namespace WatchfaceStudio.Entities
                                     for (var i = 0; i < polyN; i++)
                                     {
                                         polyPoints[i] = new Point(
-                                            (int)(x + radius * Math.Cos(2 * Math.PI * i / polyN)),
-                                            (int)(y + radius * Math.Sin(2 * Math.PI * i / polyN)));
+                                            (int)(x + radius * Math.Cos(rotation * 180 / Math.PI + 2 * Math.PI * i / polyN)),
+                                            (int)(y + radius * Math.Sin(rotation * 180 / Math.PI + 2 * Math.PI * i / polyN)));
                                     }
                                     if (shapeOptions == FacerShapeOptions.Stroke)
                                     {

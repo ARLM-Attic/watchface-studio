@@ -24,7 +24,7 @@ namespace WatchfaceStudio.Editor
                 var itm = listViewTags.Items.Add(kvp.Key);
                 itm.SubItems.Add(kvp.Value.Description);
                 if (kvp.Value.Get != null)
-                    itm.SubItems.Add(kvp.Value.Get());
+                    itm.SubItems.Add(kvp.Value.Get(DateTime.Now));
             }
             foreach (ColumnHeader col in listViewTags.Columns)
                 col.Width = -1;

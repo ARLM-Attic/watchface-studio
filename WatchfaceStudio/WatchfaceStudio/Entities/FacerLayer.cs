@@ -26,7 +26,8 @@ namespace WatchfaceStudio.Entities
         private bool _low_power;
 
         private string _text;
-       
+        private int? _shape_type;
+
         public FacerLayer()
         {
             _dctd = ProviderInstaller.Install(this);
@@ -34,61 +35,77 @@ namespace WatchfaceStudio.Entities
             _dctd.CategorySortOrder = CustomSortOrder.DescendingById;
         }
 
+        private void SetBasicProperties()
+        {
+            if (_type != "image")
+            {
+                _dctd.RemoveProperty("hash");
+                _dctd.RemoveProperty("is_tinted");
+                _dctd.RemoveProperty("tint_color");
+            }
+            else
+            {
+                _dctd.RemoveProperty("color");
+            }
 
-        [Category("Facer"), DisplayName("Layer Type"), ReadOnly(true), Id(0, 99)]
-        public string type { 
-            get { return _type; }
-            set { 
-                _type = value;
-                if (_type != "image")
-                {
-                    _dctd.RemoveProperty("hash");
-                    _dctd.RemoveProperty("is_tinted");
-                    _dctd.RemoveProperty("tint_color");
-                }
-                else
-                {
-                    _dctd.RemoveProperty("color");
-                }
+            if (_type != "text")
+            {
+                _dctd.RemoveProperty("text");
+                _dctd.RemoveProperty("size");
+                _dctd.RemoveProperty("font_family");
+                _dctd.RemoveProperty("font_hash");
+                _dctd.RemoveProperty("bold");
+                _dctd.RemoveProperty("italic");
+                _dctd.RemoveProperty("transform");
+                _dctd.RemoveProperty("bgcolor");
+                _dctd.RemoveProperty("low_power_color");
+            }
+            else
+            {
+                _dctd.RemoveProperty("width");
+                _dctd.RemoveProperty("height");
+            }
 
-                if (_type != "text")
-                {
-                    _dctd.RemoveProperty("text");
-                    _dctd.RemoveProperty("size");
-                    _dctd.RemoveProperty("font_family");
-                    _dctd.RemoveProperty("font_hash");
-                    _dctd.RemoveProperty("bold");
-                    _dctd.RemoveProperty("italic");
-                    _dctd.RemoveProperty("transform");
-                    _dctd.RemoveProperty("bgcolor");
-                    _dctd.RemoveProperty("low_power_color");
-                }
-                else
-                {
+            if (_type != "shape")
+            {
+                _dctd.RemoveProperty("shape_type");
+                _dctd.RemoveProperty("radius");
+                _dctd.RemoveProperty("sides");
+                _dctd.RemoveProperty("shape_opt");
+                _dctd.RemoveProperty("stroke_size");
+            }
+            else
+            {
+                _dctd.RemoveProperty("alignment");
+            }
+        }
+
+        private void SetShapeProperties()
+        {
+            _dctd.ResetProperties();
+            SetBasicProperties();
+
+            switch (_shape_type)
+            {
+                case (int)FacerShapeType.Line:
+                case (int)FacerShapeType.Square:
+                    _dctd.RemoveProperty("radius");
+                    break;
+                case (int)FacerShapeType.Circle:
+                case (int)FacerShapeType.Polygon:
+                case (int)FacerShapeType.Triangle:
                     _dctd.RemoveProperty("width");
                     _dctd.RemoveProperty("height");
-                }
-
-                if (_type != "shape")
-                {
-                    _dctd.RemoveProperty("shape_type");
-                    _dctd.RemoveProperty("radius");
-                    _dctd.RemoveProperty("sides");
-                    _dctd.RemoveProperty("shape_opt");
-                    _dctd.RemoveProperty("stroke_size");
-                }
-                else
-                {
-                    _dctd.RemoveProperty("alignment");
-
-                    var shapeProp = _dctd.GetProperty("shape_type");
-                    foreach (int enumValue in Enum.GetValues(typeof(FacerShapeType)))
-                    {
-                        shapeProp.StatandardValues.Add(new StandardValueAttribute(new Nullable<int>(enumValue), ((FacerShapeType)enumValue).ToString()));
-                    }
-                }
-            } 
+                    break;
+            }
+            if (_shape_type != (int)FacerShapeType.Polygon)
+            {
+                _dctd.RemoveProperty("sides");
+            }
         }
+
+        [Category("Facer"), DisplayName("Layer Type"), ReadOnly(true), Id(0, 99)]
+        public string type { get { return _type; } set { _type = value; SetBasicProperties(); } }
         [Category("Facer"), DisplayName("Id"), ReadOnly(true), Id(0, 99)]
         public int id { get { return _id; } set { _id = value; } }
 
@@ -125,8 +142,7 @@ namespace WatchfaceStudio.Entities
 
         // SHAPE
         [Category("Shape"), DisplayName("Shape Type"), TypeConverter(typeof(EnumTypeConverter<int, FacerShapeType>))]
-        public int? shape_type { get; set; } //circle, square, polygon, line, triangle
-        //TODO: add showing/hiding fields based on shape type
+        public int? shape_type { get { return _shape_type; } set { _shape_type = value; SetShapeProperties(); } }
         [Category("Shape"), DisplayName("Radius"), Editor(typeof(ExpressionTypeEditor), typeof(UITypeEditor))]
         public string radius { get; set; } //circle, polygon & triangle
         [Category("Shape"), DisplayName("Sides"), Editor(typeof(ExpressionTypeEditor), typeof(UITypeEditor))]

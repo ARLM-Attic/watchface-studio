@@ -94,5 +94,28 @@ namespace WatchfaceStudio.Properties {
                 this["AppendixVisible"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ViewCustomDateTime {
+            get {
+                return ((bool)(this["ViewCustomDateTime"]));
+            }
+            set {
+                this["ViewCustomDateTime"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.DateTime CustomDateTime {
+            get {
+                return ((global::System.DateTime)(this["CustomDateTime"]));
+            }
+            set {
+                this["CustomDateTime"] = value;
+            }
+        }
     }
 }

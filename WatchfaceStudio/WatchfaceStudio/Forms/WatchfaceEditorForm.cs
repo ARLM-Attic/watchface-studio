@@ -66,5 +66,11 @@ namespace WatchfaceStudio.Forms
             pictureBoxAlert.Visible = errorsFound;
             pictureWatch.Image = watchBmp;
         }
+
+        private void buttonPlayPause_Click(object sender, EventArgs e)
+        {
+            timerClock.Enabled = !timerClock.Enabled;
+            buttonPlayPause.Image = timerClock.Enabled ? Properties.Resources.IconPause16 : Properties.Resources.IconPlay16;
+        }
     }
 }

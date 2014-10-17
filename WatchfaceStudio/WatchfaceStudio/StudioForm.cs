@@ -107,6 +107,10 @@ namespace WatchfaceStudio
             menuViewAppendixWindow.Checked = Properties.Settings.Default.AppendixVisible;
             panelLeft.Visible = menuViewAppendixWindow.Checked;
             splitterLeft.Visible = menuViewAppendixWindow.Checked;
+
+            menuViewDateCustom.Checked = Properties.Settings.Default.ViewCustomDateTime;
+            menuViewDateCustomDate.Text = Properties.Settings.Default.CustomDateTime.ToString("MM/dd/yyyy HH:mm");
+            menuViewDateNow.Checked = !menuViewDateCustom.Checked;
         }
 
         private void ShowException(Exception ex)
@@ -603,6 +607,31 @@ namespace WatchfaceStudio
                 Properties.Settings.Default.Save();
                 Properties.Settings.Default.Upgrade();
             }
+        }
+
+        private void menuViewDateNow_Click(object sender, EventArgs e)
+        {
+            menuViewDateNow.Checked = true;
+            menuViewDateCustom.Checked = false;
+
+            Properties.Settings.Default.ViewCustomDateTime = false;
+            Properties.Settings.Default.Save();
+            Properties.Settings.Default.Upgrade();
+        }
+
+        private void menuViewDateCustom_Click(object sender, EventArgs e)
+        {
+            var date = Properties.Settings.Default.CustomDateTime;
+            if (DateTimePickerDialog.ShowDialog(ref date) != DialogResult.OK) return;
+
+            menuViewDateNow.Checked = false;
+            menuViewDateCustom.Checked = true;
+            menuViewDateCustomDate.Text = date.ToString("MM/dd/yyyy HH:mm");
+
+            Properties.Settings.Default.ViewCustomDateTime = true;
+            Properties.Settings.Default.CustomDateTime = date;
+            Properties.Settings.Default.Save();
+            Properties.Settings.Default.Upgrade();
         }
 
     }
