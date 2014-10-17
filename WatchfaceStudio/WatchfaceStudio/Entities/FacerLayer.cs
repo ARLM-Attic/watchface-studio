@@ -25,6 +25,7 @@ namespace WatchfaceStudio.Entities
         private string _opacity;
         private bool _low_power;
 
+        private string _text;
        
         public FacerLayer()
         {
@@ -142,7 +143,7 @@ namespace WatchfaceStudio.Entities
 
         // TEXT
         [Category("Text Related"), DisplayName("Text"), Editor(typeof(ExpressionTypeEditor), typeof(UITypeEditor))]
-        public string text { get; set; }
+        public string text { get { return _text; } set { _text = value; } }
         [Category("Text Related"), DisplayName("Font Size")]
         public string size { get; set; }
         [Category("Text Related"), DisplayName("Font Family"), TypeConverter(typeof(EnumTypeConverter<int, FacerFont>))]

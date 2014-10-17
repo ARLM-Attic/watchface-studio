@@ -144,6 +144,36 @@ namespace WatchfaceStudio
             newForm.Show();
         }
 
+        private TreeNode AddFontToTree(TreeNode fontsNode, string key, FacerCustomFont fnt)
+        {
+            var newNode = fontsNode.Nodes.Add("font_" + key, "Font (" + key + ")", 2, 2);
+            newNode.Tag = fnt;
+            return newNode;
+        }
+
+        private TreeNode AddImageToTree(TreeNode imagesNode, string key, Image img)
+        {
+            var newNode = imagesNode.Nodes.Add("image_" + key, key, 4, 4);
+            newNode.Tag = img;
+            return newNode;
+        }
+
+        private TreeNode AddLayerToTree(TreeNode layersNode, FacerLayer lyr)
+        {
+            TreeNode newNode = null;
+            if (lyr.type == "image")
+                newNode = layersNode.Nodes.Add("layer_" + Guid.NewGuid().ToString("N").ToLower(),
+                    "Image (" + lyr.hash + ")", 6, 6);
+            else if (lyr.type == "text")
+                newNode = layersNode.Nodes.Add("layer_" + Guid.NewGuid().ToString("N").ToLower(),
+                    "Text (" + lyr.text + ")", 7, 7);
+            else if (lyr.type == "shape")
+                newNode = layersNode.Nodes.Add("layer_" + Guid.NewGuid().ToString("N").ToLower(),
+                    "Shape (" + ((FacerShapeType)lyr.shape_type).ToString() + ")", 8, 8);
+            newNode.Tag = lyr;
+            return newNode;
+        }
+
         private void LoadWatchfaceSolution(FacerWatchface watchface)
         {
             EditorContext.SelectedWatchface = watchface;
@@ -158,29 +188,21 @@ namespace WatchfaceStudio
             fontsNode.Tag = new PropertyLabelClass(fontsNode.Text);            
             foreach (var fnt in watchface.CustomFonts)
             {
-                fontsNode.Nodes.Add("font_" + fnt.Key, "Font (" + fnt.Key + ")", 2, 2).Tag = fnt.Value;
+                AddFontToTree(fontsNode, fnt.Key, fnt.Value);
             }
 
             var imagesNode = root.Nodes.Add("images", "Images", 3, 3); 
             imagesNode.Tag = new PropertyLabelClass(imagesNode.Text);
             foreach (var img in watchface.Images)
             {
-                imagesNode.Nodes.Add("image_" +img.Key,img.Key, 4, 4).Tag = img.Value;
+                AddImageToTree(imagesNode, img.Key, img.Value);
             }
             
             var layersNode = root.Nodes.Add("layers", "Layers", 5, 5);
             layersNode.Tag = new PropertyLabelClass(layersNode.Text);
             foreach (var lyr in watchface.Layers)
             {
-                if (lyr.type == "image")
-                    layersNode.Nodes.Add("layer_" + Guid.NewGuid().ToString("N").ToLower(),
-                        "Image (" + lyr.hash + ")", 6, 6).Tag = lyr;
-                else if (lyr.type == "text")
-                    layersNode.Nodes.Add("layer_" + Guid.NewGuid().ToString("N").ToLower(),
-                        "Text (" + lyr.text + ")", 7, 7).Tag = lyr;
-                else if (lyr.type == "shape")
-                    layersNode.Nodes.Add("layer_" + Guid.NewGuid().ToString("N").ToLower(),
-                        "Shape (" + ((FacerShapeType)lyr.shape_type).ToString() + ")", 8, 8).Tag = lyr;
+                AddLayerToTree(layersNode, lyr);
             }
 
             root.Expand();
@@ -264,6 +286,16 @@ namespace WatchfaceStudio
                 treeViewExplorer.TopNode.Text = "Watchface (" + e.ChangedItem.Value + ")";
             }
 
+            if (e.ChangedItem.PropertyDescriptor.ComponentType == typeof(FacerLayer))
+            {
+                if (e.ChangedItem.Label == "Text")
+                    ((TreeNode)propertyGrid.Tag).Text = "Text (" + e.ChangedItem.Value + ")";
+                else if (e.ChangedItem.Label == "Image")
+                    ((TreeNode)propertyGrid.Tag).Text = "Image (" + e.ChangedItem.Value + ")";
+                else if (e.ChangedItem.Label == "Shape Type")
+                    ((TreeNode)propertyGrid.Tag).Text = "Shape (" + (FacerShapeType)e.ChangedItem.Value + ")";
+            }
+
             UpdateChanged();
         }
 
@@ -278,6 +310,7 @@ namespace WatchfaceStudio
         private void treeViewExplorer_AfterSelect(object sender, TreeViewEventArgs e)
         {
             propertyGrid.SelectedObject = e.Node.Tag;
+            propertyGrid.Tag = e.Node;
             if (e.Node.Tag is FacerLayer)
             {
                 EditorContext.SelectedWatchface.SelectedLayer = (FacerLayer)e.Node.Tag;
@@ -434,6 +467,8 @@ namespace WatchfaceStudio
                 if (ofd.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
 
                 EditorContext.SelectedWatchface.AddFontFile(ofd.FileName);
+                var key = Path.GetFileName(ofd.FileName);
+                AddFontToTree(treeViewExplorer.TopNode.Nodes["fonts"], key, EditorContext.SelectedWatchface.CustomFonts[key]);
                 UpdateChanged();
             }
         }
@@ -447,28 +482,92 @@ namespace WatchfaceStudio
                 if (ofd.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
 
                 EditorContext.SelectedWatchface.AddImageFile(ofd.FileName);
+                var key = Path.GetFileNameWithoutExtension(ofd.FileName);
+                AddImageToTree(treeViewExplorer.TopNode.Nodes["images"], key, EditorContext.SelectedWatchface.Images[key]);
                 UpdateChanged();
             }
         }
 
         private void buttonAddLayerText_Click(object sender, EventArgs e)
         {
-
+            var newLayer = new FacerLayer
+            {
+                type = "text",
+                x = "160",
+                y = "160",
+                r = "0",
+                opacity = "100",
+                low_power = true,
+                
+                alignment = (int)FacerTextAlignment.Center,
+                
+                color = "-1", //White
+                bgcolor = "0",
+                font_hash = "",
+                low_power_color = "-1",
+                font_family = (int)FacerFont.Roboto,
+                size = "12",
+                bold = false,
+                italic = false,
+                text = "Text",
+                transform = (int)FacerTextTransform.None
+            };
+            EditorContext.SelectedWatchface.Layers.Add(newLayer);
+            treeViewExplorer.SelectedNode = AddLayerToTree(treeViewExplorer.TopNode.Nodes["layers"], newLayer);
+            UpdateChanged();
         }
 
         private void buttonAddLayerImage_Click(object sender, EventArgs e)
         {
+            var newLayer = new FacerLayer
+            {
+                type = "image",
+                x = "160",
+                y = "160",
+                r = "0",
+                opacity = "100",
+                low_power = true,
+                
+                alignment = (int)FacerImageAlignment.Center,
+                
+                width = "64",
+                height = "64",
 
+                hash = "",
+                is_tinted = false,
+                tint_color = null,
+            };
+            EditorContext.SelectedWatchface.Layers.Add(newLayer);
+            treeViewExplorer.SelectedNode = AddLayerToTree(treeViewExplorer.TopNode.Nodes["layers"], newLayer);
+            UpdateChanged();
         }
 
         private void buttonAddLayerShape_Click(object sender, EventArgs e)
         {
+            var newLayer = new FacerLayer
+            {
+                type = "shape",
+                x = "160",
+                y = "160",
+                r = "0",
+                opacity = "100",
+                low_power = true,
 
+                color = "-1", //White
+                radius = "16",
+                shape_opt = ((int)FacerShapeOptions.Stroke).ToString(),
+                shape_type = (int)FacerShapeType.Circle,
+                sides = "6",
+                stroke_size = "6"
+            };
+            EditorContext.SelectedWatchface.Layers.Add(newLayer);
+            treeViewExplorer.SelectedNode = AddLayerToTree(treeViewExplorer.TopNode.Nodes["layers"], newLayer);
+            UpdateChanged();
         }
 
         private void buttonRemoveItem_Click(object sender, EventArgs e)
         {
-            if (treeViewExplorer.SelectedNode != null) return;
+            if (treeViewExplorer.SelectedNode == null) return;
 
             if (treeViewExplorer.SelectedNode.Tag is FacerLayer)
             {
