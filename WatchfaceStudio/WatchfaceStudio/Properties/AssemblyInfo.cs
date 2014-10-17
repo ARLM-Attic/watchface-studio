@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("FacerWatchfaceEditor")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Watchface Studio")]
+[assembly: AssemblyDescription("Windows watchface editing software. Helps designing watchfaces for the Android application: Facer for Android Wear (Written by Jeremy Steckling‏ a.k.a fodawim)")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("FacerWatchfaceEditor")]
-[assembly: AssemblyCopyright("Copyright ©  2014")]
+[assembly: AssemblyCompany("Eli Sherer")]
+[assembly: AssemblyProduct("Watchface Studio")]
+[assembly: AssemblyCopyright("Copyright © Eli Sherer 2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

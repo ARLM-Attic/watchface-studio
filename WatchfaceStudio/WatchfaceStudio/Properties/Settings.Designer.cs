@@ -22,5 +22,77 @@ namespace WatchfaceStudio.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool LowPowerMode {
+            get {
+                return ((bool)(this["LowPowerMode"]));
+            }
+            set {
+                this["LowPowerMode"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool SmoothSeconds {
+            get {
+                return ((bool)(this["SmoothSeconds"]));
+            }
+            set {
+                this["SmoothSeconds"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Normal")]
+        public global::System.Windows.Forms.FormWindowState WindowStartupState {
+            get {
+                return ((global::System.Windows.Forms.FormWindowState)(this["WindowStartupState"]));
+            }
+            set {
+                this["WindowStartupState"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool TempUnitsCelsius {
+            get {
+                return ((bool)(this["TempUnitsCelsius"]));
+            }
+            set {
+                this["TempUnitsCelsius"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int Watchtype {
+            get {
+                return ((int)(this["Watchtype"]));
+            }
+            set {
+                this["Watchtype"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool AppendixVisible {
+            get {
+                return ((bool)(this["AppendixVisible"]));
+            }
+            set {
+                this["AppendixVisible"] = value;
+            }
+        }
     }
 }

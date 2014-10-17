@@ -16,10 +16,27 @@ namespace WatchfaceStudio
 {
     public partial class StudioForm : Form
     {
+        private FormWindowState _lastWindowState;
         public static string TempFolder;
 
         public static int UntitledCounter = 1;
-        public EWatchType Watchtype = EWatchType.Moto_360;
+
+        public EWatchType Watchtype
+        {
+            get 
+            { 
+                var wt = Properties.Settings.Default.Watchtype;
+                if (!Enum.IsDefined(typeof(EWatchType), wt))
+                    wt = (int)default(EWatchType);
+                return (EWatchType)wt;
+            }
+            set
+            {
+                Properties.Settings.Default.Watchtype = (int)value;
+                Properties.Settings.Default.Save();
+                Properties.Settings.Default.Upgrade();
+            }
+        }
 
         public class PropertyLabelClass
         {
@@ -39,6 +56,8 @@ namespace WatchfaceStudio
         {
             InitializeComponent();
 
+            LoadSettings();
+
             Icon = Properties.Resources.IconApplication;
 
             imageListExplorer.Images.Add(Properties.Resources.IconWatchface16);
@@ -51,7 +70,7 @@ namespace WatchfaceStudio
             imageListExplorer.Images.Add(Properties.Resources.IconLayerText16);
             imageListExplorer.Images.Add(Properties.Resources.IconLayerShape16);
 
-            TempFolder = Path.Combine(Path.GetTempPath(), "WatchfaceEditor/");
+            TempFolder = Path.Combine(Path.GetTempPath(), "WatchfaceStudio/");
             try
             {
                 if (Directory.Exists(TempFolder))
@@ -66,6 +85,28 @@ namespace WatchfaceStudio
             }
             foreach (ColumnHeader col in listViewTagAppendix.Columns)
                 col.Width = -1;
+        }
+
+        private void LoadSettings()
+        {
+            WindowState = Properties.Settings.Default.WindowStartupState;
+            _lastWindowState = WindowState;
+
+            menuViewLowPowerMode.Checked = Properties.Settings.Default.LowPowerMode;
+            menuViewSmoothSeconds.Checked = Properties.Settings.Default.SmoothSeconds;
+
+            menuViewUnitsCelsius.Checked = Properties.Settings.Default.TempUnitsCelsius;
+            menuViewUnitsFahrenheit.Checked = !menuViewUnitsCelsius.Checked;
+            
+            var watchtype = Properties.Settings.Default.Watchtype;
+            menuViewWTMoto360.Checked = watchtype == (int)EWatchType.Moto_360;
+            menuViewWTLGW.Checked = watchtype == (int)EWatchType.LG_G_Watch;
+            menuViewWTLGWR.Checked = watchtype == (int)EWatchType.LG_G_Watch_R;
+            menuViewWTSamsungGL.Checked = watchtype == (int)EWatchType.Samsung_Gear_Live;
+
+            menuViewAppendixWindow.Checked = Properties.Settings.Default.AppendixVisible;
+            panelLeft.Visible = menuViewAppendixWindow.Checked;
+            splitterLeft.Visible = menuViewAppendixWindow.Checked;
         }
 
         private void ShowException(Exception ex)
@@ -146,7 +187,7 @@ namespace WatchfaceStudio
             layersNode.ExpandAll();
         }
 
-        private bool SaveWatch(string zipFile)
+        private void SaveWatch(string zipFile)
         {
             var wf = EditorContext.SelectedWatchface;
             var success = false;
@@ -156,11 +197,13 @@ namespace WatchfaceStudio
                 var folderPath = Path.Combine(TempFolder, zipFile.GetHashCode().ToString().Replace('-', '_') + "_" + DateTime.Now.Ticks);
                 Directory.CreateDirectory(folderPath);
 
-                wf.SaveTo(folderPath);
+                success = wf.SaveTo(folderPath);
 
-                ZipFile.CreateFromDirectory(folderPath, zipFile);
-
-                success = true;
+                if (success)
+                {
+                    ZipFile.CreateFromDirectory(folderPath, zipFile);
+                    success = true;
+                }
             }
             catch (Exception ex)
             {
@@ -174,7 +217,10 @@ namespace WatchfaceStudio
                     wf.EditorForm.Text = wf.EditorForm.Text.Substring(1);
             }
 
-            return success;
+            if (!success)
+            {
+                MessageBox.Show("There was somthing wrong while saving the file.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
         private void EditorFormFocus(object sender, EventArgs e)
@@ -332,16 +378,28 @@ namespace WatchfaceStudio
                 EWatchType.Samsung_Gear_Live));
         }
 
+        private void menuViewUnits_Click(object sender, EventArgs e)
+        {
+            menuViewUnitsCelsius.Checked = sender == menuViewUnitsCelsius;
+            menuViewUnitsFahrenheit.Checked = sender == menuViewUnitsFahrenheit;
+
+            Properties.Settings.Default.TempUnitsCelsius = menuViewUnitsCelsius.Checked;
+            Properties.Settings.Default.Save();
+            Properties.Settings.Default.Upgrade();
+        }
+
         private void menuViewLowPowerMode_Click(object sender, EventArgs e)
         {
             menuViewLowPowerMode.Checked = !menuViewLowPowerMode.Checked;
 
-            FacerMockData.LowPowerMode = menuViewLowPowerMode.Checked;
+            Properties.Settings.Default.LowPowerMode = menuViewLowPowerMode.Checked;
+            Properties.Settings.Default.Save();
+            Properties.Settings.Default.Upgrade();
         }
 
         private void menuHelpAbout_Click(object sender, EventArgs e)
         {
-            //Todo: ABOUT
+            new AboutBox().ShowDialog();
         }
 
         #endregion
@@ -352,13 +410,19 @@ namespace WatchfaceStudio
 
             panelLeft.Visible = menuViewAppendixWindow.Checked;
             splitterLeft.Visible = menuViewAppendixWindow.Checked;
+
+            Properties.Settings.Default.AppendixVisible = menuViewAppendixWindow.Checked;
+            Properties.Settings.Default.Save();
+            Properties.Settings.Default.Upgrade();
         }
 
         private void menuViewSmoothSeconds_Click(object sender, EventArgs e)
         {
             menuViewSmoothSeconds.Checked = !menuViewSmoothSeconds.Checked;
 
-            FacerMockData.SmoothSeconds = menuViewSmoothSeconds.Checked;
+            Properties.Settings.Default.SmoothSeconds = menuViewSmoothSeconds.Checked;
+            Properties.Settings.Default.Save();
+            Properties.Settings.Default.Upgrade();
         }
 
         private void buttonAddFont_Click(object sender, EventArgs e)
@@ -370,6 +434,7 @@ namespace WatchfaceStudio
                 if (ofd.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
 
                 EditorContext.SelectedWatchface.AddFontFile(ofd.FileName);
+                UpdateChanged();
             }
         }
 
@@ -382,6 +447,7 @@ namespace WatchfaceStudio
                 if (ofd.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
 
                 EditorContext.SelectedWatchface.AddImageFile(ofd.FileName);
+                UpdateChanged();
             }
         }
 
@@ -402,7 +468,43 @@ namespace WatchfaceStudio
 
         private void buttonRemoveItem_Click(object sender, EventArgs e)
         {
+            if (treeViewExplorer.SelectedNode != null) return;
 
+            if (treeViewExplorer.SelectedNode.Tag is FacerLayer)
+            {
+                EditorContext.SelectedWatchface.Layers.Remove((FacerLayer)treeViewExplorer.SelectedNode.Tag);
+                treeViewExplorer.SelectedNode.Remove();
+            }
+            else if (treeViewExplorer.SelectedNode.Tag is Image)
+            {
+                EditorContext.SelectedWatchface.Images.Remove(treeViewExplorer.SelectedNode.Text);
+                treeViewExplorer.SelectedNode.Remove();
+            }
+            else if (treeViewExplorer.SelectedNode.Tag is Image)
+            {
+                EditorContext.SelectedWatchface.CustomFonts.Remove(treeViewExplorer.SelectedNode.Text);
+                treeViewExplorer.SelectedNode.Remove();
+            }
         }
+
+        private void StudioForm_Resize(object sender, EventArgs e)
+        {
+            if (_lastWindowState == this.WindowState) return;
+
+            if (this.WindowState == FormWindowState.Maximized)
+            {
+                Properties.Settings.Default.WindowStartupState = FormWindowState.Maximized;
+                Properties.Settings.Default.Save();
+                Properties.Settings.Default.Upgrade();
+            }
+ 
+            if (this.WindowState == FormWindowState.Normal)
+            {
+                Properties.Settings.Default.WindowStartupState = FormWindowState.Normal;
+                Properties.Settings.Default.Save();
+                Properties.Settings.Default.Upgrade();
+            }
+        }
+
     }
 }

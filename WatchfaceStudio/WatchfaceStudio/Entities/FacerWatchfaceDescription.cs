@@ -8,9 +8,11 @@ namespace WatchfaceStudio.Entities
 {
     public class FacerWatchfaceDescription
     {
+        public static string AppBuild = "0.90.1";
+
         private string _id;
         private string _title;
-        private string _build = "0.90.1";
+        private string _build = AppBuild;
         private int _build_int = 50;
 
         public string id { get { return _id; } set { _id = value; } }

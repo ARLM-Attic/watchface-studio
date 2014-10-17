@@ -13,6 +13,11 @@ namespace WatchfaceStudio.Entities
         public static CultureInfo _culture = new CultureInfo("en-us");
         public static Regex TagRegex = new Regex(@"#[DBZW]\w*#");
 
+        public static string ShowTemp(int cTemp)
+        {
+            return ((int)(Properties.Settings.Default.TempUnitsCelsius ? cTemp : cTemp * 1.8 + 32)).ToString();
+        }
+
         static FacerTags()
         {
             Tags = new Dictionary<string, FacerTag>
@@ -77,53 +82,53 @@ namespace WatchfaceStudio.Entities
 
                 //WEAR
                 {"Wear", new FacerTag(string.Empty, null)},
-                {"#ZLP#", new FacerTag("Low Power Mode", () => FacerMockData.LowPowerMode.ToString())},
+                {"#ZLP#", new FacerTag("Low Power Mode", () => Properties.Settings.Default.LowPowerMode.ToString())},
                 {"#ZSC#", new FacerTag("Step Count", () => "0")},
 
                 //WEATHER
                 {"Weather", new FacerTag(string.Empty, null)},
                 {"#WLC#", new FacerTag("Weather Location", () => "New York City")},
-                {"#WTH#", new FacerTag("Today's High", () => "29")},
-                {"#WTL#", new FacerTag("Today's Low", () => "21")},
-                {"#WCT#", new FacerTag("Today's Low", () => "27")},
+                {"#WTH#", new FacerTag("Today's High", () => ShowTemp(29))},
+                {"#WTL#", new FacerTag("Today's Low", () => ShowTemp(21))},
+                {"#WCT#", new FacerTag("Today's Low", () => ShowTemp(27))},
                 {"#WCCI#", new FacerTag("Current Condition Icon", () => "01")},
                 {"#WCCT#", new FacerTag("Current Condition Text", () => "Fair")},
                 {"#WCHN#", new FacerTag("Current Humidity Number", () => "54.0")},
                 {"#WCHP#", new FacerTag("Current Humidity Percentage", () => "54.0%")},
                 {"#WSUNRISE#", new FacerTag("Sunrise time for your current location", () => "6:40 am")},
                 {"#WSUNSET#", new FacerTag("Sunset time for your current location", () => "6:11 pm")},
-                {"#WFAH#", new FacerTag("Forecast Day 1 High", () => "29")},
-                {"#WFAL#", new FacerTag("Forecast Day 1 Low", () => "19")},
+                {"#WFAH#", new FacerTag("Forecast Day 1 High", () => ShowTemp(29))},
+                {"#WFAL#", new FacerTag("Forecast Day 1 Low", () => ShowTemp(19))},
                 {"#WFACT#", new FacerTag("Forecast Day 1 Condition Text", () => "Partly Cloudy")},
                 {"#WFACI#", new FacerTag("Forecast Day 1 Condition Icon", () => "03")},
-                {"#WFBH#", new FacerTag("Forecast Day 2 High", () => "29")},
-                {"#WFBL#", new FacerTag("Forecast Day 2 Low", () => "19")},
+                {"#WFBH#", new FacerTag("Forecast Day 2 High", () => ShowTemp(29))},
+                {"#WFBL#", new FacerTag("Forecast Day 2 Low", () => ShowTemp(19))},
                 {"#WFBCT#", new FacerTag("Forecast Day 2 Condition Text", () => "Partly Cloudy")},
                 {"#WFBCI#", new FacerTag("Forecast Day 2 Condition Icon", () => "03")},
-                {"#WFCH#", new FacerTag("Forecast Day 3 High", () => "29")},
-                {"#WFCL#", new FacerTag("Forecast Day 3 Low", () => "19")},
+                {"#WFCH#", new FacerTag("Forecast Day 3 High", () => ShowTemp(29))},
+                {"#WFCL#", new FacerTag("Forecast Day 3 Low", () => ShowTemp(19))},
                 {"#WFCCT#", new FacerTag("Forecast Day 3 Condition Text", () => "Partly Cloudy")},
                 {"#WFCCI#", new FacerTag("Forecast Day 3 Condition Icon", () => "03")},
-                {"#WFDH#", new FacerTag("Forecast Day 4 High", () => "29")},
-                {"#WFDL#", new FacerTag("Forecast Day 4 Low", () => "19")},
+                {"#WFDH#", new FacerTag("Forecast Day 4 High", () => ShowTemp(29))},
+                {"#WFDL#", new FacerTag("Forecast Day 4 Low", () => ShowTemp(19))},
                 {"#WFDCT#", new FacerTag("Forecast Day 4 Condition Text", () => "Partly Cloudy")},
                 {"#WFDCI#", new FacerTag("Forecast Day 4 Condition Icon", () => "03")},
-                {"#WFEH#", new FacerTag("Forecast Day 5 High", () => "29")},
-                {"#WFEL#", new FacerTag("Forecast Day 5 Low", () => "19")},
+                {"#WFEH#", new FacerTag("Forecast Day 5 High", () => ShowTemp(29))},
+                {"#WFEL#", new FacerTag("Forecast Day 5 Low", () => ShowTemp(19))},
                 {"#WFECT#", new FacerTag("Forecast Day 5 Condition Text", () => "Partly Cloudy")},
                 {"#WFECI#", new FacerTag("Forecast Day 5 Condition Icon", () => "03")},
-                {"#WFFH#", new FacerTag("Forecast Day 6 High", () => "29")},
-                {"#WFFL#", new FacerTag("Forecast Day 6 Low", () => "19")},
+                {"#WFFH#", new FacerTag("Forecast Day 6 High", () => ShowTemp(29))},
+                {"#WFFL#", new FacerTag("Forecast Day 6 Low", () => ShowTemp(19))},
                 {"#WFFCT#", new FacerTag("Forecast Day 6 Condition Text", () => "Partly Cloudy")},
                 {"#WFFCI#", new FacerTag("Forecast Day 6 Condition Icon", () => "03")},
-                {"#WFGH#", new FacerTag("Forecast Day 7 High", () => "29")},
-                {"#WFGL#", new FacerTag("Forecast Day 7 Low", () => "19")},
+                {"#WFGH#", new FacerTag("Forecast Day 7 High", () => ShowTemp(29))},
+                {"#WFGL#", new FacerTag("Forecast Day 7 Low", () => ShowTemp(19))},
                 {"#WFGCT#", new FacerTag("Forecast Day 7 Condition Text", () => "Partly Cloudy")},
-                {"#WFGCI#", new FacerTag("Forecast Day 7 Condition Icon", () => "03")}
+                {"#WFGCI#", new FacerTag("Forecast Day 7 Condition Icon", () => "03")},
 
-                
-                //
-                //{"_DUMMY_", null }
+                //META
+                {"Meta", new FacerTag(string.Empty, null)},
+                {"#ZDEBUG#", new FacerTag("Application Version", () => FacerWatchfaceDescription.AppBuild)}
             };
 
         }

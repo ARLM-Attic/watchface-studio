@@ -15,30 +15,8 @@ namespace WatchfaceStudio.Editor
     {
         public override UITypeEditorEditStyle GetEditStyle(ITypeDescriptorContext context)
         {
-            return UITypeEditorEditStyle.None; //TODO: convert to dropdown
+            return UITypeEditorEditStyle.None;
         }
-
-        /*public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider, object value)
-        {
-            IWindowsFormsEditorService svc = (IWindowsFormsEditorService)provider.GetService(typeof(IWindowsFormsEditorService));
-
-            if (svc != null)
-            {
-                Color color = Color.FromArgb(int.Parse((value ?? 0).ToString()));
-
-                using (var form = new ColorDialogForm(color))
-                {
-                    if (svc.ShowDialog(form) == DialogResult.OK)
-                    {
-                        var returnedColor = form.Color;
-                        var colorInt = returnedColor.ToArgb();
-                        return context.PropertyDescriptor.PropertyType == typeof(int?) ? colorInt : (object)colorInt.ToString();
-                    }
-                }
-            }
-
-            return value;
-        }*/
 
         public override bool GetPaintValueSupported(ITypeDescriptorContext context)
         {
@@ -53,12 +31,26 @@ namespace WatchfaceStudio.Editor
             if (e.Value == null || !EditorContext.SelectedWatchface.Images.TryGetValue(e.Value.ToString(), out img))
             {
                 //Draw X
-                g.DrawLine(Pens.Black, e.Bounds.Left, e.Bounds.Top, e.Bounds.Width - 1, e.Bounds.Height - 1);
-                g.DrawLine(Pens.Black, e.Bounds.Width - 1, e.Bounds.Top, e.Bounds.Left, e.Bounds.Height - 1);
+                g.DrawLine(Pens.Black, e.Bounds.Left, e.Bounds.Top, e.Bounds.Left + e.Bounds.Width - 1, e.Bounds.Top + e.Bounds.Height - 1);
+                g.DrawLine(Pens.Black, e.Bounds.Width - 1, e.Bounds.Top, e.Bounds.Left, e.Bounds.Top + e.Bounds.Height - 1);
             }
             else
             {
-                g.DrawImage(img, e.Bounds);
+                if (img.Width > img.Height) //[_____] / [_]
+                {
+                    var newHeight = (int)(img.Height / img.Width * e.Bounds.Width);
+                    g.DrawImage(img, new Rectangle(e.Bounds.Left, e.Bounds.Height / 2 - newHeight / 2 + 1, e.Bounds.Width, newHeight));
+                }
+                else if (img.Height >= img.Width) //[]
+                {
+                    var newWidth = (int)(img.Width / img.Height * e.Bounds.Height);
+                    g.DrawImage(img, new Rectangle(e.Bounds.Width / 2 - newWidth / 2 + 1, e.Bounds.Top, newWidth, e.Bounds.Height));
+                }
+                else
+                {
+                    g.DrawImage(img, e.Bounds);
+                }
+                
             }
         }
     }

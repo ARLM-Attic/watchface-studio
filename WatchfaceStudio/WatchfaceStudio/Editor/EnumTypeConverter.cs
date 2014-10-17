@@ -21,8 +21,20 @@ namespace WatchfaceStudio.Editor
             }
             EnumType = typeof(TEnum);
             EnumDictionary = new Dictionary<TSource,string>();
-            foreach (var val in Enum.GetValues(EnumType))
+
+            foreach (var val in GetBrowseableValues(EnumType))
                 EnumDictionary.Add((TSource)GetKey(val), Enum.Parse(EnumType, val.ToString()).ToString());
+        }
+
+        private static List<TEnum> GetBrowseableValues(Type type)
+        {
+            return Enum.GetValues(type).OfType<TEnum>().Where(
+                v =>
+                {
+                    var memInfo = type.GetMember(Enum.Parse(type, v.ToString()).ToString());
+                    var attributes = memInfo[0].GetCustomAttributes(typeof(BrowsableAttribute), false);
+                    return attributes.Length > 0 ? ((BrowsableAttribute)attributes[0]).Browsable : true;
+                }).ToList();
         }
 
         private static object GetKey(object value)

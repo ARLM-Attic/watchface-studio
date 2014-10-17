@@ -39,6 +39,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Resources\IconApplication.ico</ApplicationIcon>
@@ -56,6 +57,7 @@
       <HintPath>lib\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Design" />
     <Reference Include="System.IO.Compression.FileSystem" />
@@ -76,34 +78,42 @@
       <DependentUpon>ColorDialogForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Editor\ColorUITypeEditor.cs" />
+    <Compile Include="Editor\FacerAlignmentTypeConverter.cs" />
     <Compile Include="Editor\ImageUITypeEditor.cs" />
     <Compile Include="Editor\EditorContext.cs" />
     <Compile Include="Editor\ExpressionTypeEditor.cs" />
     <Compile Include="Editor\CustomComponentModel.cs" />
     <Compile Include="Editor\DynamicTypeDescriptor.cs" />
-    <Compile Include="Editor\EnumIntTypeConverter.cs" />
+    <Compile Include="Editor\EnumTypeConverter.cs" />
     <Compile Include="Editor\FacerExpressionEditorForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Editor\FacerExpressionEditorForm.Designer.cs">
       <DependentUpon>FacerExpressionEditorForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Editor\FacerLayerDesigner.cs" />
     <Compile Include="Editor\StandardValueEditorUI.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Editor\StandardValueEditorUI.Designer.cs">
       <DependentUpon>StandardValueEditorUI.cs</DependentUpon>
     </Compile>
+    <Compile Include="Editor\WatchfaceImageTypeConverter.cs" />
+    <Compile Include="Editor\WatchfaceFontTypeConverter.cs" />
     <Compile Include="Entities\EWatchType.cs" />
     <Compile Include="Entities\FacerEnums.cs" />
+    <Compile Include="Entities\FacerCustomFont.cs" />
     <Compile Include="Entities\FacerLayer.cs" />
-    <Compile Include="Entities\FacerMockData.cs" />
     <Compile Include="Entities\FacerTags.cs" />
     <Compile Include="Entities\FacerWatcfaceRenderer.cs" />
     <Compile Include="Entities\FacerWatchface.cs" />
     <Compile Include="Entities\FacerWatchfaceDescription.cs" />
     <Compile Include="Entities\XorDrawing.cs" />
+    <Compile Include="Forms\AboutBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\AboutBox.Designer.cs">
+      <DependentUpon>AboutBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -131,6 +141,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Editor\StandardValueEditorUI.resx">
       <DependentUpon>StandardValueEditorUI.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\AboutBox.resx">
+      <DependentUpon>AboutBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="StudioForm.resx">
       <DependentUpon>StudioForm.cs</DependentUpon>
@@ -224,6 +237,8 @@
     <Content Include="lib\Newtonsoft.Json.dll" />
     <Content Include="lib\Newtonsoft.Json.pdb" />
     <Content Include="lib\Newtonsoft.Json.xml" />
+    <None Include="Resources\IconWatchface.ico" />
+    <None Include="Resources\IconAlert.gif" />
     <None Include="Resources\IconFonts16.png" />
     <None Include="Resources\IconApplication.ico" />
     <None Include="Resources\IconImages16.png" />

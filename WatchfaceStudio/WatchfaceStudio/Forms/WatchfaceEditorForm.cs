@@ -21,6 +21,7 @@ namespace WatchfaceStudio.Forms
         public WatchfaceEditorForm()
         {
             InitializeComponent();
+            Icon = Properties.Resources.IconWatchface;
 
             GotFocus += WatchfaceEditorForm_GotFocus;
             LostFocus += WatchfaceEditorForm_LostFocus;
@@ -50,18 +51,19 @@ namespace WatchfaceStudio.Forms
                 return;
             }
 
-            if (timerClock.Interval == 1000 && FacerMockData.SmoothSeconds)
+            if (timerClock.Interval == 1000 && Properties.Settings.Default.SmoothSeconds)
             {
                 timerClock.Interval = 250;
             }
-            else if (timerClock.Interval == 250 && !FacerMockData.SmoothSeconds)
+            else if (timerClock.Interval == 250 && !Properties.Settings.Default.SmoothSeconds)
             {
                 timerClock.Interval = 1000;
             }
 
             var watchtype = ((StudioForm)this.ParentForm).Watchtype;
-            var watchBmp = FacerWatcfaceRenderer.Render(Watchface, watchtype);
-            
+            bool errorsFound;
+            var watchBmp = FacerWatcfaceRenderer.Render(Watchface, watchtype, out errorsFound);
+            pictureBoxAlert.Visible = errorsFound;
             pictureWatch.Image = watchBmp;
         }
     }

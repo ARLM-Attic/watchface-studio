@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.Drawing.Text;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -15,6 +16,83 @@ namespace WatchfaceStudio.Entities
     {
         private static System.Data.DataTable _computer = new System.Data.DataTable();
         private static Regex ConditionalRegex = new Regex(@"\$([^\$]+)\$");
+        public static Dictionary<FacerFont, Tuple<PrivateFontCollection, FontStyle>> FacerFontConfig;
+        
+        static FacerWatcfaceRenderer()
+        {
+            FacerFontConfig = new Dictionary<FacerFont, Tuple<PrivateFontCollection, FontStyle>>();
+
+            FacerFontConfig.Add(FacerFont.RobotoThin, new Tuple<PrivateFontCollection, FontStyle>(PFCWithFont(19), FontStyle.Regular));
+            FacerFontConfig.Add(FacerFont.RobotoLight, new Tuple<PrivateFontCollection, FontStyle>(PFCWithFont(10), FontStyle.Regular));
+            FacerFontConfig.Add(FacerFont.RobotoLightCondensed, new Tuple<PrivateFontCollection, FontStyle>(PFCWithFont(6), FontStyle.Regular));
+            FacerFontConfig.Add(FacerFont.Roboto, new Tuple<PrivateFontCollection, FontStyle>(PFCWithFont(14), FontStyle.Regular));
+            FacerFontConfig.Add(FacerFont.RobotoBlack, new Tuple<PrivateFontCollection, FontStyle>(PFCWithFont(0), FontStyle.Regular));
+            FacerFontConfig.Add(FacerFont.RobotoCondensed, new Tuple<PrivateFontCollection, FontStyle>(PFCWithFont(8), FontStyle.Regular));
+            FacerFontConfig.Add(FacerFont.RobotoSlabThin, new Tuple<PrivateFontCollection, FontStyle>(PFCWithFont(18), FontStyle.Regular));
+            FacerFontConfig.Add(FacerFont.RobotoSlabLight, new Tuple<PrivateFontCollection, FontStyle>(PFCWithFont(16), FontStyle.Regular));
+            FacerFontConfig.Add(FacerFont.RobotoSlab, new Tuple<PrivateFontCollection, FontStyle>(PFCWithFont(17), FontStyle.Regular));
+
+            FacerFontConfig.Add(FacerFont.RobotoThin_Bold, new Tuple<PrivateFontCollection, FontStyle>(PFCWithFont(19), FontStyle.Bold)); //needs bold
+            FacerFontConfig.Add(FacerFont.RobotoLight_Bold, new Tuple<PrivateFontCollection, FontStyle>(PFCWithFont(10), FontStyle.Bold)); //needs bold
+            FacerFontConfig.Add(FacerFont.RobotoLightCondensed_Bold, new Tuple<PrivateFontCollection, FontStyle>(PFCWithFont(6), FontStyle.Bold)); //needs bold
+            FacerFontConfig.Add(FacerFont.Roboto_Bold, new Tuple<PrivateFontCollection, FontStyle>(PFCWithFont(1), FontStyle.Regular));
+            FacerFontConfig.Add(FacerFont.RobotoBlack_Bold, new Tuple<PrivateFontCollection, FontStyle>(PFCWithFont(0), FontStyle.Bold)); //needs bold
+            FacerFontConfig.Add(FacerFont.RobotoCondensed_Bold, new Tuple<PrivateFontCollection, FontStyle>(PFCWithFont(3), FontStyle.Regular));
+            FacerFontConfig.Add(FacerFont.RobotoSlabThin_Bold, new Tuple<PrivateFontCollection, FontStyle>(PFCWithFont(18), FontStyle.Bold)); //needs bold
+            FacerFontConfig.Add(FacerFont.RobotoSlabLight_Bold, new Tuple<PrivateFontCollection, FontStyle>(PFCWithFont(16), FontStyle.Bold)); //needs bold
+            FacerFontConfig.Add(FacerFont.RobotoSlab_Bold, new Tuple<PrivateFontCollection, FontStyle>(PFCWithFont(15), FontStyle.Regular));
+
+            FacerFontConfig.Add(FacerFont.RobotoThin_Italic, new Tuple<PrivateFontCollection, FontStyle>(PFCWithFont(20), FontStyle.Regular));
+            FacerFontConfig.Add(FacerFont.RobotoLight_Italic, new Tuple<PrivateFontCollection, FontStyle>(PFCWithFont(11), FontStyle.Regular));
+            FacerFontConfig.Add(FacerFont.RobotoLightCondensed_Italic, new Tuple<PrivateFontCollection, FontStyle>(PFCWithFont(7), FontStyle.Regular));
+            FacerFontConfig.Add(FacerFont.Roboto_Italic, new Tuple<PrivateFontCollection, FontStyle>(PFCWithFont(9), FontStyle.Regular));
+            FacerFontConfig.Add(FacerFont.RobotoBlack_Italic, new Tuple<PrivateFontCollection, FontStyle>(PFCWithFont(0), FontStyle.Italic));//needs italic
+            FacerFontConfig.Add(FacerFont.RobotoCondensed_Italic, new Tuple<PrivateFontCollection, FontStyle>(PFCWithFont(5), FontStyle.Regular));
+            FacerFontConfig.Add(FacerFont.RobotoSlabThin_Italic, new Tuple<PrivateFontCollection, FontStyle>(PFCWithFont(18), FontStyle.Italic));//needs italic
+            FacerFontConfig.Add(FacerFont.RobotoSlabLight_Italic, new Tuple<PrivateFontCollection, FontStyle>(PFCWithFont(16), FontStyle.Italic));//needs italic
+            FacerFontConfig.Add(FacerFont.RobotoSlab_Italic, new Tuple<PrivateFontCollection, FontStyle>(PFCWithFont(17), FontStyle.Italic));//needs italic
+
+            FacerFontConfig.Add(FacerFont.RobotoThin_BoldItalic, new Tuple<PrivateFontCollection, FontStyle>(PFCWithFont(20), FontStyle.Bold));//needs bold
+            FacerFontConfig.Add(FacerFont.RobotoLight_BoldItalic, new Tuple<PrivateFontCollection, FontStyle>(PFCWithFont(11), FontStyle.Bold));//needs bold
+            FacerFontConfig.Add(FacerFont.RobotoLightCondensed_BoldItalic, new Tuple<PrivateFontCollection, FontStyle>(PFCWithFont(7), FontStyle.Bold));//needs bold
+            FacerFontConfig.Add(FacerFont.Roboto_BoldItalic, new Tuple<PrivateFontCollection, FontStyle>(PFCWithFont(2), FontStyle.Regular));
+            FacerFontConfig.Add(FacerFont.RobotoBlack_BoldItalic, new Tuple<PrivateFontCollection, FontStyle>(PFCWithFont(0), FontStyle.Bold | FontStyle.Italic));//needs bold & italic
+            FacerFontConfig.Add(FacerFont.RobotoCondensed_BoldItalic, new Tuple<PrivateFontCollection, FontStyle>(PFCWithFont(4), FontStyle.Regular));
+            FacerFontConfig.Add(FacerFont.RobotoSlabThin_BoldItalic, new Tuple<PrivateFontCollection, FontStyle>(PFCWithFont(18), FontStyle.Bold | FontStyle.Italic));//needs bold & italic
+            FacerFontConfig.Add(FacerFont.RobotoSlabLight_BoldItalic, new Tuple<PrivateFontCollection, FontStyle>(PFCWithFont(16), FontStyle.Bold | FontStyle.Italic));//needs bold & italic
+            FacerFontConfig.Add(FacerFont.RobotoSlab_BoldItalic, new Tuple<PrivateFontCollection, FontStyle>(PFCWithFont(15), FontStyle.Bold | FontStyle.Italic));//needs italic
+ 
+        }
+
+        private static PrivateFontCollection PFCWithFont(int index)
+        {
+            var col = new PrivateFontCollection();
+            switch (index)
+            {
+                case 0: col.AddFontFile("Fonts/Roboto-Black.ttf"); break;
+                case 1: col.AddFontFile("Fonts/Roboto-Bold.ttf"); break;
+                case 2: col.AddFontFile("Fonts/Roboto-BoldItalic.ttf"); break;
+                case 3: col.AddFontFile("Fonts/RobotoCondensed-Bold.ttf"); break;
+                case 4: col.AddFontFile("Fonts/RobotoCondensed-BoldItalic.ttf"); break;
+                case 5: col.AddFontFile("Fonts/RobotoCondensed-Italic.ttf"); break;
+                case 6: col.AddFontFile("Fonts/RobotoCondensed-Light.ttf"); break;
+                case 7: col.AddFontFile("Fonts/RobotoCondensed-LightItalic.ttf"); break;
+                case 8: col.AddFontFile("Fonts/RobotoCondensed-Regular.ttf"); break;
+                case 9: col.AddFontFile("Fonts/Roboto-Italic.ttf"); break;
+                case 10: col.AddFontFile("Fonts/Roboto-Light.ttf"); break;
+                case 11: col.AddFontFile("Fonts/Roboto-LightItalic.ttf"); break;
+                case 12: col.AddFontFile("Fonts/Roboto-Medium.ttf"); break;
+                case 13: col.AddFontFile("Fonts/Roboto-MediumItalic.ttf"); break;
+                case 14: col.AddFontFile("Fonts/Roboto-Regular.ttf"); break;
+                case 15: col.AddFontFile("Fonts/RobotoSlab-Bold.ttf"); break;
+                case 16: col.AddFontFile("Fonts/RobotoSlab-Light.ttf"); break;
+                case 17: col.AddFontFile("Fonts/RobotoSlab-Regular.ttf"); break;
+                case 18: col.AddFontFile("Fonts/RobotoSlab-Thin.ttf"); break;
+                case 19: col.AddFontFile("Fonts/Roboto-Thin.ttf"); break;
+                case 20: col.AddFontFile("Fonts/Roboto-ThinItalic.ttf"); break;
+            }
+            return col;
+        }
 
         private static double Calc(string formula)
         {
@@ -131,8 +209,9 @@ namespace WatchfaceStudio.Entities
 
         }
 
-        public static Bitmap Render(FacerWatchface watchface, EWatchType watchtype)
+        public static Bitmap Render(FacerWatchface watchface, EWatchType watchtype, out bool errorsFound)
         {
+            errorsFound = false;
             var bmp = new Bitmap(320, 320);
             using (var g = Graphics.FromImage(bmp))
             {
@@ -148,7 +227,7 @@ namespace WatchfaceStudio.Entities
                 {
                     try 
                     {
-                        if (FacerMockData.LowPowerMode && !layer.low_power) continue; //don't show on dimmed
+                        if (Properties.Settings.Default.LowPowerMode && !layer.low_power) continue; //don't show on dimmed
 
                         var opacity = (float)Calc(layer.opacity) / 100;
                         if (opacity == 0) continue;
@@ -203,12 +282,12 @@ namespace WatchfaceStudio.Entities
                             Font layerFont;
                             if (layer.font_family == (int)FacerFont.Custom)
                             {
-                                layerFont = new Font(watchface.CustomFonts[layer.font_hash], fontSize, fontStyle);
+                                layerFont = new Font(watchface.CustomFonts[layer.font_hash].FontFamily, fontSize, fontStyle);
                             }
                             else
                             {
                                 var facerFontKey = layer.font_family + 100 * (layer.bold ?? false ? 1 : 0) + 200 * (layer.italic ?? false ? 1 : 0);
-                                var fontPair = FacerWatchface.FacerFontConfig[(FacerFont)facerFontKey];
+                                var fontPair = FacerFontConfig[(FacerFont)facerFontKey];
                                 layerFont = new Font(fontPair.Item1.Families[0], fontSize,fontPair.Item2);
                             }
 
@@ -310,7 +389,7 @@ namespace WatchfaceStudio.Entities
 
                         g.ResetTransform();
                     }
-                    catch {}
+                    catch { errorsFound = true; }
                 }
 
                 if (selectedRectangle != Rectangle.Empty)

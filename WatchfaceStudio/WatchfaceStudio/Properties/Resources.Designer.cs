@@ -111,6 +111,16 @@ namespace WatchfaceStudio.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap IconAlert {
+            get {
+                object obj = ResourceManager.GetObject("IconAlert", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
         internal static System.Drawing.Icon IconApplication {
@@ -257,6 +267,16 @@ namespace WatchfaceStudio.Properties {
             get {
                 object obj = ResourceManager.GetObject("IconSettings16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon IconWatchface {
+            get {
+                object obj = ResourceManager.GetObject("IconWatchface", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
             }
         }
         

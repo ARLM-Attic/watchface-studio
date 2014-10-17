@@ -9,10 +9,10 @@ namespace WatchfaceStudio.Entities
 {
     public enum EWatchType
     {
-        Moto_360,
-        LG_G_Watch,
-        LG_G_Watch_R,
-        Samsung_Gear_Live
+        Moto_360 = 0,
+        LG_G_Watch = 1,
+        LG_G_Watch_R = 2,
+        Samsung_Gear_Live = 3
     }
 
     public static class WatchType

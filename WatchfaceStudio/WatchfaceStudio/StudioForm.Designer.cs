@@ -44,6 +44,9 @@
             this.menuView = new System.Windows.Forms.ToolStripMenuItem();
             this.menuViewLowPowerMode = new System.Windows.Forms.ToolStripMenuItem();
             this.menuViewSmoothSeconds = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuViewUnits = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuViewUnitsFahrenheit = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuViewUnitsCelsius = new System.Windows.Forms.ToolStripMenuItem();
             this.menuViewWatchType = new System.Windows.Forms.ToolStripMenuItem();
             this.menuViewWTMoto360 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuViewWTLGW = new System.Windows.Forms.ToolStripMenuItem();
@@ -193,6 +196,7 @@
             this.menuView.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menuViewLowPowerMode,
             this.menuViewSmoothSeconds,
+            this.menuViewUnits,
             this.menuViewWatchType,
             this.menuViewSeparator0,
             this.menuViewAppendixWindow});
@@ -203,16 +207,40 @@
             // menuViewLowPowerMode
             // 
             this.menuViewLowPowerMode.Name = "menuViewLowPowerMode";
-            this.menuViewLowPowerMode.Size = new System.Drawing.Size(171, 22);
+            this.menuViewLowPowerMode.Size = new System.Drawing.Size(172, 22);
             this.menuViewLowPowerMode.Text = "&Low Power Mode";
             this.menuViewLowPowerMode.Click += new System.EventHandler(this.menuViewLowPowerMode_Click);
             // 
             // menuViewSmoothSeconds
             // 
             this.menuViewSmoothSeconds.Name = "menuViewSmoothSeconds";
-            this.menuViewSmoothSeconds.Size = new System.Drawing.Size(171, 22);
-            this.menuViewSmoothSeconds.Text = "Smooth Seconds";
+            this.menuViewSmoothSeconds.Size = new System.Drawing.Size(172, 22);
+            this.menuViewSmoothSeconds.Text = "&Smooth Seconds";
             this.menuViewSmoothSeconds.Click += new System.EventHandler(this.menuViewSmoothSeconds_Click);
+            // 
+            // menuViewUnits
+            // 
+            this.menuViewUnits.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuViewUnitsFahrenheit,
+            this.menuViewUnitsCelsius});
+            this.menuViewUnits.Name = "menuViewUnits";
+            this.menuViewUnits.Size = new System.Drawing.Size(172, 22);
+            this.menuViewUnits.Text = "&Temperature Units";
+            // 
+            // menuViewUnitsFahrenheit
+            // 
+            this.menuViewUnitsFahrenheit.Checked = true;
+            this.menuViewUnitsFahrenheit.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.menuViewUnitsFahrenheit.Name = "menuViewUnitsFahrenheit";
+            this.menuViewUnitsFahrenheit.Size = new System.Drawing.Size(130, 22);
+            this.menuViewUnitsFahrenheit.Text = "&Fahrenheit";
+            this.menuViewUnitsFahrenheit.Click += new System.EventHandler(this.menuViewUnits_Click);
+            // 
+            // menuViewUnitsCelsius
+            // 
+            this.menuViewUnitsCelsius.Name = "menuViewUnitsCelsius";
+            this.menuViewUnitsCelsius.Size = new System.Drawing.Size(130, 22);
+            this.menuViewUnitsCelsius.Text = "&Celsius";
             // 
             // menuViewWatchType
             // 
@@ -222,8 +250,8 @@
             this.menuViewWTLGWR,
             this.menuViewWTSamsungGL});
             this.menuViewWatchType.Name = "menuViewWatchType";
-            this.menuViewWatchType.Size = new System.Drawing.Size(171, 22);
-            this.menuViewWatchType.Text = "Watch Type";
+            this.menuViewWatchType.Size = new System.Drawing.Size(172, 22);
+            this.menuViewWatchType.Text = "&Watch Type";
             // 
             // menuViewWTMoto360
             // 
@@ -258,15 +286,15 @@
             // menuViewSeparator0
             // 
             this.menuViewSeparator0.Name = "menuViewSeparator0";
-            this.menuViewSeparator0.Size = new System.Drawing.Size(168, 6);
+            this.menuViewSeparator0.Size = new System.Drawing.Size(169, 6);
             // 
             // menuViewAppendixWindow
             // 
             this.menuViewAppendixWindow.Checked = true;
             this.menuViewAppendixWindow.CheckState = System.Windows.Forms.CheckState.Checked;
             this.menuViewAppendixWindow.Name = "menuViewAppendixWindow";
-            this.menuViewAppendixWindow.Size = new System.Drawing.Size(171, 22);
-            this.menuViewAppendixWindow.Text = "Appendix Window";
+            this.menuViewAppendixWindow.Size = new System.Drawing.Size(172, 22);
+            this.menuViewAppendixWindow.Text = "&Appendix Window";
             this.menuViewAppendixWindow.Click += new System.EventHandler(this.menuViewAppendixWindow_Click);
             // 
             // menuWindow
@@ -293,7 +321,6 @@
             // splitContainerRight
             // 
             this.splitContainerRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.splitContainerRight.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
             this.splitContainerRight.Location = new System.Drawing.Point(843, 24);
             this.splitContainerRight.Name = "splitContainerRight";
             this.splitContainerRight.Orientation = System.Windows.Forms.Orientation.Horizontal;
@@ -582,6 +609,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Watchface Studio";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.StudioForm_FormClosed);
+            this.Resize += new System.EventHandler(this.StudioForm_Resize);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             this.splitContainerRight.Panel1.ResumeLayout(false);
@@ -656,6 +684,9 @@
         private System.Windows.Forms.ToolStripSeparator menuViewSeparator0;
         private System.Windows.Forms.ToolStripMenuItem menuViewAppendixWindow;
         private System.Windows.Forms.ToolStripMenuItem menuViewSmoothSeconds;
+        private System.Windows.Forms.ToolStripMenuItem menuViewUnits;
+        private System.Windows.Forms.ToolStripMenuItem menuViewUnitsFahrenheit;
+        private System.Windows.Forms.ToolStripMenuItem menuViewUnitsCelsius;
     }
 }
 
