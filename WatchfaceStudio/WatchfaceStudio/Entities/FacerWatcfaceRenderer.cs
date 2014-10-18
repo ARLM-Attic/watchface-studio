@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using WatchfaceStudio.Imaging;
 
 namespace WatchfaceStudio.Entities
 {
@@ -220,6 +221,11 @@ namespace WatchfaceStudio.Entities
             {
                 g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
                 g.TextRenderingHint = TextRenderingHint.AntiAlias;
+                g.SmoothingMode = SmoothingMode.HighQuality;
+                g.TextContrast = 1;
+                g.PixelOffsetMode = PixelOffsetMode.None;
+                g.PageUnit = GraphicsUnit.Pixel;
+                g.CompositingQuality = CompositingQuality.HighQuality;
 
                 g.Clear(Color.Black);
 
@@ -309,9 +315,8 @@ namespace WatchfaceStudio.Entities
                             var measurements = g.MeasureString(resolvedText, layerFont, bmp.Width, textFormat);
                             width = (int)measurements.Width;
                             height = (int)measurements.Height;
-                            alp = AlignedPoint(width, height, (int)FacerImageAlignment.TopLeft);
                             var textPoint = new PointF(alp.X, alp.Y);
-
+                            
                             g.TranslateTransform(x, y);
                             g.RotateTransform(rotation);
 
@@ -326,7 +331,7 @@ namespace WatchfaceStudio.Entities
                             var foreColor = Color.FromArgb(((int)Calc(layer.color) & 0xFFFFFF) + ((int)(opacity * 255) << 24));
                             var radius = string.IsNullOrEmpty(layer.radius) ? 0 : (float)Calc(layer.radius);
                             var shapeOptions = layer.shape_opt == ((int)FacerShapeOptions.Stroke).ToString() ? FacerShapeOptions.Stroke : FacerShapeOptions.Fill;
-                            Pen penToUse = shapeOptions == FacerShapeOptions.Stroke ? new Pen(foreColor, (float)Calc(layer.stroke_size) / 3) : null;
+                            Pen penToUse = shapeOptions == FacerShapeOptions.Stroke ? new Pen(foreColor, (float)Calc(layer.stroke_size) / 2) : null;
                             Brush brushToUse = shapeOptions == FacerShapeOptions.Fill ? new SolidBrush(foreColor) : null;
 
                             switch (layer.shape_type)

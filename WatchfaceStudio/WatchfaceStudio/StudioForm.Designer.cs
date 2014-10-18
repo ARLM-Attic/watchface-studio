@@ -43,7 +43,7 @@
             this.menuFileExit = new System.Windows.Forms.ToolStripMenuItem();
             this.menuView = new System.Windows.Forms.ToolStripMenuItem();
             this.menuViewLowPowerMode = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuViewSmoothSeconds = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuViewSmoothSecondHands = new System.Windows.Forms.ToolStripMenuItem();
             this.menuViewUnits = new System.Windows.Forms.ToolStripMenuItem();
             this.menuViewUnitsFahrenheit = new System.Windows.Forms.ToolStripMenuItem();
             this.menuViewUnitsCelsius = new System.Windows.Forms.ToolStripMenuItem();
@@ -60,6 +60,8 @@
             this.menuViewAppendixWindow = new System.Windows.Forms.ToolStripMenuItem();
             this.menuWindow = new System.Windows.Forms.ToolStripMenuItem();
             this.menuHelp = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuHelpCheckForUpdate = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuHelpSeperator0 = new System.Windows.Forms.ToolStripSeparator();
             this.menuHelpAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainerRight = new System.Windows.Forms.SplitContainer();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
@@ -70,11 +72,11 @@
             this.toolStripExplorer = new System.Windows.Forms.ToolStrip();
             this.buttonAddFont = new System.Windows.Forms.ToolStripButton();
             this.buttonAddImage = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripExplorerSeparator0 = new System.Windows.Forms.ToolStripSeparator();
             this.buttonAddLayerText = new System.Windows.Forms.ToolStripButton();
             this.buttonAddLayerImage = new System.Windows.Forms.ToolStripButton();
             this.buttonAddLayerShape = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripExplorerSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.buttonRemoveItem = new System.Windows.Forms.ToolStripButton();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.labelProperties = new System.Windows.Forms.Label();
@@ -87,6 +89,18 @@
             this.columnHeaderTag = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderDescription = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.splitterLeft = new System.Windows.Forms.Splitter();
+            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.toolbarNewWatchface = new System.Windows.Forms.ToolStripButton();
+            this.toolbarOpenWatchface = new System.Windows.Forms.ToolStripButton();
+            this.toolbarSave = new System.Windows.Forms.ToolStripButton();
+            this.toolbarSeperator0 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolbarLowPowerMode = new System.Windows.Forms.ToolStripButton();
+            this.toolbarSmoothSecondHands = new System.Windows.Forms.ToolStripButton();
+            this.toolbarTemperatureUnits = new System.Windows.Forms.ToolStripDropDownButton();
+            this.toolbarWatchType = new System.Windows.Forms.ToolStripDropDownButton();
+            this.toolbarSeperator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolbarAppendixWindow = new System.Windows.Forms.ToolStripButton();
+            this.backgroundWorkerCheckForUpdates = new System.ComponentModel.BackgroundWorker();
             this.menuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerRight)).BeginInit();
             this.splitContainerRight.Panel1.SuspendLayout();
@@ -98,6 +112,7 @@
             this.tableLayoutPanel2.SuspendLayout();
             this.panelLeft.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
+            this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip
@@ -199,7 +214,7 @@
             // 
             this.menuView.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menuViewLowPowerMode,
-            this.menuViewSmoothSeconds,
+            this.menuViewSmoothSecondHands,
             this.menuViewUnits,
             this.menuViewWatchType,
             this.menuViewDate,
@@ -211,17 +226,19 @@
             // 
             // menuViewLowPowerMode
             // 
+            this.menuViewLowPowerMode.Image = global::WatchfaceStudio.Properties.Resources.IconLowPower16;
             this.menuViewLowPowerMode.Name = "menuViewLowPowerMode";
-            this.menuViewLowPowerMode.Size = new System.Drawing.Size(172, 22);
+            this.menuViewLowPowerMode.Size = new System.Drawing.Size(195, 22);
             this.menuViewLowPowerMode.Text = "&Low Power Mode";
             this.menuViewLowPowerMode.Click += new System.EventHandler(this.menuViewLowPowerMode_Click);
             // 
-            // menuViewSmoothSeconds
+            // menuViewSmoothSecondHands
             // 
-            this.menuViewSmoothSeconds.Name = "menuViewSmoothSeconds";
-            this.menuViewSmoothSeconds.Size = new System.Drawing.Size(172, 22);
-            this.menuViewSmoothSeconds.Text = "&Smooth Seconds";
-            this.menuViewSmoothSeconds.Click += new System.EventHandler(this.menuViewSmoothSeconds_Click);
+            this.menuViewSmoothSecondHands.Image = global::WatchfaceStudio.Properties.Resources.IconSpeed16;
+            this.menuViewSmoothSecondHands.Name = "menuViewSmoothSecondHands";
+            this.menuViewSmoothSecondHands.Size = new System.Drawing.Size(195, 22);
+            this.menuViewSmoothSecondHands.Text = "&Smooth Second Hands";
+            this.menuViewSmoothSecondHands.Click += new System.EventHandler(this.menuViewSmoothSeconds_Click);
             // 
             // menuViewUnits
             // 
@@ -229,23 +246,27 @@
             this.menuViewUnitsFahrenheit,
             this.menuViewUnitsCelsius});
             this.menuViewUnits.Name = "menuViewUnits";
-            this.menuViewUnits.Size = new System.Drawing.Size(172, 22);
+            this.menuViewUnits.Size = new System.Drawing.Size(195, 22);
             this.menuViewUnits.Text = "&Temperature Units";
             // 
             // menuViewUnitsFahrenheit
             // 
             this.menuViewUnitsFahrenheit.Checked = true;
             this.menuViewUnitsFahrenheit.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.menuViewUnitsFahrenheit.Image = global::WatchfaceStudio.Properties.Resources.IconFahrenheit16;
             this.menuViewUnitsFahrenheit.Name = "menuViewUnitsFahrenheit";
             this.menuViewUnitsFahrenheit.Size = new System.Drawing.Size(130, 22);
+            this.menuViewUnitsFahrenheit.Tag = "";
             this.menuViewUnitsFahrenheit.Text = "&Fahrenheit";
             this.menuViewUnitsFahrenheit.Click += new System.EventHandler(this.menuViewUnits_Click);
             // 
             // menuViewUnitsCelsius
             // 
+            this.menuViewUnitsCelsius.Image = global::WatchfaceStudio.Properties.Resources.IconCelsius16;
             this.menuViewUnitsCelsius.Name = "menuViewUnitsCelsius";
             this.menuViewUnitsCelsius.Size = new System.Drawing.Size(130, 22);
             this.menuViewUnitsCelsius.Text = "&Celsius";
+            this.menuViewUnitsCelsius.Click += new System.EventHandler(this.menuViewUnits_Click);
             // 
             // menuViewWatchType
             // 
@@ -255,13 +276,14 @@
             this.menuViewWTLGWR,
             this.menuViewWTSamsungGL});
             this.menuViewWatchType.Name = "menuViewWatchType";
-            this.menuViewWatchType.Size = new System.Drawing.Size(172, 22);
+            this.menuViewWatchType.Size = new System.Drawing.Size(195, 22);
             this.menuViewWatchType.Text = "&Watch Type";
             // 
             // menuViewWTMoto360
             // 
             this.menuViewWTMoto360.Checked = true;
             this.menuViewWTMoto360.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.menuViewWTMoto360.Image = global::WatchfaceStudio.Properties.Resources.IconMediumCircleCut16;
             this.menuViewWTMoto360.Name = "menuViewWTMoto360";
             this.menuViewWTMoto360.Size = new System.Drawing.Size(174, 22);
             this.menuViewWTMoto360.Text = "Moto 360";
@@ -269,6 +291,7 @@
             // 
             // menuViewWTLGW
             // 
+            this.menuViewWTLGW.Image = global::WatchfaceStudio.Properties.Resources.IconSmallSquare16;
             this.menuViewWTLGW.Name = "menuViewWTLGW";
             this.menuViewWTLGW.Size = new System.Drawing.Size(174, 22);
             this.menuViewWTLGW.Text = "LG G-Watch";
@@ -276,6 +299,7 @@
             // 
             // menuViewWTLGWR
             // 
+            this.menuViewWTLGWR.Image = global::WatchfaceStudio.Properties.Resources.IconMediumCircle16;
             this.menuViewWTLGWR.Name = "menuViewWTLGWR";
             this.menuViewWTLGWR.Size = new System.Drawing.Size(174, 22);
             this.menuViewWTLGWR.Text = "LG G-Watch R";
@@ -283,6 +307,7 @@
             // 
             // menuViewWTSamsungGL
             // 
+            this.menuViewWTSamsungGL.Image = global::WatchfaceStudio.Properties.Resources.IconMediumSquare16;
             this.menuViewWTSamsungGL.Name = "menuViewWTSamsungGL";
             this.menuViewWTSamsungGL.Size = new System.Drawing.Size(174, 22);
             this.menuViewWTSamsungGL.Text = "Samsung Gear Live";
@@ -295,7 +320,7 @@
             this.menuViewDateCustom,
             this.menuViewDateCustomDate});
             this.menuViewDate.Name = "menuViewDate";
-            this.menuViewDate.Size = new System.Drawing.Size(172, 22);
+            this.menuViewDate.Size = new System.Drawing.Size(195, 22);
             this.menuViewDate.Text = "&Date";
             // 
             // menuViewDateNow
@@ -323,14 +348,15 @@
             // menuViewSeparator0
             // 
             this.menuViewSeparator0.Name = "menuViewSeparator0";
-            this.menuViewSeparator0.Size = new System.Drawing.Size(169, 6);
+            this.menuViewSeparator0.Size = new System.Drawing.Size(192, 6);
             // 
             // menuViewAppendixWindow
             // 
             this.menuViewAppendixWindow.Checked = true;
             this.menuViewAppendixWindow.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.menuViewAppendixWindow.Image = global::WatchfaceStudio.Properties.Resources.IconHash16;
             this.menuViewAppendixWindow.Name = "menuViewAppendixWindow";
-            this.menuViewAppendixWindow.Size = new System.Drawing.Size(172, 22);
+            this.menuViewAppendixWindow.Size = new System.Drawing.Size(195, 22);
             this.menuViewAppendixWindow.Text = "&Appendix Window";
             this.menuViewAppendixWindow.Click += new System.EventHandler(this.menuViewAppendixWindow_Click);
             // 
@@ -343,22 +369,36 @@
             // menuHelp
             // 
             this.menuHelp.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuHelpCheckForUpdate,
+            this.menuHelpSeperator0,
             this.menuHelpAbout});
             this.menuHelp.Name = "menuHelp";
             this.menuHelp.Size = new System.Drawing.Size(44, 20);
             this.menuHelp.Text = "&Help";
             // 
+            // menuHelpCheckForUpdate
+            // 
+            this.menuHelpCheckForUpdate.Name = "menuHelpCheckForUpdate";
+            this.menuHelpCheckForUpdate.Size = new System.Drawing.Size(174, 22);
+            this.menuHelpCheckForUpdate.Text = "&Check for update...";
+            this.menuHelpCheckForUpdate.Click += new System.EventHandler(this.menuHelpCheckForUpdate_Click);
+            // 
+            // menuHelpSeperator0
+            // 
+            this.menuHelpSeperator0.Name = "menuHelpSeperator0";
+            this.menuHelpSeperator0.Size = new System.Drawing.Size(171, 6);
+            // 
             // menuHelpAbout
             // 
             this.menuHelpAbout.Name = "menuHelpAbout";
-            this.menuHelpAbout.Size = new System.Drawing.Size(107, 22);
+            this.menuHelpAbout.Size = new System.Drawing.Size(174, 22);
             this.menuHelpAbout.Text = "&About";
             this.menuHelpAbout.Click += new System.EventHandler(this.menuHelpAbout_Click);
             // 
             // splitContainerRight
             // 
             this.splitContainerRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.splitContainerRight.Location = new System.Drawing.Point(843, 24);
+            this.splitContainerRight.Location = new System.Drawing.Point(843, 49);
             this.splitContainerRight.Name = "splitContainerRight";
             this.splitContainerRight.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -369,8 +409,8 @@
             // splitContainerRight.Panel2
             // 
             this.splitContainerRight.Panel2.Controls.Add(this.tableLayoutPanel2);
-            this.splitContainerRight.Size = new System.Drawing.Size(300, 515);
-            this.splitContainerRight.SplitterDistance = 249;
+            this.splitContainerRight.Size = new System.Drawing.Size(300, 490);
+            this.splitContainerRight.SplitterDistance = 236;
             this.splitContainerRight.TabIndex = 2;
             // 
             // tableLayoutPanel1
@@ -385,7 +425,7 @@
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(300, 249);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(300, 236);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // labelWatchfaceExplorer
@@ -407,7 +447,7 @@
             this.panelExplorer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelExplorer.Location = new System.Drawing.Point(3, 23);
             this.panelExplorer.Name = "panelExplorer";
-            this.panelExplorer.Size = new System.Drawing.Size(294, 223);
+            this.panelExplorer.Size = new System.Drawing.Size(294, 210);
             this.panelExplorer.TabIndex = 1;
             // 
             // treeViewExplorer
@@ -418,7 +458,7 @@
             this.treeViewExplorer.Location = new System.Drawing.Point(0, 25);
             this.treeViewExplorer.Name = "treeViewExplorer";
             this.treeViewExplorer.SelectedImageIndex = 0;
-            this.treeViewExplorer.Size = new System.Drawing.Size(294, 198);
+            this.treeViewExplorer.Size = new System.Drawing.Size(294, 185);
             this.treeViewExplorer.TabIndex = 1;
             this.treeViewExplorer.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewExplorer_AfterSelect);
             // 
@@ -434,11 +474,11 @@
             this.toolStripExplorer.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.buttonAddFont,
             this.buttonAddImage,
-            this.toolStripSeparator1,
+            this.toolStripExplorerSeparator0,
             this.buttonAddLayerText,
             this.buttonAddLayerImage,
             this.buttonAddLayerShape,
-            this.toolStripSeparator2,
+            this.toolStripExplorerSeparator1,
             this.buttonRemoveItem});
             this.toolStripExplorer.Location = new System.Drawing.Point(0, 0);
             this.toolStripExplorer.Name = "toolStripExplorer";
@@ -466,10 +506,10 @@
             this.buttonAddImage.Text = "Add Image";
             this.buttonAddImage.Click += new System.EventHandler(this.buttonAddImage_Click);
             // 
-            // toolStripSeparator1
+            // toolStripExplorerSeparator0
             // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            this.toolStripExplorerSeparator0.Name = "toolStripExplorerSeparator0";
+            this.toolStripExplorerSeparator0.Size = new System.Drawing.Size(6, 25);
             // 
             // buttonAddLayerText
             // 
@@ -501,10 +541,10 @@
             this.buttonAddLayerShape.Text = "Add Shape Layer";
             this.buttonAddLayerShape.Click += new System.EventHandler(this.buttonAddLayerShape_Click);
             // 
-            // toolStripSeparator2
+            // toolStripExplorerSeparator1
             // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
+            this.toolStripExplorerSeparator1.Name = "toolStripExplorerSeparator1";
+            this.toolStripExplorerSeparator1.Size = new System.Drawing.Size(6, 25);
             // 
             // buttonRemoveItem
             // 
@@ -528,7 +568,7 @@
             this.tableLayoutPanel2.RowCount = 2;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(300, 262);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(300, 250);
             this.tableLayoutPanel2.TabIndex = 1;
             // 
             // labelProperties
@@ -548,16 +588,16 @@
             this.propertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.propertyGrid.Location = new System.Drawing.Point(3, 23);
             this.propertyGrid.Name = "propertyGrid";
-            this.propertyGrid.Size = new System.Drawing.Size(294, 236);
+            this.propertyGrid.Size = new System.Drawing.Size(294, 224);
             this.propertyGrid.TabIndex = 2;
             this.propertyGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid_PropertyValueChanged);
             // 
             // splitterRight
             // 
             this.splitterRight.Dock = System.Windows.Forms.DockStyle.Right;
-            this.splitterRight.Location = new System.Drawing.Point(840, 24);
+            this.splitterRight.Location = new System.Drawing.Point(840, 49);
             this.splitterRight.Name = "splitterRight";
-            this.splitterRight.Size = new System.Drawing.Size(3, 515);
+            this.splitterRight.Size = new System.Drawing.Size(3, 490);
             this.splitterRight.TabIndex = 4;
             this.splitterRight.TabStop = false;
             // 
@@ -565,9 +605,9 @@
             // 
             this.panelLeft.Controls.Add(this.tableLayoutPanel3);
             this.panelLeft.Dock = System.Windows.Forms.DockStyle.Left;
-            this.panelLeft.Location = new System.Drawing.Point(0, 24);
+            this.panelLeft.Location = new System.Drawing.Point(0, 49);
             this.panelLeft.Name = "panelLeft";
-            this.panelLeft.Size = new System.Drawing.Size(231, 515);
+            this.panelLeft.Size = new System.Drawing.Size(231, 490);
             this.panelLeft.TabIndex = 5;
             // 
             // tableLayoutPanel3
@@ -583,7 +623,7 @@
             this.tableLayoutPanel3.RowCount = 2;
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(231, 515);
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(231, 490);
             this.tableLayoutPanel3.TabIndex = 1;
             // 
             // labelAppendix
@@ -608,7 +648,7 @@
             this.listViewTagAppendix.GridLines = true;
             this.listViewTagAppendix.Location = new System.Drawing.Point(3, 27);
             this.listViewTagAppendix.Name = "listViewTagAppendix";
-            this.listViewTagAppendix.Size = new System.Drawing.Size(225, 485);
+            this.listViewTagAppendix.Size = new System.Drawing.Size(225, 460);
             this.listViewTagAppendix.TabIndex = 0;
             this.listViewTagAppendix.UseCompatibleStateImageBehavior = false;
             this.listViewTagAppendix.View = System.Windows.Forms.View.Details;
@@ -624,14 +664,130 @@
             // 
             // splitterLeft
             // 
-            this.splitterLeft.Location = new System.Drawing.Point(231, 24);
+            this.splitterLeft.Location = new System.Drawing.Point(231, 49);
             this.splitterLeft.Name = "splitterLeft";
-            this.splitterLeft.Size = new System.Drawing.Size(3, 515);
+            this.splitterLeft.Size = new System.Drawing.Size(3, 490);
             this.splitterLeft.TabIndex = 6;
             this.splitterLeft.TabStop = false;
             // 
+            // toolStrip1
+            // 
+            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolbarNewWatchface,
+            this.toolbarOpenWatchface,
+            this.toolbarSave,
+            this.toolbarSeperator0,
+            this.toolbarLowPowerMode,
+            this.toolbarSmoothSecondHands,
+            this.toolbarTemperatureUnits,
+            this.toolbarWatchType,
+            this.toolbarSeperator1,
+            this.toolbarAppendixWindow});
+            this.toolStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
+            this.toolStrip1.Location = new System.Drawing.Point(0, 24);
+            this.toolStrip1.Name = "toolStrip1";
+            this.toolStrip1.Size = new System.Drawing.Size(1143, 25);
+            this.toolStrip1.TabIndex = 0;
+            this.toolStrip1.Text = "toolStrip1";
+            // 
+            // toolbarNewWatchface
+            // 
+            this.toolbarNewWatchface.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolbarNewWatchface.Image = global::WatchfaceStudio.Properties.Resources.IconNewWatchface16;
+            this.toolbarNewWatchface.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolbarNewWatchface.Name = "toolbarNewWatchface";
+            this.toolbarNewWatchface.Size = new System.Drawing.Size(23, 22);
+            this.toolbarNewWatchface.Text = "New Watchface";
+            this.toolbarNewWatchface.Click += new System.EventHandler(this.menuFileNew_Click);
+            // 
+            // toolbarOpenWatchface
+            // 
+            this.toolbarOpenWatchface.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolbarOpenWatchface.Image = global::WatchfaceStudio.Properties.Resources.IconOpen16;
+            this.toolbarOpenWatchface.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolbarOpenWatchface.Name = "toolbarOpenWatchface";
+            this.toolbarOpenWatchface.Size = new System.Drawing.Size(23, 22);
+            this.toolbarOpenWatchface.Text = "Open Watchface";
+            this.toolbarOpenWatchface.Click += new System.EventHandler(this.menuFileOpen_Click);
+            // 
+            // toolbarSave
+            // 
+            this.toolbarSave.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolbarSave.Image = global::WatchfaceStudio.Properties.Resources.IconSave16;
+            this.toolbarSave.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolbarSave.Name = "toolbarSave";
+            this.toolbarSave.Size = new System.Drawing.Size(23, 22);
+            this.toolbarSave.Text = "Save";
+            this.toolbarSave.Click += new System.EventHandler(this.menuFileSave_Click);
+            // 
+            // toolbarSeperator0
+            // 
+            this.toolbarSeperator0.Name = "toolbarSeperator0";
+            this.toolbarSeperator0.Size = new System.Drawing.Size(6, 25);
+            // 
+            // toolbarLowPowerMode
+            // 
+            this.toolbarLowPowerMode.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolbarLowPowerMode.Image = global::WatchfaceStudio.Properties.Resources.IconLowPower16;
+            this.toolbarLowPowerMode.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolbarLowPowerMode.Name = "toolbarLowPowerMode";
+            this.toolbarLowPowerMode.Size = new System.Drawing.Size(23, 22);
+            this.toolbarLowPowerMode.Text = "Low Power Mode";
+            this.toolbarLowPowerMode.Click += new System.EventHandler(this.menuViewLowPowerMode_Click);
+            // 
+            // toolbarSmoothSecondHands
+            // 
+            this.toolbarSmoothSecondHands.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolbarSmoothSecondHands.Image = global::WatchfaceStudio.Properties.Resources.IconSpeed16;
+            this.toolbarSmoothSecondHands.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolbarSmoothSecondHands.Name = "toolbarSmoothSecondHands";
+            this.toolbarSmoothSecondHands.Size = new System.Drawing.Size(23, 22);
+            this.toolbarSmoothSecondHands.Text = "Smooth Second Hands";
+            this.toolbarSmoothSecondHands.Click += new System.EventHandler(this.menuViewSmoothSeconds_Click);
+            // 
+            // toolbarTemperatureUnits
+            // 
+            this.toolbarTemperatureUnits.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolbarTemperatureUnits.Image = global::WatchfaceStudio.Properties.Resources.IconFahrenheit16;
+            this.toolbarTemperatureUnits.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolbarTemperatureUnits.Name = "toolbarTemperatureUnits";
+            this.toolbarTemperatureUnits.Size = new System.Drawing.Size(29, 22);
+            this.toolbarTemperatureUnits.Text = "Temperature Units";
+            // 
+            // toolbarWatchType
+            // 
+            this.toolbarWatchType.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolbarWatchType.Image = global::WatchfaceStudio.Properties.Resources.IconMediumCircleCut16;
+            this.toolbarWatchType.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolbarWatchType.Name = "toolbarWatchType";
+            this.toolbarWatchType.Size = new System.Drawing.Size(29, 22);
+            this.toolbarWatchType.Text = "Watch Type";
+            // 
+            // toolbarSeperator1
+            // 
+            this.toolbarSeperator1.Name = "toolbarSeperator1";
+            this.toolbarSeperator1.Size = new System.Drawing.Size(6, 25);
+            // 
+            // toolbarAppendixWindow
+            // 
+            this.toolbarAppendixWindow.Checked = true;
+            this.toolbarAppendixWindow.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.toolbarAppendixWindow.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolbarAppendixWindow.Image = global::WatchfaceStudio.Properties.Resources.IconHash16;
+            this.toolbarAppendixWindow.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolbarAppendixWindow.Name = "toolbarAppendixWindow";
+            this.toolbarAppendixWindow.Size = new System.Drawing.Size(23, 22);
+            this.toolbarAppendixWindow.Text = "Appendix Window";
+            this.toolbarAppendixWindow.Click += new System.EventHandler(this.menuViewAppendixWindow_Click);
+            // 
+            // backgroundWorkerCheckForUpdates
+            // 
+            this.backgroundWorkerCheckForUpdates.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerCheckForUpdates_DoWork);
+            this.backgroundWorkerCheckForUpdates.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorkerCheckForUpdates_RunWorkerCompleted);
+            // 
             // StudioForm
             // 
+            this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1143, 539);
@@ -639,6 +795,7 @@
             this.Controls.Add(this.panelLeft);
             this.Controls.Add(this.splitterRight);
             this.Controls.Add(this.splitContainerRight);
+            this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.menuStrip);
             this.IsMdiContainer = true;
             this.MainMenuStrip = this.menuStrip;
@@ -646,6 +803,8 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Watchface Studio";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.StudioForm_FormClosed);
+            this.DragDrop += new System.Windows.Forms.DragEventHandler(this.StudioForm_DragDrop);
+            this.DragEnter += new System.Windows.Forms.DragEventHandler(this.StudioForm_DragEnter);
             this.Resize += new System.EventHandler(this.StudioForm_Resize);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
@@ -664,6 +823,8 @@
             this.panelLeft.ResumeLayout(false);
             this.tableLayoutPanel3.ResumeLayout(false);
             this.tableLayoutPanel3.PerformLayout();
+            this.toolStrip1.ResumeLayout(false);
+            this.toolStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -694,13 +855,13 @@
         private System.Windows.Forms.ToolStripMenuItem menuFileExit;
         private System.Windows.Forms.ToolStripButton buttonAddImage;
         private System.Windows.Forms.ToolStripButton buttonAddLayerText;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripSeparator toolStripExplorerSeparator0;
         private System.Windows.Forms.ToolStripButton buttonRemoveItem;
         private System.Windows.Forms.ToolStripMenuItem menuHelp;
         private System.Windows.Forms.ToolStripMenuItem menuWindow;
         private System.Windows.Forms.ToolStripMenuItem menuHelpAbout;
         private System.Windows.Forms.ToolStripMenuItem menuView;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripSeparator toolStripExplorerSeparator1;
         private System.Windows.Forms.ToolStripButton buttonAddLayerImage;
         private System.Windows.Forms.ToolStripButton buttonAddLayerShape;
         private System.Windows.Forms.Splitter splitterRight;
@@ -720,7 +881,7 @@
         private System.Windows.Forms.ToolStripMenuItem menuViewWTSamsungGL;
         private System.Windows.Forms.ToolStripSeparator menuViewSeparator0;
         private System.Windows.Forms.ToolStripMenuItem menuViewAppendixWindow;
-        private System.Windows.Forms.ToolStripMenuItem menuViewSmoothSeconds;
+        private System.Windows.Forms.ToolStripMenuItem menuViewSmoothSecondHands;
         private System.Windows.Forms.ToolStripMenuItem menuViewUnits;
         private System.Windows.Forms.ToolStripMenuItem menuViewUnitsFahrenheit;
         private System.Windows.Forms.ToolStripMenuItem menuViewUnitsCelsius;
@@ -728,6 +889,20 @@
         private System.Windows.Forms.ToolStripMenuItem menuViewDateNow;
         private System.Windows.Forms.ToolStripMenuItem menuViewDateCustom;
         private System.Windows.Forms.ToolStripTextBox menuViewDateCustomDate;
+        private System.Windows.Forms.ToolStrip toolStrip1;
+        private System.Windows.Forms.ToolStripButton toolbarNewWatchface;
+        private System.Windows.Forms.ToolStripButton toolbarOpenWatchface;
+        private System.Windows.Forms.ToolStripButton toolbarSave;
+        private System.Windows.Forms.ToolStripSeparator toolbarSeperator0;
+        private System.Windows.Forms.ToolStripButton toolbarLowPowerMode;
+        private System.Windows.Forms.ToolStripButton toolbarSmoothSecondHands;
+        private System.Windows.Forms.ToolStripSeparator toolbarSeperator1;
+        private System.Windows.Forms.ToolStripButton toolbarAppendixWindow;
+        private System.Windows.Forms.ToolStripDropDownButton toolbarTemperatureUnits;
+        private System.Windows.Forms.ToolStripDropDownButton toolbarWatchType;
+        private System.Windows.Forms.ToolStripMenuItem menuHelpCheckForUpdate;
+        private System.Windows.Forms.ToolStripSeparator menuHelpSeperator0;
+        private System.ComponentModel.BackgroundWorker backgroundWorkerCheckForUpdates;
     }
 }
 

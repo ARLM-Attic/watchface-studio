@@ -133,9 +133,29 @@ namespace WatchfaceStudio.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap IconCelsius16 {
+            get {
+                object obj = ResourceManager.GetObject("IconCelsius16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap IconClose16 {
             get {
                 object obj = ResourceManager.GetObject("IconClose16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap IconFahrenheit16 {
+            get {
+                object obj = ResourceManager.GetObject("IconFahrenheit16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -156,6 +176,16 @@ namespace WatchfaceStudio.Properties {
         internal static System.Drawing.Bitmap IconFonts16 {
             get {
                 object obj = ResourceManager.GetObject("IconFonts16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap IconHash16 {
+            get {
+                object obj = ResourceManager.GetObject("IconHash16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -216,6 +246,46 @@ namespace WatchfaceStudio.Properties {
         internal static System.Drawing.Bitmap IconLayerText16 {
             get {
                 object obj = ResourceManager.GetObject("IconLayerText16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap IconLowPower16 {
+            get {
+                object obj = ResourceManager.GetObject("IconLowPower16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap IconMediumCircle16 {
+            get {
+                object obj = ResourceManager.GetObject("IconMediumCircle16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap IconMediumCircleCut16 {
+            get {
+                object obj = ResourceManager.GetObject("IconMediumCircleCut16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap IconMediumSquare16 {
+            get {
+                object obj = ResourceManager.GetObject("IconMediumSquare16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -286,6 +356,26 @@ namespace WatchfaceStudio.Properties {
         internal static System.Drawing.Bitmap IconSettings16 {
             get {
                 object obj = ResourceManager.GetObject("IconSettings16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap IconSmallSquare16 {
+            get {
+                object obj = ResourceManager.GetObject("IconSmallSquare16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap IconSpeed16 {
+            get {
+                object obj = ResourceManager.GetObject("IconSpeed16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

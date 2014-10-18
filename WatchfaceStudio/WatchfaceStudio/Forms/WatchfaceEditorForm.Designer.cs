@@ -78,6 +78,7 @@
             // 
             // WatchfaceEditorForm
             // 
+            this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.WindowFrame;
@@ -87,6 +88,8 @@
             this.Controls.Add(this.pictureWatch);
             this.Name = "WatchfaceEditorForm";
             this.Text = "WatchfaceEditorForm";
+            this.DragDrop += new System.Windows.Forms.DragEventHandler(this.WatchfaceEditorForm_DragDrop);
+            this.DragEnter += new System.Windows.Forms.DragEventHandler(this.WatchfaceEditorForm_DragEnter);
             ((System.ComponentModel.ISupportInitialize)(this.pictureWatch)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxAlert)).EndInit();
             this.ResumeLayout(false);

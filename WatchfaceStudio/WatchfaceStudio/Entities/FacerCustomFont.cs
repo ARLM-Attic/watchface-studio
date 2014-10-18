@@ -12,7 +12,7 @@ namespace WatchfaceStudio.Entities
     public class FacerCustomFont
     {
         private PrivateFontCollection _pfc;
-        public FontFamily FontFamily;
+        public FontFamily FontFamily {get; set;}
         public byte[] FileBytes;
 
         public FacerCustomFont(string path)

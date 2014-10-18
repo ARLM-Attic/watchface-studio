@@ -13,39 +13,42 @@ namespace WatchfaceStudio.Forms
 {
     public partial class WatchfaceEditorForm : Form
     {
-        public static WatchfaceEditorForm FocusedEditor;
-
         public FacerWatchface Watchface;
         public string ZipFilePath;
+        public event DragEventHandler DraggedFile;
+        public event DragEventHandler DroppedFile;
+        public bool IsPlaying = true;
 
         public WatchfaceEditorForm()
         {
             InitializeComponent();
             Icon = Properties.Resources.IconWatchface;
 
-            GotFocus += WatchfaceEditorForm_GotFocus;
-            LostFocus += WatchfaceEditorForm_LostFocus;
+            Activated += WatchfaceEditorForm_Activated;
+            Deactivate += WatchfaceEditorForm_Deactivated;
+            
+            timerClock_Tick(null, null);
         }
 
         public Image PreviewImage { get { return pictureWatch.Image; } }
 
-        void WatchfaceEditorForm_LostFocus(object sender, EventArgs e)
+        void WatchfaceEditorForm_Deactivated(object sender, EventArgs e)
         {
-            //timerClock.Enabled = false;
+            timerClock.Enabled = false;
         }
 
-        void WatchfaceEditorForm_GotFocus(object sender, EventArgs e)
+        void WatchfaceEditorForm_Activated(object sender, EventArgs e)
         {
-            FocusedEditor = this;
-
-            timerClock_Tick(sender, e);
-            timerClock.Enabled = true;
+            if (IsPlaying)
+            {
+                timerClock_Tick(sender, e);
+                timerClock.Enabled = true;
+            }
         }
         
         private void timerClock_Tick(object sender, EventArgs e)
         {
-            if (this != FocusedEditor) return;
-            if (this.ParentForm == null)
+            if (this.ParentForm == null) //close
             {
                 timerClock.Enabled = false;
                 return;
@@ -60,17 +63,38 @@ namespace WatchfaceStudio.Forms
                 timerClock.Interval = 1000;
             }
 
-            var watchtype = ((StudioForm)this.ParentForm).Watchtype;
             bool errorsFound;
-            var watchBmp = FacerWatcfaceRenderer.Render(Watchface, watchtype, out errorsFound);
+            var watchBmp = FacerWatcfaceRenderer.Render(Watchface, WatchType.Current, out errorsFound);
             pictureBoxAlert.Visible = errorsFound;
             pictureWatch.Image = watchBmp;
         }
 
         private void buttonPlayPause_Click(object sender, EventArgs e)
         {
-            timerClock.Enabled = !timerClock.Enabled;
-            buttonPlayPause.Image = timerClock.Enabled ? Properties.Resources.IconPause16 : Properties.Resources.IconPlay16;
+            if (IsPlaying)
+            {
+                timerClock.Enabled = false;
+                IsPlaying = false;
+                buttonPlayPause.Image = Properties.Resources.IconPlay16;
+            }
+            else
+            {
+                timerClock.Enabled = true;
+                IsPlaying = true;
+                buttonPlayPause.Image = Properties.Resources.IconPause16;
+            }
+        }
+
+        private void WatchfaceEditorForm_DragEnter(object sender, DragEventArgs e)
+        {
+            if (DraggedFile == null) return;
+            DraggedFile(null, e);
+        }
+
+        private void WatchfaceEditorForm_DragDrop(object sender, DragEventArgs e)
+        {
+            if (DroppedFile == null) return;
+            DroppedFile(null, e);
         }
     }
 }

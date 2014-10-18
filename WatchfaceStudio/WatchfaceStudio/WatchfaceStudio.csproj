@@ -27,7 +27,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
+    <Prefer32Bit>true</Prefer32Bit>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -38,7 +38,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
+    <Prefer32Bit>true</Prefer32Bit>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
@@ -107,7 +107,9 @@
     <Compile Include="Entities\FacerWatcfaceRenderer.cs" />
     <Compile Include="Entities\FacerWatchface.cs" />
     <Compile Include="Entities\FacerWatchfaceDescription.cs" />
-    <Compile Include="Entities\XorDrawing.cs" />
+    <Compile Include="Imaging\AnimatedGif.cs" />
+    <Compile Include="Imaging\DrawingCalculations.cs" />
+    <Compile Include="Imaging\XorDrawing.cs" />
     <Compile Include="Forms\AboutBox.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -246,6 +248,15 @@
     <Content Include="lib\Newtonsoft.Json.dll" />
     <Content Include="lib\Newtonsoft.Json.pdb" />
     <Content Include="lib\Newtonsoft.Json.xml" />
+    <None Include="Resources\IconSpeed16.png" />
+    <None Include="Resources\IconHash16.png" />
+    <None Include="Resources\IconSmallSquare16.png" />
+    <None Include="Resources\IconMediumSquare16.png" />
+    <None Include="Resources\IconMediumCircle16.png" />
+    <None Include="Resources\IconMediumCircleCut16.png" />
+    <None Include="Resources\IconLowPower16.png" />
+    <None Include="Resources\IconFahrenheit16.png" />
+    <None Include="Resources\IconCelsius16.png" />
     <None Include="Resources\IconPause16.png" />
     <None Include="Resources\IconPlay16.png" />
     <None Include="Resources\IconWatchface.ico" />

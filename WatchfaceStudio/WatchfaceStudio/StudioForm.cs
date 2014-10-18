@@ -11,6 +11,10 @@ using System.IO.Compression;
 using WatchfaceStudio.Forms;
 using WatchfaceStudio.Entities;
 using WatchfaceStudio.Editor;
+using System.Net;
+using System.Text.RegularExpressions;
+using System.Diagnostics;
+using WatchfaceStudio.Imaging;
 
 namespace WatchfaceStudio
 {
@@ -18,32 +22,18 @@ namespace WatchfaceStudio
     {
         private FormWindowState _lastWindowState;
         public static string TempFolder;
+        public static string CodePlexUrl = "https://watchfacestudio.codeplex.com/";
 
         public static int UntitledCounter = 1;
+        
+        //Clones
+        private ToolStripMenuItem menuViewUnitsFahrenheitClone;
+        private ToolStripMenuItem menuViewUnitsCelsiusClone;
 
-        public EWatchType Watchtype
-        {
-            get 
-            { 
-                var wt = Properties.Settings.Default.Watchtype;
-                if (!Enum.IsDefined(typeof(EWatchType), wt))
-                    wt = (int)default(EWatchType);
-                return (EWatchType)wt;
-            }
-            set
-            {
-                Properties.Settings.Default.Watchtype = (int)value;
-                Properties.Settings.Default.Save();
-                Properties.Settings.Default.Upgrade();
-            }
-        }
-
-        public class PropertyLabelClass
-        {
-            private string _title;
-            public string Title { get {return _title; } }
-            public PropertyLabelClass(string title) { _title = title; }
-        }
+        private ToolStripMenuItem menuViewWTMoto360Clone;
+        private ToolStripMenuItem menuViewWTLGWClone;
+        private ToolStripMenuItem menuViewWTLGWRClone;
+        private ToolStripMenuItem menuViewWTSamsungGLClone;
 
         public void UpdateChanged()
         {
@@ -52,11 +42,46 @@ namespace WatchfaceStudio
                 EditorContext.SelectedWatchface.EditorForm.Text = string.Concat("*", EditorContext.SelectedWatchface.EditorForm.Text);
         }
 
+        private static ToolStripMenuItem CloneToolStripMenuItem(ToolStripMenuItem source, EventHandler onClick)
+        {
+            var target = new ToolStripMenuItem(source.Text, source.Image, onClick, source.ShortcutKeys);
+            target.Checked = source.Checked;
+            target.CheckState = source.CheckState;
+            target.Tag = source.Tag;
+            return target;
+        }
+
         public StudioForm()
         {
             InitializeComponent();
 
             LoadSettings();
+
+            //Toolbar cloning from menu
+
+            menuViewUnitsFahrenheit.Tag = false;
+            menuViewUnitsCelsius.Tag = true;
+
+            menuViewUnitsFahrenheitClone = CloneToolStripMenuItem(menuViewUnitsFahrenheit, menuViewUnits_Click);
+            menuViewUnitsCelsiusClone = CloneToolStripMenuItem(menuViewUnitsCelsius, menuViewUnits_Click);
+            toolbarTemperatureUnits.DropDownItems.Add(menuViewUnitsFahrenheitClone);
+            toolbarTemperatureUnits.DropDownItems.Add(menuViewUnitsCelsiusClone);
+
+            menuViewWTMoto360.Tag = EWatchType.Moto_360;
+            menuViewWTLGW.Tag = EWatchType.LG_G_Watch;
+            menuViewWTLGWR.Tag = EWatchType.LG_G_Watch_R;
+            menuViewWTSamsungGL.Tag = EWatchType.Samsung_Gear_Live;
+
+            menuViewWTMoto360Clone = CloneToolStripMenuItem(menuViewWTMoto360, menuViewMode_Click);
+            menuViewWTLGWClone = CloneToolStripMenuItem(menuViewWTLGW, menuViewMode_Click);
+            menuViewWTLGWRClone = CloneToolStripMenuItem(menuViewWTLGWR, menuViewMode_Click);
+            menuViewWTSamsungGLClone = CloneToolStripMenuItem(menuViewWTSamsungGL, menuViewMode_Click);
+            toolbarWatchType.DropDownItems.Add(menuViewWTMoto360Clone);
+            toolbarWatchType.DropDownItems.Add(menuViewWTLGWClone);
+            toolbarWatchType.DropDownItems.Add(menuViewWTLGWRClone);
+            toolbarWatchType.DropDownItems.Add(menuViewWTSamsungGLClone);
+
+            toolbarLowPowerMode.Checked = menuViewLowPowerMode.Checked;
 
             Icon = Properties.Resources.IconApplication;
 
@@ -85,6 +110,9 @@ namespace WatchfaceStudio
             }
             foreach (ColumnHeader col in listViewTagAppendix.Columns)
                 col.Width = -1;
+#if !DEBUG
+            backgroundWorkerCheckForUpdates.RunWorkerAsync(false);
+#endif
         }
 
         private void LoadSettings()
@@ -93,16 +121,24 @@ namespace WatchfaceStudio
             _lastWindowState = WindowState;
 
             menuViewLowPowerMode.Checked = Properties.Settings.Default.LowPowerMode;
-            menuViewSmoothSeconds.Checked = Properties.Settings.Default.SmoothSeconds;
+            menuViewSmoothSecondHands.Checked = Properties.Settings.Default.SmoothSeconds;
 
             menuViewUnitsCelsius.Checked = Properties.Settings.Default.TempUnitsCelsius;
             menuViewUnitsFahrenheit.Checked = !menuViewUnitsCelsius.Checked;
-            
+            toolbarTemperatureUnits.Image =
+                menuViewUnitsCelsius.Checked ? menuViewUnitsCelsius.Image :
+                menuViewUnitsFahrenheit.Image;
+
             var watchtype = Properties.Settings.Default.Watchtype;
             menuViewWTMoto360.Checked = watchtype == (int)EWatchType.Moto_360;
             menuViewWTLGW.Checked = watchtype == (int)EWatchType.LG_G_Watch;
             menuViewWTLGWR.Checked = watchtype == (int)EWatchType.LG_G_Watch_R;
             menuViewWTSamsungGL.Checked = watchtype == (int)EWatchType.Samsung_Gear_Live;
+            toolbarWatchType.Image =
+                menuViewWTMoto360.Checked ? menuViewWTMoto360.Image :
+                menuViewWTLGW.Checked ? menuViewWTLGW.Image :
+                menuViewWTLGWR.Checked ? menuViewWTLGWR.Image :
+                menuViewWTSamsungGL.Image;
 
             menuViewAppendixWindow.Checked = Properties.Settings.Default.AppendixVisible;
             panelLeft.Visible = menuViewAppendixWindow.Checked;
@@ -134,18 +170,46 @@ namespace WatchfaceStudio
 
         private void CreateEditorForm(string name, string path = null)
         {
+            var isNew = path == null;
             var newForm = new WatchfaceEditorForm
             {
-                Text = (path == null ? "*" : string.Empty) + "Editor - " + Path.GetFileName(name),
+                Text = (isNew ? "*" : string.Empty) + Path.GetFileName(name),
                 Watchface = new Entities.FacerWatchface(path),
                 MdiParent = this,
-                ZipFilePath = path == null ? null : name
+                ZipFilePath = isNew ? null : name
             };
             newForm.Watchface.EditorForm = newForm;
             newForm.GotFocus += EditorFormFocus;
             newForm.FormClosing += EditorFormClosing;
             newForm.FormClosed += EditorFormClosed;
+            newForm.DroppedFile += EditorFormDroppedFile;
+            newForm.DraggedFile += EditorFormDraggedFile;
             newForm.Show();
+        }
+
+        void EditorFormDraggedFile(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                var fileNames = (string[])e.Data.GetData(DataFormats.FileDrop);
+                var ext = Path.GetExtension(fileNames[0]);
+                var regex = new Regex("png|jpe?g|gif|bmp|ttf");
+                e.Effect = regex.IsMatch(ext.Substring(1)) ? DragDropEffects.Copy : DragDropEffects.None;
+            }
+            else
+            {
+                e.Effect = DragDropEffects.None;
+            }
+        }
+
+        void EditorFormDroppedFile(object sender, DragEventArgs e)
+        {
+            var fileNames = (string[])e.Data.GetData(DataFormats.FileDrop);
+            var ext = Path.GetExtension(fileNames[0]);
+            if (ext == ".ttf")
+                AddNewFont(fileNames[0]);
+            else
+                AddNewImage(fileNames[0]);
         }
 
         private TreeNode AddFontToTree(TreeNode fontsNode, string key, FacerCustomFont fnt)
@@ -188,22 +252,19 @@ namespace WatchfaceStudio
             var root = treeViewExplorer.Nodes.Add("watchface", "Watchface (" + watchface.Description.title + ")", 0, 0);
             root.Tag = watchface.Description;
 
-            var fontsNode = root.Nodes.Add("fonts", "Fonts", 1, 1); 
-            fontsNode.Tag = new PropertyLabelClass(fontsNode.Text);            
+            var fontsNode = root.Nodes.Add("fonts", "Fonts", 1, 1);             
             foreach (var fnt in watchface.CustomFonts)
             {
                 AddFontToTree(fontsNode, fnt.Key, fnt.Value);
             }
 
             var imagesNode = root.Nodes.Add("images", "Images", 3, 3); 
-            imagesNode.Tag = new PropertyLabelClass(imagesNode.Text);
             foreach (var img in watchface.Images)
             {
                 AddImageToTree(imagesNode, img.Key, img.Value);
             }
             
             var layersNode = root.Nodes.Add("layers", "Layers", 5, 5);
-            layersNode.Tag = new PropertyLabelClass(layersNode.Text);
             foreach (var lyr in watchface.Layers)
             {
                 AddLayerToTree(layersNode, lyr);
@@ -333,6 +394,26 @@ namespace WatchfaceStudio
             CreateEditorForm("Untitled" + UntitledCounter++);
         }
 
+        private void OpenArchivedWatchface(string fileName)
+        {
+            string zipTempFolder = null;
+            try
+            {
+                zipTempFolder = Path.Combine(TempFolder, fileName.GetHashCode().ToString().Replace('-', '_') + "_" + DateTime.Now.Ticks);
+                if (Directory.Exists(zipTempFolder))
+                    Directory.Delete(zipTempFolder, true);
+                Directory.CreateDirectory(zipTempFolder);
+
+                ZipFile.ExtractToDirectory(fileName, zipTempFolder);
+
+                CreateEditorForm(fileName, zipTempFolder);
+            }
+            catch (Exception ex)
+            {
+                ShowException(ex);
+            }
+        }
+
         private void menuFileOpen_Click(object sender, EventArgs e)
         {
             var ofd = new OpenFileDialog
@@ -341,22 +422,7 @@ namespace WatchfaceStudio
             };
             if (ofd.ShowDialog() != DialogResult.OK) return;
 
-            string zipTempFolder = null;
-            try
-            {
-                zipTempFolder = Path.Combine(TempFolder, ofd.FileName.GetHashCode().ToString().Replace('-', '_') + "_" + DateTime.Now.Ticks);
-                if (Directory.Exists(zipTempFolder))
-                    Directory.Delete(zipTempFolder, true);
-                Directory.CreateDirectory(zipTempFolder);
-
-                ZipFile.ExtractToDirectory(ofd.FileName, zipTempFolder);
-
-                CreateEditorForm(ofd.FileName, zipTempFolder);
-            }
-            catch (Exception ex)
-            {
-                ShowException(ex);
-            }
+            OpenArchivedWatchface(ofd.FileName);
         }
 
         private void menuFileClose_Click(object sender, EventArgs e)
@@ -404,34 +470,36 @@ namespace WatchfaceStudio
 
         private void menuViewMode_Click(object sender, EventArgs e)
         {
-            menuViewWTMoto360.Checked = sender == menuViewWTMoto360;
-            menuViewWTLGW.Checked = sender == menuViewWTLGW;
-            menuViewWTLGWR.Checked = sender == menuViewWTLGWR;
-            menuViewWTSamsungGL.Checked = sender == menuViewWTSamsungGL;
+            var watchType = (EWatchType)((ToolStripMenuItem)sender).Tag;
 
-            Watchtype = menuViewWTMoto360.Checked ? EWatchType.Moto_360 :
-                (menuViewWTLGW.Checked ? EWatchType.LG_G_Watch : 
-                (menuViewWTLGWR.Checked ? EWatchType.LG_G_Watch_R :
-                EWatchType.Samsung_Gear_Live));
+            menuViewWTMoto360Clone.Checked = menuViewWTMoto360.Checked = watchType == EWatchType.Moto_360;
+            menuViewWTLGWClone.Checked = menuViewWTLGW.Checked = watchType == EWatchType.LG_G_Watch;
+            menuViewWTLGWRClone.Checked = menuViewWTLGWR.Checked = watchType == EWatchType.LG_G_Watch_R;
+            menuViewWTSamsungGLClone.Checked = menuViewWTSamsungGL.Checked = watchType == EWatchType.Samsung_Gear_Live;
+            toolbarWatchType.Image = ((ToolStripMenuItem)sender).Image;
+
+            WatchType.Current = watchType;
         }
 
         private void menuViewUnits_Click(object sender, EventArgs e)
         {
-            menuViewUnitsCelsius.Checked = sender == menuViewUnitsCelsius;
-            menuViewUnitsFahrenheit.Checked = sender == menuViewUnitsFahrenheit;
+            var isTempUnitsCelsius = (bool)((ToolStripMenuItem)sender).Tag;
 
-            Properties.Settings.Default.TempUnitsCelsius = menuViewUnitsCelsius.Checked;
+            menuViewUnitsCelsiusClone.Checked = menuViewUnitsCelsius.Checked = isTempUnitsCelsius;
+            menuViewUnitsFahrenheitClone.Checked = menuViewUnitsFahrenheit.Checked = !isTempUnitsCelsius;
+            toolbarTemperatureUnits.Image = ((ToolStripMenuItem)sender).Image;
+
+            Properties.Settings.Default.TempUnitsCelsius = isTempUnitsCelsius;
             Properties.Settings.Default.Save();
-            Properties.Settings.Default.Upgrade();
         }
 
         private void menuViewLowPowerMode_Click(object sender, EventArgs e)
         {
             menuViewLowPowerMode.Checked = !menuViewLowPowerMode.Checked;
+            toolbarLowPowerMode.Checked = menuViewLowPowerMode.Checked;
 
             Properties.Settings.Default.LowPowerMode = menuViewLowPowerMode.Checked;
             Properties.Settings.Default.Save();
-            Properties.Settings.Default.Upgrade();
         }
 
         private void menuHelpAbout_Click(object sender, EventArgs e)
@@ -450,16 +518,21 @@ namespace WatchfaceStudio
 
             Properties.Settings.Default.AppendixVisible = menuViewAppendixWindow.Checked;
             Properties.Settings.Default.Save();
-            Properties.Settings.Default.Upgrade();
         }
 
         private void menuViewSmoothSeconds_Click(object sender, EventArgs e)
         {
-            menuViewSmoothSeconds.Checked = !menuViewSmoothSeconds.Checked;
+            menuViewSmoothSecondHands.Checked = !menuViewSmoothSecondHands.Checked;
 
-            Properties.Settings.Default.SmoothSeconds = menuViewSmoothSeconds.Checked;
+            Properties.Settings.Default.SmoothSeconds = menuViewSmoothSecondHands.Checked;
             Properties.Settings.Default.Save();
-            Properties.Settings.Default.Upgrade();
+        }
+
+        private void AddNewFont(string fileName)
+        {
+            var key = EditorContext.SelectedWatchface.AddFontFile(fileName);
+            AddFontToTree(treeViewExplorer.TopNode.Nodes["fonts"], key, EditorContext.SelectedWatchface.CustomFonts[key]);
+            UpdateChanged();
         }
 
         private void buttonAddFont_Click(object sender, EventArgs e)
@@ -470,11 +543,40 @@ namespace WatchfaceStudio
             {
                 if (ofd.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
 
-                EditorContext.SelectedWatchface.AddFontFile(ofd.FileName);
-                var key = Path.GetFileName(ofd.FileName);
-                AddFontToTree(treeViewExplorer.TopNode.Nodes["fonts"], key, EditorContext.SelectedWatchface.CustomFonts[key]);
-                UpdateChanged();
+                AddNewFont(ofd.FileName);
             }
+        }
+
+        private void AddNewImage(string fileName)
+        {
+            var key = EditorContext.SelectedWatchface.AddImageFile(fileName);
+            var tn = AddImageToTree(treeViewExplorer.TopNode.Nodes["images"], key, EditorContext.SelectedWatchface.Images[key]);
+            var img = (Image)tn.Tag;
+
+            var containedSize = DrawingCalculations.GetContainedSize(img.Size, new Size(320, 320));
+
+            //also add layer
+            var newLayer = new FacerLayer
+            {
+                type = "image",
+                x = "160",
+                y = "160",
+                r = "0",
+                opacity = "100",
+                low_power = true,
+
+                alignment = (int)FacerImageAlignment.Center,
+
+                width = containedSize.Width.ToString(),
+                height = containedSize.Height.ToString(),
+
+                hash = key,
+                is_tinted = false,
+                tint_color = null,
+            };
+            EditorContext.SelectedWatchface.Layers.Add(newLayer);
+            treeViewExplorer.SelectedNode = AddLayerToTree(treeViewExplorer.TopNode.Nodes["layers"], newLayer);
+            UpdateChanged();
         }
 
         private void buttonAddImage_Click(object sender, EventArgs e)
@@ -485,10 +587,7 @@ namespace WatchfaceStudio
             {
                 if (ofd.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
 
-                EditorContext.SelectedWatchface.AddImageFile(ofd.FileName);
-                var key = Path.GetFileNameWithoutExtension(ofd.FileName);
-                AddImageToTree(treeViewExplorer.TopNode.Nodes["images"], key, EditorContext.SelectedWatchface.Images[key]);
-                UpdateChanged();
+                AddNewImage(ofd.FileName);
             }
         }
 
@@ -598,14 +697,12 @@ namespace WatchfaceStudio
             {
                 Properties.Settings.Default.WindowStartupState = FormWindowState.Maximized;
                 Properties.Settings.Default.Save();
-                Properties.Settings.Default.Upgrade();
             }
  
             if (this.WindowState == FormWindowState.Normal)
             {
                 Properties.Settings.Default.WindowStartupState = FormWindowState.Normal;
                 Properties.Settings.Default.Save();
-                Properties.Settings.Default.Upgrade();
             }
         }
 
@@ -616,7 +713,6 @@ namespace WatchfaceStudio
 
             Properties.Settings.Default.ViewCustomDateTime = false;
             Properties.Settings.Default.Save();
-            Properties.Settings.Default.Upgrade();
         }
 
         private void menuViewDateCustom_Click(object sender, EventArgs e)
@@ -631,7 +727,77 @@ namespace WatchfaceStudio
             Properties.Settings.Default.ViewCustomDateTime = true;
             Properties.Settings.Default.CustomDateTime = date;
             Properties.Settings.Default.Save();
-            Properties.Settings.Default.Upgrade();
+        }
+
+        private void menuHelpCheckForUpdate_Click(object sender, EventArgs e)
+        {
+            if (!backgroundWorkerCheckForUpdates.IsBusy)
+                backgroundWorkerCheckForUpdates.RunWorkerAsync(true);
+        }
+
+        private void backgroundWorkerCheckForUpdates_DoWork(object sender, DoWorkEventArgs e)
+        {
+            var wc = new WebClient();
+            var str = wc.DownloadString(CodePlexUrl);
+            var regex = new Regex(@"Watchface Studio v([\d]+\.[\d]+)");
+            var match = regex.Match(str);
+            var manual = (bool)e.Argument;
+            e.Result = string.Concat(manual ? 'M' : 'A',  match.Success ? match.Groups[1].ToString() : string.Empty);
+        }
+
+        private void backgroundWorkerCheckForUpdates_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            var mode = e.Result.ToString()[0];
+            var result = e.Result.ToString().Substring(1);
+            if (result.Length == 0)
+            {
+                if (mode == 'M')
+                    MessageBox.Show("Couldn't figure out the version.");
+                return;
+            }
+            var currentVersion = Application.ProductVersion.Substring(0,
+                Application.ProductVersion.IndexOf('.', Application.ProductVersion.IndexOf('.') + 1));
+            if (currentVersion != result)
+            {
+                if (MessageBox.Show(string.Format(
+@"There's a more updated version on the server.
+Server version: {0}
+Your version: {1}
+Would you like to open the browser to download it?",
+                    result, currentVersion),
+                    "Update Available", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1)
+                    == System.Windows.Forms.DialogResult.Yes)
+                {
+                    Process.Start(CodePlexUrl);
+                }
+            }
+            else
+            {
+                if (mode == 'M')
+                    MessageBox.Show("You have the most updated version.", "Check for updates");
+            }
+        }
+
+        private void StudioForm_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                var fileNames = (string[])e.Data.GetData(DataFormats.FileDrop);
+                var regex = new Regex("zip|face");
+                e.Effect = fileNames.All(f => regex.IsMatch(Path.GetExtension(f).Substring(1))) ? 
+                    DragDropEffects.Copy : DragDropEffects.None;
+            }
+            else
+            {
+                e.Effect = DragDropEffects.None;
+            }
+        }
+
+        private void StudioForm_DragDrop(object sender, DragEventArgs e)
+        {
+            var fileNames = (string[])e.Data.GetData(DataFormats.FileDrop);
+            foreach(var file in fileNames)
+                OpenArchivedWatchface(file);
         }
 
     }

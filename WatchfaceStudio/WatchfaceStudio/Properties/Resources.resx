@@ -193,4 +193,31 @@
   <data name="IconPlay16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\IconPlay16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="IconCelsius16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\IconCelsius16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IconFahrenheit16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\IconFahrenheit16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IconLowPower16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\IconLowPower16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IconMediumCircle16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\IconMediumCircle16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IconMediumCircleCut16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\IconMediumCircleCut16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IconMediumSquare16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\IconMediumSquare16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IconSmallSquare16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\IconSmallSquare16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IconHash16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\IconHash16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IconSpeed16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\IconSpeed16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

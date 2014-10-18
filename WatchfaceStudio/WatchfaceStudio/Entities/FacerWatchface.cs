@@ -25,14 +25,24 @@ namespace WatchfaceStudio.Entities
         public Dictionary<string, FacerCustomFont> CustomFonts;
         public List<FacerLayer> Layers;
 
-        public void AddImageFile(string imageFile)
+        public string AddImageFile(string imageFile)
         {
-            Images.Add(Path.GetFileNameWithoutExtension(imageFile), Image.FromFile(imageFile));
+            var key = Path.GetFileNameWithoutExtension(imageFile);
+            var i = 0;
+            while (Images.ContainsKey(key))
+                key = string.Concat(Path.GetFileNameWithoutExtension(imageFile), "(", i++, ")");
+            Images.Add(key, Image.FromFile(imageFile));
+            return key;
         }
 
-        public void AddFontFile(string fontFile)
+        public string AddFontFile(string fontFile)
         {
-            CustomFonts.Add(Path.GetFileName(fontFile), new FacerCustomFont(fontFile));
+            var key = Path.GetFileName(fontFile);
+            var i = 0;
+            while (CustomFonts.ContainsKey(key))
+                key = string.Concat(Path.GetFileName(fontFile), "(", i++, ")");
+            CustomFonts.Add(key, new FacerCustomFont(fontFile));
+            return key;
         }
 
         public FacerWatchface(string folder)
@@ -90,7 +100,7 @@ namespace WatchfaceStudio.Entities
             bool errorsFound;
             try
             {
-                var preview = FacerWatcfaceRenderer.Render(this, ((StudioForm)EditorForm.MdiParent).Watchtype, out errorsFound);
+                var preview = FacerWatcfaceRenderer.Render(this, WatchType.Current, out errorsFound);
 
                 var watchfileContent = JsonConvert.SerializeObject(Layers, new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore });
                 File.WriteAllText(Path.Combine(folderPath, "watchface.json"), watchfileContent);

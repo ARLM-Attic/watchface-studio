@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WatchfaceStudio.Entities
+namespace WatchfaceStudio.Imaging
 {
     public static class XorDrawing
     {

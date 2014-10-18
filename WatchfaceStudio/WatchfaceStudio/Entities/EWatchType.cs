@@ -17,6 +17,22 @@ namespace WatchfaceStudio.Entities
 
     public static class WatchType
     {
+        public static EWatchType Current
+        {
+            get
+            {
+                var wt = Properties.Settings.Default.Watchtype;
+                if (!Enum.IsDefined(typeof(EWatchType), wt))
+                    wt = (int)default(EWatchType);
+                return (EWatchType)wt;
+            }
+            set
+            {
+                Properties.Settings.Default.Watchtype = (int)value;
+                Properties.Settings.Default.Save();
+            }
+        }
+
         public static Dictionary<EWatchType, Bitmap> Masks;
 
         static WatchType()
