@@ -1,18 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Drawing.Text;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WatchfaceStudio.Entities
 {
     public class FacerCustomFont
     {
         private PrivateFontCollection _pfc;
-        public FontFamily FontFamily {get; set;}
+        public FontFamily FontFamily {get; set; }
+        private FontStyle _fontStyle;
+        public FontStyle FontStyle
+        {
+            get { return _fontStyle; }
+        }
+
         public byte[] FileBytes;
 
         public FacerCustomFont(string path)
@@ -20,6 +22,9 @@ namespace WatchfaceStudio.Entities
             _pfc = new PrivateFontCollection();
             _pfc.AddFontFile(path);
             FontFamily = _pfc.Families.Last();
+            _fontStyle = default(FontStyle);
+            while (!FontFamily.IsStyleAvailable(_fontStyle))
+                _fontStyle++;
             FileBytes = File.ReadAllBytes(path);
         }
     }

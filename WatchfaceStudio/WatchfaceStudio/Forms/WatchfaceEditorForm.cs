@@ -64,8 +64,15 @@ namespace WatchfaceStudio.Forms
             }
 
             bool errorsFound;
-            var watchBmp = FacerWatcfaceRenderer.Render(Watchface, WatchType.Current, out errorsFound);
+            string firstErrorMessage;
+            var watchBmp = FacerWatcfaceRenderer.Render(Watchface, WatchType.Current, out errorsFound, out firstErrorMessage);
             pictureBoxAlert.Visible = errorsFound;
+            labelError.Visible = errorsFound;
+            if (!string.IsNullOrEmpty(firstErrorMessage))
+            {
+                labelError.Text = firstErrorMessage;
+                toolTip.SetToolTip(labelError, firstErrorMessage);
+            }
             pictureWatch.Image = watchBmp;
         }
 

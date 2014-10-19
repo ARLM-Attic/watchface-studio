@@ -214,7 +214,7 @@ namespace WatchfaceStudio
 
         private TreeNode AddFontToTree(TreeNode fontsNode, string key, FacerCustomFont fnt)
         {
-            var newNode = fontsNode.Nodes.Add("font_" + key, "Font (" + key + ")", 2, 2);
+            var newNode = fontsNode.Nodes.Add("font_" + key, key, 2, 2);
             newNode.Tag = fnt;
             return newNode;
         }

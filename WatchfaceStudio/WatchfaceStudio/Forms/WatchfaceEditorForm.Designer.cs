@@ -34,6 +34,7 @@
             this.pictureBoxAlert = new System.Windows.Forms.PictureBox();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.buttonPlayPause = new System.Windows.Forms.Button();
+            this.labelError = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureWatch)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxAlert)).BeginInit();
             this.SuspendLayout();
@@ -76,6 +77,17 @@
             this.buttonPlayPause.UseVisualStyleBackColor = true;
             this.buttonPlayPause.Click += new System.EventHandler(this.buttonPlayPause_Click);
             // 
+            // labelError
+            // 
+            this.labelError.AutoSize = true;
+            this.labelError.ForeColor = System.Drawing.Color.White;
+            this.labelError.Location = new System.Drawing.Point(46, 6);
+            this.labelError.Name = "labelError";
+            this.labelError.Size = new System.Drawing.Size(28, 13);
+            this.labelError.TabIndex = 4;
+            this.labelError.Text = "error";
+            this.labelError.Visible = false;
+            // 
             // WatchfaceEditorForm
             // 
             this.AllowDrop = true;
@@ -83,6 +95,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.WindowFrame;
             this.ClientSize = new System.Drawing.Size(344, 358);
+            this.Controls.Add(this.labelError);
             this.Controls.Add(this.buttonPlayPause);
             this.Controls.Add(this.pictureBoxAlert);
             this.Controls.Add(this.pictureWatch);
@@ -93,6 +106,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureWatch)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxAlert)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -103,5 +117,6 @@
         private System.Windows.Forms.PictureBox pictureBoxAlert;
         private System.Windows.Forms.ToolTip toolTip;
         private System.Windows.Forms.Button buttonPlayPause;
+        private System.Windows.Forms.Label labelError;
     }
 }

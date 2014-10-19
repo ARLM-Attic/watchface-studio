@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System.Globalization;
+using System.Windows.Forms;
 using ExpressionEvaluator;
 using System;
 using System.Collections.Generic;
@@ -109,9 +110,16 @@ namespace WatchfaceStudio.Entities
 
             //convert formula to c#
             resolvedFormula = ConditionalRegex.Replace(resolvedFormula, "($1)");
-            resolvedFormula = resolvedFormula.Replace("=", "==").Replace('[', '(').Replace(']', ')');
+            resolvedFormula = resolvedFormula
+                .Replace("=", "==")
+                .Replace('[', '(')
+                .Replace(']', ')')
+                .Replace(">==",">=")
+                .Replace("<==", "<=")
+                .Replace("!==", "!=");
             var expression = new CompiledExpression(resolvedFormula);
             var result = expression.Eval();
+            var b = (5 <= 6);
             return Convert.ToDouble(result);
         }
 
@@ -143,17 +151,6 @@ namespace WatchfaceStudio.Entities
         private static float DpToPx(float dp)
         {
             return dp * ScreenDPI / DefaultScreenDPI;
-        }
-
-        private static StringFormat ToStringFormat(FacerTextAlignment alignment)
-        {
-            return new StringFormat
-            {
-                LineAlignment = StringAlignment.Far,
-                Alignment = (alignment == FacerTextAlignment.Center ? StringAlignment.Center :
-                            (alignment == FacerTextAlignment.Left ? StringAlignment.Near :
-                            StringAlignment.Far))
-            };
         }
 
         private enum ChannelARGB
@@ -188,39 +185,14 @@ namespace WatchfaceStudio.Entities
             dest.UnlockBits(bdDst);
         }
 
-        private static Bitmap TintBitmap(Bitmap b, Color color, float intensity)
-        {
-            var b2 = new Bitmap(b.Width, b.Height);
-            var ia = new ImageAttributes();
-
-            var m = new ColorMatrix(new float[][] {
-		        new float[] {1,0,0,0,0},
-		        new float[] {0,1,0,0,0},
-		        new float[] {0,0,1,0,0},
-		        new float[] {0,0,0,1,0},
-		        new float[] {
-                    color.R / 255 * intensity,
-			        color.G / 255 * intensity,
-			        color.B / 255 * intensity,
-			        0,
-			        1
-		        }
-	        });
-
-            ia.SetColorMatrix(m);
-            Graphics g = Graphics.FromImage(b2);
-            g.DrawImage(b, new Rectangle(0, 0, b.Width, b.Height), 0, 0, b.Width, b.Height, GraphicsUnit.Pixel, ia);
-            return b2;
-
-        }
-
-        public static Bitmap Render(FacerWatchface watchface, EWatchType watchtype, out bool errorsFound)
+        public static Bitmap Render(FacerWatchface watchface, EWatchType watchtype, out bool errorsFound, out string firstErrorMessage)
         {
             errorsFound = false;
+            firstErrorMessage = null;
             var bmp = new Bitmap(320, 320);
             using (var g = Graphics.FromImage(bmp))
             {
-                g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
                 g.TextRenderingHint = TextRenderingHint.AntiAlias;
                 g.SmoothingMode = SmoothingMode.HighQuality;
                 g.TextContrast = 1;
@@ -232,7 +204,7 @@ namespace WatchfaceStudio.Entities
 
                 var outRect = Rectangle.Empty;
                 var selectedRectangle = Rectangle.Empty;
-                System.Drawing.Drawing2D.Matrix selectedTransform = null;
+                Matrix selectedTransform = null;
 
                 foreach (var layer in watchface.Layers)
                 {
@@ -249,19 +221,19 @@ namespace WatchfaceStudio.Entities
                         var rotation = layer.r != "0" ? (float)Calc(layer.r) : 0.0F;
 
                         var alp = new PointF(0, 0); ;
-                        int width = 0, height = 0;
+                        int width, height;
 
                         if (layer.type == "image")
                         {
                             var imageAtt = new ImageAttributes();
 
-                            if (opacity != 1 || (layer.is_tinted ?? false))
+                            if (opacity > 0.999 || (layer.is_tinted ?? false))
                             {
                                 var tint_color = (layer.is_tinted ?? false) && layer.tint_color != null ? Color.FromArgb(layer.tint_color.Value) : Color.Empty;
                                 const float intensity = 0.3f;
 
                                 var colorMatrix = new ColorMatrix();
-                                if (opacity != 1)
+                                if (opacity > 0.999)
                                     colorMatrix.Matrix33 = opacity;
                                 if (tint_color != Color.Empty)
                                 {
@@ -293,7 +265,8 @@ namespace WatchfaceStudio.Entities
                             Font layerFont;
                             if (layer.font_family == (int)FacerFont.Custom)
                             {
-                                layerFont = new Font(watchface.CustomFonts[layer.font_hash].FontFamily, fontSize, fontStyle);
+                                var customFont = watchface.CustomFonts[layer.font_hash];
+                                layerFont = new Font(customFont.FontFamily, fontSize, customFont.FontStyle);
                             }
                             else
                             {
@@ -342,7 +315,7 @@ namespace WatchfaceStudio.Entities
                         {
                             var foreColor = Color.FromArgb(((int)Calc(layer.color) & 0xFFFFFF) + ((int)(opacity * 255) << 24));
                             var radius = string.IsNullOrEmpty(layer.radius) ? 0 : (float)Calc(layer.radius);
-                            var shapeOptions = layer.shape_opt == ((int)FacerShapeOptions.Stroke).ToString() ? FacerShapeOptions.Stroke : FacerShapeOptions.Fill;
+                            var shapeOptions = layer.shape_opt == ((int)FacerShapeOptions.Stroke).ToString(CultureInfo.InvariantCulture) ? FacerShapeOptions.Stroke : FacerShapeOptions.Fill;
                             Pen penToUse = shapeOptions == FacerShapeOptions.Stroke ? new Pen(foreColor, (float)Calc(layer.stroke_size) / 2) : null;
                             Brush brushToUse = shapeOptions == FacerShapeOptions.Fill ? new SolidBrush(foreColor) : null;
 
@@ -409,7 +382,16 @@ namespace WatchfaceStudio.Entities
 
                         g.ResetTransform();
                     }
-                    catch { errorsFound = true; }
+                    catch (NullReferenceException nrex)
+                    {
+                        errorsFound = true;
+                        firstErrorMessage = "General Error";
+                    }
+                    catch (Exception ex)
+                    { 
+                        errorsFound = true;
+                        firstErrorMessage = ex.Message;
+                    }
                 }
 
                 if (selectedRectangle != Rectangle.Empty)
