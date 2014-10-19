@@ -179,7 +179,7 @@ namespace WatchfaceStudio
                 ZipFilePath = isNew ? null : name
             };
             newForm.Watchface.EditorForm = newForm;
-            newForm.GotFocus += EditorFormFocus;
+            newForm.Activated += EditorFormActivated;
             newForm.FormClosing += EditorFormClosing;
             newForm.FormClosed += EditorFormClosed;
             newForm.DroppedFile += EditorFormDroppedFile;
@@ -310,7 +310,7 @@ namespace WatchfaceStudio
             }
         }
 
-        private void EditorFormFocus(object sender, EventArgs e)
+        private void EditorFormActivated(object sender, EventArgs e)
         {
             var form = (WatchfaceEditorForm)sender;
 

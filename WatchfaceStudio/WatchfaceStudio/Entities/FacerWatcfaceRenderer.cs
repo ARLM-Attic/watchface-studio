@@ -21,7 +21,14 @@ namespace WatchfaceStudio.Entities
         private static System.Data.DataTable _computer = new System.Data.DataTable();
         private static Regex ConditionalRegex = new Regex(@"\$([^\$]+)\$");
         public static Dictionary<FacerFont, Tuple<PrivateFontCollection, FontStyle>> FacerFontConfig;
-        
+
+        public const float ScreenDPI = 120f;
+        public const float DefaultScreenDPI = 160f;
+        private static float DpToPx(float dp)
+        {
+            return dp * ScreenDPI / DefaultScreenDPI;
+        }
+
         static FacerWatcfaceRenderer()
         {
             FacerFontConfig = new Dictionary<FacerFont, Tuple<PrivateFontCollection, FontStyle>>();
@@ -254,7 +261,7 @@ namespace WatchfaceStudio.Entities
                         else if (layer.type == "text")
                         {
                             var foreColor = Color.FromArgb(((int)Calc(layer.color) & 0xFFFFFF) + ((int)(opacity * 255) << 24));
-                            var fontSize = (float)Calc(layer.size);
+                            var fontSize = DpToPx((float)Calc(layer.size));
                             var fontStyle = (layer.bold ?? false) && (layer.italic ?? false) ? FontStyle.Bold | FontStyle.Italic :
                                 ((layer.bold ?? false) && !(layer.italic ?? false) ? FontStyle.Bold :
                                 (!(layer.bold ?? false) && (layer.italic ?? false) ? FontStyle.Italic : FontStyle.Regular));
@@ -268,7 +275,7 @@ namespace WatchfaceStudio.Entities
                             {
                                 var facerFontKey = layer.font_family + 100 * (layer.bold ?? false ? 1 : 0) + 200 * (layer.italic ?? false ? 1 : 0);
                                 var fontPair = FacerFontConfig[(FacerFont)facerFontKey];
-                                layerFont = new Font(fontPair.Item1.Families[0], fontSize, fontPair.Item2, GraphicsUnit.Pixel);
+                                layerFont = new Font(fontPair.Item1.Families[0], fontSize, fontPair.Item2, GraphicsUnit.Point);
                             }
 
                             var resolvedText = FacerTags.ResolveTags(layer.text)
