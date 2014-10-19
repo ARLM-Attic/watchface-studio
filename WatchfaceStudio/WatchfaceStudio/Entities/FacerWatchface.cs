@@ -86,19 +86,19 @@ namespace WatchfaceStudio.Entities
                 }
 
                 var jsonString = File.ReadAllText(watchfaceFile);
-                Layers = JsonConvert.DeserializeObject<List<FacerLayer>>(jsonString, new JsonSerializerSettings() { MissingMemberHandling = MissingMemberHandling.Error });
+                Layers = JsonConvert.DeserializeObject<List<FacerLayer>>(jsonString, new JsonSerializerSettings() { MissingMemberHandling = MissingMemberHandling.Ignore });
 
                 var descriptionFile = Path.Combine(folder, "description.json");
                 if (!File.Exists(descriptionFile))
                     throw new Exception("description.json was not found");
                 jsonString = File.ReadAllText(descriptionFile);
-                Description = JsonConvert.DeserializeObject<FacerWatchfaceDescription>(jsonString, new JsonSerializerSettings() { MissingMemberHandling = MissingMemberHandling.Error });
+                Description = JsonConvert.DeserializeObject<FacerWatchfaceDescription>(jsonString, new JsonSerializerSettings() { MissingMemberHandling = MissingMemberHandling.Ignore });
 
                 PreviewImage = Image.FromFile(Path.Combine(folder, "preview.png"));
 
                 Images = new Dictionary<string, Image>();
                 var imagesFolder = Path.Combine(folder, "images");
-                var imageExtensions = new[] {".jpg", ".jpeg", ".bmp", ".gif", ".png", "."};
+                var imageExtensions = new[] {".jpg", ".jpeg", ".bmp", ".gif", ".png", string.Empty};
                 if (Directory.Exists(imagesFolder))
                     foreach (var imageFile in 
                         Directory.EnumerateFiles(imagesFolder)

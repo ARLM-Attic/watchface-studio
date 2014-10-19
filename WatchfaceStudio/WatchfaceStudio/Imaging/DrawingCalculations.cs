@@ -36,5 +36,16 @@ namespace WatchfaceStudio.Imaging
 
             return zoomSize;
         }
+
+        public static float DrawStringOnBaseline(this Graphics g, string s, Font f, Brush b, int x, int y, StringFormat format)
+        {
+            float baselineOffset = f.SizeInPoints / f.FontFamily.GetEmHeight(f.Style) * f.FontFamily.GetCellAscent(f.Style);
+            float baselineOffsetPixels = g.DpiY / 72f * baselineOffset;
+
+            //g.DrawString(s, f, b, new Point(x, y + (int)(baselineOffsetPixels + 0.5f)), format);
+            g.DrawString(s, f, b, x, y + (int)(baselineOffsetPixels - 0.5f), format);//StringFormat.GenericTypographic); // ;//format);
+
+            return (int)(baselineOffsetPixels - 0.5f);
+        }
     }
 }

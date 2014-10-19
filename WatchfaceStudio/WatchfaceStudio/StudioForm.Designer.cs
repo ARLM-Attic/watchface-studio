@@ -64,7 +64,7 @@
             this.menuHelpSeperator0 = new System.Windows.Forms.ToolStripSeparator();
             this.menuHelpAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainerRight = new System.Windows.Forms.SplitContainer();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanelExplorer = new System.Windows.Forms.TableLayoutPanel();
             this.labelWatchfaceExplorer = new System.Windows.Forms.Label();
             this.panelExplorer = new System.Windows.Forms.Panel();
             this.treeViewExplorer = new System.Windows.Forms.TreeView();
@@ -78,12 +78,12 @@
             this.buttonAddLayerShape = new System.Windows.Forms.ToolStripButton();
             this.toolStripExplorerSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.buttonRemoveItem = new System.Windows.Forms.ToolStripButton();
-            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanelProperties = new System.Windows.Forms.TableLayoutPanel();
             this.labelProperties = new System.Windows.Forms.Label();
             this.propertyGrid = new System.Windows.Forms.PropertyGrid();
             this.splitterRight = new System.Windows.Forms.Splitter();
             this.panelLeft = new System.Windows.Forms.Panel();
-            this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanelAppendix = new System.Windows.Forms.TableLayoutPanel();
             this.labelAppendix = new System.Windows.Forms.Label();
             this.listViewTagAppendix = new System.Windows.Forms.ListView();
             this.columnHeaderTag = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -106,12 +106,12 @@
             this.splitContainerRight.Panel1.SuspendLayout();
             this.splitContainerRight.Panel2.SuspendLayout();
             this.splitContainerRight.SuspendLayout();
-            this.tableLayoutPanel1.SuspendLayout();
+            this.tableLayoutPanelExplorer.SuspendLayout();
             this.panelExplorer.SuspendLayout();
             this.toolStripExplorer.SuspendLayout();
-            this.tableLayoutPanel2.SuspendLayout();
+            this.tableLayoutPanelProperties.SuspendLayout();
             this.panelLeft.SuspendLayout();
-            this.tableLayoutPanel3.SuspendLayout();
+            this.tableLayoutPanelAppendix.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -404,29 +404,31 @@
             // 
             // splitContainerRight.Panel1
             // 
-            this.splitContainerRight.Panel1.Controls.Add(this.tableLayoutPanel1);
+            this.splitContainerRight.Panel1.Controls.Add(this.tableLayoutPanelExplorer);
             // 
             // splitContainerRight.Panel2
             // 
-            this.splitContainerRight.Panel2.Controls.Add(this.tableLayoutPanel2);
+            this.splitContainerRight.Panel2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.splitContainerRight.Panel2.Controls.Add(this.tableLayoutPanelProperties);
             this.splitContainerRight.Size = new System.Drawing.Size(300, 490);
             this.splitContainerRight.SplitterDistance = 236;
             this.splitContainerRight.TabIndex = 2;
             // 
-            // tableLayoutPanel1
+            // tableLayoutPanelExplorer
             // 
-            this.tableLayoutPanel1.ColumnCount = 1;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Controls.Add(this.labelWatchfaceExplorer, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.panelExplorer, 0, 1);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 2;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(300, 236);
-            this.tableLayoutPanel1.TabIndex = 0;
+            this.tableLayoutPanelExplorer.ColumnCount = 1;
+            this.tableLayoutPanelExplorer.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanelExplorer.Controls.Add(this.labelWatchfaceExplorer, 0, 0);
+            this.tableLayoutPanelExplorer.Controls.Add(this.panelExplorer, 0, 1);
+            this.tableLayoutPanelExplorer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanelExplorer.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanelExplorer.Name = "tableLayoutPanelExplorer";
+            this.tableLayoutPanelExplorer.RowCount = 2;
+            this.tableLayoutPanelExplorer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanelExplorer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanelExplorer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanelExplorer.Size = new System.Drawing.Size(300, 236);
+            this.tableLayoutPanelExplorer.TabIndex = 0;
             // 
             // labelWatchfaceExplorer
             // 
@@ -556,20 +558,19 @@
             this.buttonRemoveItem.Text = "Remove Item";
             this.buttonRemoveItem.Click += new System.EventHandler(this.buttonRemoveItem_Click);
             // 
-            // tableLayoutPanel2
+            // tableLayoutPanelProperties
             // 
-            this.tableLayoutPanel2.ColumnCount = 1;
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel2.Controls.Add(this.labelProperties, 0, 0);
-            this.tableLayoutPanel2.Controls.Add(this.propertyGrid, 0, 1);
-            this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 0);
-            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-            this.tableLayoutPanel2.RowCount = 2;
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(300, 250);
-            this.tableLayoutPanel2.TabIndex = 1;
+            this.tableLayoutPanelProperties.ColumnCount = 1;
+            this.tableLayoutPanelProperties.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanelProperties.Controls.Add(this.labelProperties, 0, 0);
+            this.tableLayoutPanelProperties.Controls.Add(this.propertyGrid, 0, 1);
+            this.tableLayoutPanelProperties.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanelProperties.Name = "tableLayoutPanelProperties";
+            this.tableLayoutPanelProperties.RowCount = 2;
+            this.tableLayoutPanelProperties.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanelProperties.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanelProperties.Size = new System.Drawing.Size(300, 250);
+            this.tableLayoutPanelProperties.TabIndex = 1;
             // 
             // labelProperties
             // 
@@ -603,28 +604,28 @@
             // 
             // panelLeft
             // 
-            this.panelLeft.Controls.Add(this.tableLayoutPanel3);
+            this.panelLeft.Controls.Add(this.tableLayoutPanelAppendix);
             this.panelLeft.Dock = System.Windows.Forms.DockStyle.Left;
             this.panelLeft.Location = new System.Drawing.Point(0, 49);
             this.panelLeft.Name = "panelLeft";
             this.panelLeft.Size = new System.Drawing.Size(231, 490);
             this.panelLeft.TabIndex = 5;
             // 
-            // tableLayoutPanel3
+            // tableLayoutPanelAppendix
             // 
-            this.tableLayoutPanel3.ColumnCount = 1;
-            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel3.Controls.Add(this.labelAppendix, 0, 0);
-            this.tableLayoutPanel3.Controls.Add(this.listViewTagAppendix, 0, 1);
-            this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel3.Location = new System.Drawing.Point(0, 0);
-            this.tableLayoutPanel3.Name = "tableLayoutPanel3";
-            this.tableLayoutPanel3.RowCount = 2;
-            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
-            this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(231, 490);
-            this.tableLayoutPanel3.TabIndex = 1;
+            this.tableLayoutPanelAppendix.ColumnCount = 1;
+            this.tableLayoutPanelAppendix.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanelAppendix.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanelAppendix.Controls.Add(this.labelAppendix, 0, 0);
+            this.tableLayoutPanelAppendix.Controls.Add(this.listViewTagAppendix, 0, 1);
+            this.tableLayoutPanelAppendix.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanelAppendix.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanelAppendix.Name = "tableLayoutPanelAppendix";
+            this.tableLayoutPanelAppendix.RowCount = 2;
+            this.tableLayoutPanelAppendix.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
+            this.tableLayoutPanelAppendix.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanelAppendix.Size = new System.Drawing.Size(231, 490);
+            this.tableLayoutPanelAppendix.TabIndex = 1;
             // 
             // labelAppendix
             // 
@@ -812,17 +813,17 @@
             this.splitContainerRight.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerRight)).EndInit();
             this.splitContainerRight.ResumeLayout(false);
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.tableLayoutPanel1.PerformLayout();
+            this.tableLayoutPanelExplorer.ResumeLayout(false);
+            this.tableLayoutPanelExplorer.PerformLayout();
             this.panelExplorer.ResumeLayout(false);
             this.panelExplorer.PerformLayout();
             this.toolStripExplorer.ResumeLayout(false);
             this.toolStripExplorer.PerformLayout();
-            this.tableLayoutPanel2.ResumeLayout(false);
-            this.tableLayoutPanel2.PerformLayout();
+            this.tableLayoutPanelProperties.ResumeLayout(false);
+            this.tableLayoutPanelProperties.PerformLayout();
             this.panelLeft.ResumeLayout(false);
-            this.tableLayoutPanel3.ResumeLayout(false);
-            this.tableLayoutPanel3.PerformLayout();
+            this.tableLayoutPanelAppendix.ResumeLayout(false);
+            this.tableLayoutPanelAppendix.PerformLayout();
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -834,13 +835,13 @@
 
         private System.Windows.Forms.MenuStrip menuStrip;
         private System.Windows.Forms.SplitContainer splitContainerRight;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanelExplorer;
         private System.Windows.Forms.Label labelWatchfaceExplorer;
         private System.Windows.Forms.Panel panelExplorer;
         private System.Windows.Forms.TreeView treeViewExplorer;
         private System.Windows.Forms.ToolStrip toolStripExplorer;
         private System.Windows.Forms.ToolStripButton buttonAddFont;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanelProperties;
         private System.Windows.Forms.Label labelProperties;
         private System.Windows.Forms.PropertyGrid propertyGrid;
         private System.Windows.Forms.ToolStripMenuItem menuFile;
@@ -866,7 +867,7 @@
         private System.Windows.Forms.ToolStripButton buttonAddLayerShape;
         private System.Windows.Forms.Splitter splitterRight;
         private System.Windows.Forms.Panel panelLeft;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanelAppendix;
         private System.Windows.Forms.Label labelAppendix;
         private System.Windows.Forms.ListView listViewTagAppendix;
         private System.Windows.Forms.ColumnHeader columnHeaderTag;

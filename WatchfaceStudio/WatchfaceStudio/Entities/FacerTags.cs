@@ -61,7 +61,7 @@ namespace WatchfaceStudio.Entities
                 {"#DWFH#", new FacerTag("Rotation value for hour hand (24 hour, wearface)", (t) => (15 * t.Hour).ToString())},
                 {"#DWFKS#", new FacerTag("Smooth rotation value for hour hand (12 hour, wearface)", (t) => (30 * (t.GetFloatHour() % 12)).ToString())},
                 {"#DWFHS#", new FacerTag("Smooth rotation value for hour hand (24 hour, wearface)", (t) => (15 * t.GetFloatHour()).ToString())},
-                {"#DhT#", new FacerTag("String value for hour (12 hour)", (t) => (t.Hour % 12).ToWord())},
+                {"#DhT#", new FacerTag("String value for hour (12 hour)", (t) => (t.Hour % 12 == 0 ? 12 : t.Hour % 12).ToWord())},
                 {"#DkT#", new FacerTag("String value for hour (24 hour)", (t) => (t.Hour).ToWord())},
                 {"#Dm#", new FacerTag("Minute in hour", (t) => t.ToString("%m", _culture))},
                 {"#DmZ#", new FacerTag("Minute in hour (with leading zero)", (t) => t.ToString("mm", _culture))},

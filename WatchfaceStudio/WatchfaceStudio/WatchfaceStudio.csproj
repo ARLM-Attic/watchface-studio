@@ -78,6 +78,7 @@
       <DependentUpon>ColorDialogForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Editor\ColorUITypeEditor.cs" />
+    <Compile Include="Editor\DateTimeIntTypeEditor.cs" />
     <Compile Include="Editor\FacerAlignmentTypeConverter.cs" />
     <Compile Include="Editor\ImageUITypeEditor.cs" />
     <Compile Include="Editor\EditorContext.cs" />
@@ -91,6 +92,7 @@
     <Compile Include="Editor\FacerExpressionEditorForm.Designer.cs">
       <DependentUpon>FacerExpressionEditorForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Editor\IntDateTimeTypeConverter.cs" />
     <Compile Include="Editor\StandardValueEditorUI.cs">
       <SubType>UserControl</SubType>
     </Compile>

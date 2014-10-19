@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using WatchfaceStudio.Imaging;
 
 namespace WatchfaceStudio.Entities
@@ -21,9 +22,6 @@ namespace WatchfaceStudio.Entities
         private static Regex ConditionalRegex = new Regex(@"\$([^\$]+)\$");
         public static Dictionary<FacerFont, Tuple<PrivateFontCollection, FontStyle>> FacerFontConfig;
         
-        public const float ScreenDPI = 120f;
-        public const float DefaultScreenDPI = 160f;
-
         static FacerWatcfaceRenderer()
         {
             FacerFontConfig = new Dictionary<FacerFont, Tuple<PrivateFontCollection, FontStyle>>();
@@ -119,7 +117,6 @@ namespace WatchfaceStudio.Entities
                 .Replace("!==", "!=");
             var expression = new CompiledExpression(resolvedFormula);
             var result = expression.Eval();
-            var b = (5 <= 6);
             return Convert.ToDouble(result);
         }
 
@@ -146,11 +143,6 @@ namespace WatchfaceStudio.Entities
                 default: //& FacerImageAlignment.TopLeft
                     return new PointF(0, 0);
             }
-        }
-
-        private static float DpToPx(float dp)
-        {
-            return dp * ScreenDPI / DefaultScreenDPI;
         }
 
         private enum ChannelARGB
@@ -220,6 +212,9 @@ namespace WatchfaceStudio.Entities
                     
                         var rotation = layer.r != "0" ? (float)Calc(layer.r) : 0.0F;
 
+                        g.TranslateTransform(x, y);
+                        g.RotateTransform(rotation);
+
                         var alp = new PointF(0, 0); ;
                         int width, height;
 
@@ -248,9 +243,10 @@ namespace WatchfaceStudio.Entities
                             height = (int)Calc(layer.height);
                             alp = AlignedPoint(width, height, layer.alignment.Value);
 
-                            g.TranslateTransform(x, y);
-                            g.RotateTransform(rotation);
-
+                            if (!watchface.Images.ContainsKey(layer.hash))
+                            {
+                                throw new Exception("Project doesn't contain image: " + layer.hash);
+                            }
                             var img = watchface.Images[layer.hash];
                             outRect = new Rectangle((int)alp.X, (int)alp.Y, width, height);
                             g.DrawImage(img, outRect, 0, 0, img.Width, img.Height, GraphicsUnit.Pixel, imageAtt);
@@ -258,7 +254,7 @@ namespace WatchfaceStudio.Entities
                         else if (layer.type == "text")
                         {
                             var foreColor = Color.FromArgb(((int)Calc(layer.color) & 0xFFFFFF) + ((int)(opacity * 255) << 24));
-                            var fontSize = DpToPx((float)Calc(layer.size));
+                            var fontSize = (float)Calc(layer.size);
                             var fontStyle = (layer.bold ?? false) && (layer.italic ?? false) ? FontStyle.Bold | FontStyle.Italic :
                                 ((layer.bold ?? false) && !(layer.italic ?? false) ? FontStyle.Bold :
                                 (!(layer.bold ?? false) && (layer.italic ?? false) ? FontStyle.Italic : FontStyle.Regular));
@@ -272,7 +268,7 @@ namespace WatchfaceStudio.Entities
                             {
                                 var facerFontKey = layer.font_family + 100 * (layer.bold ?? false ? 1 : 0) + 200 * (layer.italic ?? false ? 1 : 0);
                                 var fontPair = FacerFontConfig[(FacerFont)facerFontKey];
-                                layerFont = new Font(fontPair.Item1.Families[0], fontSize,fontPair.Item2);
+                                layerFont = new Font(fontPair.Item1.Families[0], fontSize, fontPair.Item2, GraphicsUnit.Pixel);
                             }
 
                             var resolvedText = FacerTags.ResolveTags(layer.text)
@@ -295,9 +291,6 @@ namespace WatchfaceStudio.Entities
                             var drawMeasurements = g.MeasureString(resolvedText, layerFont, bmp.Width, textFormat);
                             width = measurements.Width;
                             height = measurements.Height;
-                            
-                            g.TranslateTransform(x, y);
-                            g.RotateTransform(rotation);
 
                             var xOffset = textAlign == FacerTextAlignment.Left ? 0 :
                                 textAlign == FacerTextAlignment.Center ? width / 2 : 
@@ -322,7 +315,7 @@ namespace WatchfaceStudio.Entities
                             switch (layer.shape_type)
                             {
                                 case (int)FacerShapeType.Circle:
-                                    outRect = new Rectangle((int)(x - radius), (int)(y - radius), (int)(2 * radius), (int)(2 * radius));
+                                    outRect = new Rectangle((int)(-radius), (int)(-radius), (int)(2 * radius), (int)(2 * radius));
                                     if (shapeOptions == FacerShapeOptions.Stroke)
                                     {
                                         g.DrawEllipse(penToUse, outRect);
@@ -337,10 +330,7 @@ namespace WatchfaceStudio.Entities
                                     width = (int)Calc(layer.width);
                                     height = (int)Calc(layer.height);
 
-                                    g.TranslateTransform(x, y);
-                                    g.RotateTransform(rotation);
-
-                                    outRect = new Rectangle((int)alp.X, (int)alp.Y, width, height);
+                                    outRect = new Rectangle(0, 0, width, height);
                                     if (shapeOptions == FacerShapeOptions.Stroke)
                                     {
                                         g.DrawRectangle(penToUse, outRect);
@@ -352,14 +342,14 @@ namespace WatchfaceStudio.Entities
                                     break;
                                 case (int)FacerShapeType.Triangle:
                                 case (int)FacerShapeType.Polygon:
-                                    outRect = new Rectangle((int)(alp.X - radius), (int)(alp.X - radius), (int)(2 * radius), (int)(2 * radius));
+                                    outRect = new Rectangle((int)(-radius), (int)(-radius), (int)(2 * radius), (int)(2 * radius));
                                     var polyN = layer.shape_type == (int)FacerShapeType.Triangle ? 3 : (int)Calc(layer.sides);
                                     var polyPoints = new Point[polyN];
                                     for (var i = 0; i < polyN; i++)
                                     {
                                         polyPoints[i] = new Point(
-                                            (int)(x + radius * Math.Cos(rotation * 180 / Math.PI + 2 * Math.PI * i / polyN)),
-                                            (int)(y + radius * Math.Sin(rotation * 180 / Math.PI + 2 * Math.PI * i / polyN)));
+                                            (int)(radius * Math.Cos(2 * Math.PI * i / polyN)),
+                                            (int)(radius * Math.Sin(2 * Math.PI * i / polyN)));
                                     }
                                     if (shapeOptions == FacerShapeOptions.Stroke)
                                     {

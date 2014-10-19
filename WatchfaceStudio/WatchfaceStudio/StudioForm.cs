@@ -384,7 +384,15 @@ namespace WatchfaceStudio
             {
                 EditorContext.SelectedWatchface.SelectedLayer = null;
             }
-
+            if (e.Node.Tag is Image)
+            {
+                tableLayoutPanelProperties.Visible = false;
+                splitContainerRight.Panel2.BackgroundImage = (Image)e.Node.Tag;
+            }
+            else
+            {
+                tableLayoutPanelProperties.Visible = true;
+            }
         }
 
         #region Menu
