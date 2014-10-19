@@ -1,4 +1,5 @@
-﻿using ExpressionEvaluator;
+﻿using System.Windows.Forms;
+using ExpressionEvaluator;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -30,7 +31,7 @@ namespace WatchfaceStudio.Entities
             FacerFontConfig.Add(FacerFont.RobotoLight, new Tuple<PrivateFontCollection, FontStyle>(PFCWithFont(10), FontStyle.Regular));
             FacerFontConfig.Add(FacerFont.RobotoLightCondensed, new Tuple<PrivateFontCollection, FontStyle>(PFCWithFont(6), FontStyle.Regular));
             FacerFontConfig.Add(FacerFont.Roboto, new Tuple<PrivateFontCollection, FontStyle>(PFCWithFont(14), FontStyle.Regular));
-            FacerFontConfig.Add(FacerFont.RobotoBlack, new Tuple<PrivateFontCollection, FontStyle>(PFCWithFont(0), FontStyle.Regular));
+            FacerFontConfig.Add(FacerFont.RobotoBlack, new Tuple<PrivateFontCollection, FontStyle>(PFCWithFont(0), FontStyle.Bold));
             FacerFontConfig.Add(FacerFont.RobotoCondensed, new Tuple<PrivateFontCollection, FontStyle>(PFCWithFont(8), FontStyle.Regular));
             FacerFontConfig.Add(FacerFont.RobotoSlabThin, new Tuple<PrivateFontCollection, FontStyle>(PFCWithFont(18), FontStyle.Regular));
             FacerFontConfig.Add(FacerFont.RobotoSlabLight, new Tuple<PrivateFontCollection, FontStyle>(PFCWithFont(16), FontStyle.Regular));
@@ -301,7 +302,9 @@ namespace WatchfaceStudio.Entities
                                 layerFont = new Font(fontPair.Item1.Families[0], fontSize,fontPair.Item2);
                             }
 
-                            var resolvedText = FacerTags.ResolveTags(layer.text);
+                            var resolvedText = FacerTags.ResolveTags(layer.text)
+                                .Replace("\n", string.Empty)
+                                .Replace("\x10",string.Empty).Replace("\x13",string.Empty); //remove new lines
 
                             if (layer.transform == (int)FacerTextTransform.AllUppercase)
                                 resolvedText = resolvedText.ToUpper();
@@ -310,21 +313,30 @@ namespace WatchfaceStudio.Entities
 
                             var textBrush = new SolidBrush(foreColor);
                             var textAlign = (FacerTextAlignment)layer.alignment.Value;
-                            var textFormat = ToStringFormat(textAlign);
-
-                            var measurements = g.MeasureString(resolvedText, layerFont, bmp.Width, textFormat);
-                            width = (int)measurements.Width;
-                            height = (int)measurements.Height;
-                            var textPoint = new PointF(alp.X, alp.Y);
+                            var textFormat = StringFormat.GenericTypographic; //ToStringFormat(textAlign);
+                            textFormat.LineAlignment = StringAlignment.Far;
+                            textFormat.Trimming = StringTrimming.None;
+                            textFormat.FormatFlags = StringFormatFlags.NoWrap;
+                            
+                            var measurements = TextRenderer.MeasureText(g, resolvedText, layerFont, bmp.Size, TextFormatFlags.Top | TextFormatFlags.NoClipping | TextFormatFlags.NoPadding | TextFormatFlags.SingleLine);
+                            var drawMeasurements = g.MeasureString(resolvedText, layerFont, bmp.Width, textFormat);
+                            width = measurements.Width;
+                            height = measurements.Height;
                             
                             g.TranslateTransform(x, y);
                             g.RotateTransform(rotation);
 
+                            var xOffset = textAlign == FacerTextAlignment.Left ? 0 :
+                                textAlign == FacerTextAlignment.Center ? width / 2 : 
+                                width;
+
+                            var baselineOffset = layerFont.SizeInPoints / layerFont.FontFamily.GetEmHeight(layerFont.Style) * layerFont.FontFamily.GetCellAscent(layerFont.Style);
+                            var yOffset = (int) (g.DpiY / 72f * baselineOffset);
+
+                            var textPoint = new PointF(-(int)(drawMeasurements.Width - measurements.Width) - xOffset, height - yOffset);
                             g.DrawString(resolvedText, layerFont, textBrush, textPoint, textFormat);
 
-                            var xOffset = textAlign == FacerTextAlignment.Left ? 0 :
-                                textAlign == FacerTextAlignment.Center ? width / 2 : width;
-                            outRect = new Rectangle((int)alp.X - xOffset, (int)alp.Y - height, width, height);
+                            outRect = new Rectangle((int)textPoint.X, (int)textPoint.Y - height, width, height);
                         }
                         else if (layer.type == "shape")
                         {
