@@ -564,6 +564,7 @@
             this.tableLayoutPanelProperties.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanelProperties.Controls.Add(this.labelProperties, 0, 0);
             this.tableLayoutPanelProperties.Controls.Add(this.propertyGrid, 0, 1);
+            this.tableLayoutPanelProperties.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanelProperties.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanelProperties.Name = "tableLayoutPanelProperties";
             this.tableLayoutPanelProperties.RowCount = 2;
