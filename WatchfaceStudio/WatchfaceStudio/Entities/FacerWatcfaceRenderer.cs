@@ -248,7 +248,7 @@ namespace WatchfaceStudio.Entities
                                     throw new Exception("The font \"" + layer.hash + "\" was not found in the fonts folder.");
                                 }
                                 var customFont = watchface.CustomFonts[layer.font_hash];
-                                layerFont = new Font(customFont.FontFamily, fontSize, customFont.FontStyle);
+                                layerFont = new Font(customFont.FontFamily, fontSize, customFont.FontStyle); //TODO: use the right font style
                             }
                             else
                             {
