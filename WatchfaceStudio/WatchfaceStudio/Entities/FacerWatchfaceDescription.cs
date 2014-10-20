@@ -17,18 +17,20 @@ namespace WatchfaceStudio.Entities
         private string _id;
         private string _title;
         private string _build = AppBuild;
-        private int? _build_int = 50;
+        private int? _build_int = 56;
         private int? _watch_type;
         private bool? _is_beta;
         private int? _created_at;
         private int? _edited_at;
         private string _creator;
+        private string _desc;
 
         public string id { get { return _id; } set { _id = value; } }
         public string title { get { return _title; } set { _title = value; } }
         public string build { get { return _build; } set { _build = value; } }
         public int? build_int { get { return _build_int; } set { _build_int = value; } }
-        
+        public string desc { get { return _desc; } set { _desc = value; } }
+
         public bool? is_beta { get { return _is_beta; } set { _is_beta = value; } }
         [TypeConverter(typeof(EnumTypeConverter<int, EWatchType>))]
         public int? watch_type { get { return _watch_type; } set { _watch_type = value; } }

@@ -45,10 +45,11 @@ namespace WatchfaceStudio.Entities
 
         public string AddImageFile(string imageFile)
         {
-            var key = Path.GetFileName(imageFile) ?? string.Empty;
+            var fileName = Path.GetFileNameWithoutExtension(imageFile) ?? string.Empty;
+            var key = string.Concat(fileName, ".png");
             var i = 0;
             while (Images.ContainsKey(key))
-                key = string.Concat(Path.GetFileName(imageFile), "(", i++, ")");
+                key = string.Concat(fileName, "(", i++, ").png");
             try
             {
                 Images.Add(key, Image.FromFile(imageFile));
@@ -131,12 +132,25 @@ namespace WatchfaceStudio.Entities
             string firstErrorMessage = null;
             try
             {
+                //fix layers
+                for (var i = 0; i < Layers.Count; i++)
+                {
+                    Layers[i].id = i + 1;
+                    if (Layers[i].type == "text")
+                    {
+                        if (string.IsNullOrEmpty(Layers[i].low_power_color))
+                            Layers[i].low_power_color = "0";
+                        if (string.IsNullOrEmpty(Layers[i].bgcolor))
+                            Layers[i].bgcolor = "0";
+                    }
+                }
+
                 var preview = FacerWatcfaceRenderer.Render(this, WatchType.Current, out errorsFound, out firstErrorMessage);
 
-                var watchfileContent = JsonConvert.SerializeObject(Layers, new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore });
+                var watchfileContent = JsonConvert.SerializeObject(Layers, new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore, StringEscapeHandling = StringEscapeHandling.EscapeNonAscii });
                 File.WriteAllText(Path.Combine(folderPath, "watchface.json"), watchfileContent);
 
-                var descriptionContent = JsonConvert.SerializeObject(Description, new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore });
+                var descriptionContent = JsonConvert.SerializeObject(Description, new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore, StringEscapeHandling = StringEscapeHandling.EscapeNonAscii });
                 File.WriteAllText(Path.Combine(folderPath, "description.json"), descriptionContent);
 
                 var savedSelectedLayer = SelectedLayer;

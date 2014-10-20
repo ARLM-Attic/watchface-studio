@@ -284,10 +284,12 @@ namespace WatchfaceStudio
                 var folderPath = Path.Combine(TempFolder, zipFile.GetHashCode().ToString().Replace('-', '_') + "_" + DateTime.Now.Ticks);
                 Directory.CreateDirectory(folderPath);
 
-                success = wf.SaveTo(folderPath);
+                success = !wf.SaveTo(folderPath);
 
                 if (success)
                 {
+                    if (File.Exists(zipFile))
+                        File.Delete(zipFile);
                     ZipFile.CreateFromDirectory(folderPath, zipFile);
                     success = true;
                 }

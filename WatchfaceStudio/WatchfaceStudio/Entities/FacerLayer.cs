@@ -148,7 +148,7 @@ namespace WatchfaceStudio.Entities
         [Category("Shape"), DisplayName("Sides"), Editor(typeof(ExpressionTypeEditor), typeof(UITypeEditor))]
         public string sides { get; set; } //polygon
         [Category("Shape"), DisplayName("Shape Options"), TypeConverter(typeof(EnumTypeConverter<string, FacerShapeOptions>))]
-        public string shape_opt { get; set; } //0-fill, 1-stroke
+        public string shape_opt { get; set; }
         [Category("Shape"), DisplayName("Stroke Size")]
         public string stroke_size { get; set; }
         
@@ -170,8 +170,8 @@ namespace WatchfaceStudio.Entities
         public bool? bold { get; set; }
         [Category("Text Related"), DisplayName("Is Italic")]
         public bool? italic { get; set; }
-        [Category("Text Related"), DisplayName("Transform")]
-        public int? transform { get; set; } //0-none, 1-uppercase, 2-lowercase
+        [Category("Text Related"), DisplayName("Transform"), TypeConverter(typeof(EnumTypeConverter<int, FacerTextTransform>))]
+        public int? transform { get; set; }
         [Category("Text Related"), DisplayName("Background Color"), Editor(typeof(ColorUITypeEditor), typeof(UITypeEditor))]
         public string bgcolor { get; set; }
         [Category("Text Related"), DisplayName("Dimmed Color"), Editor(typeof(ColorUITypeEditor), typeof(UITypeEditor))]

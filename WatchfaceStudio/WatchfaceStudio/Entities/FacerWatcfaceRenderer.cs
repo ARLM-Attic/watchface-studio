@@ -260,7 +260,8 @@ namespace WatchfaceStudio.Entities
                         }
                         else if (layer.type == "text")
                         {
-                            var foreColor = Color.FromArgb(((int)Calc(layer.color) & 0xFFFFFF) + ((int)(opacity * 255) << 24));
+                            var colorToUse = Properties.Settings.Default.LowPowerMode ? layer.low_power_color : layer.color;
+                            var foreColor = Color.FromArgb(((int)Calc(colorToUse) & 0xFFFFFF) + ((int)(opacity * 255) << 24));
                             var fontSize = DpToPx((float)Calc(layer.size));
                             var fontStyle = (layer.bold ?? false) && (layer.italic ?? false) ? FontStyle.Bold | FontStyle.Italic :
                                 ((layer.bold ?? false) && !(layer.italic ?? false) ? FontStyle.Bold :
