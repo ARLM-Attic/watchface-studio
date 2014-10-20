@@ -11,7 +11,6 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using WatchfaceStudio.Imaging;
 
 namespace WatchfaceStudio.Entities
@@ -19,7 +18,6 @@ namespace WatchfaceStudio.Entities
     public static class FacerWatcfaceRenderer
     {
         private static System.Data.DataTable _computer = new System.Data.DataTable();
-        private static Regex ConditionalRegex = new Regex(@"\$([^\$]+)\$");
         public static Dictionary<FacerFont, Tuple<PrivateFontCollection, FontStyle>> FacerFontConfig;
 
         public const float ScreenDPI = 120f;
@@ -105,28 +103,6 @@ namespace WatchfaceStudio.Entities
             return col;
         }
 
-        private static double Calc(string formula)
-        {
-            if (string.IsNullOrEmpty(formula)) return 0;
-            var resolvedFormula = FacerTags.ResolveTags(formula).Replace(" ", string.Empty);
-            double dblVal;
-            if (double.TryParse(resolvedFormula, out dblVal))
-                return dblVal;
-
-            //convert formula to c#
-            resolvedFormula = ConditionalRegex.Replace(resolvedFormula, "($1)");
-            resolvedFormula = resolvedFormula
-                .Replace("=", "==")
-                .Replace('[', '(')
-                .Replace(']', ')')
-                .Replace(">==",">=")
-                .Replace("<==", "<=")
-                .Replace("!==", "!=");
-            var expression = new CompiledExpression(resolvedFormula);
-            var result = expression.Eval();
-            return Convert.ToDouble(result);
-        }
-
         private static PointF AlignedPoint(int width, int height, int alignment)
         {
             switch ((FacerImageAlignment)alignment)
@@ -184,10 +160,8 @@ namespace WatchfaceStudio.Entities
             dest.UnlockBits(bdDst);
         }
 
-        public static Bitmap Render(FacerWatchface watchface, EWatchType watchtype, out bool errorsFound, out string firstErrorMessage)
+        public static Bitmap Render(FacerWatchface watchface, EWatchType watchtype, bool checkForErrors, List<WatchfaceRendererError> errors)
         {
-            errorsFound = false;
-            firstErrorMessage = null;
             var bmp = new Bitmap(320, 320);
             using (var g = Graphics.FromImage(bmp))
             {
@@ -211,13 +185,13 @@ namespace WatchfaceStudio.Entities
                     {
                         if (Properties.Settings.Default.LowPowerMode && !layer.low_power) continue; //don't show on dimmed
 
-                        var opacity = (float)Calc(layer.opacity) / 100;
+                        var opacity = (float)(ExpressionCalculator.Calc(layer.opacity) / 100);
                         if (opacity == 0) continue;
 
-                        var x = (float)Calc(layer.x);
-                        var y = (float)Calc(layer.y);
+                        var x = (float)ExpressionCalculator.Calc(layer.x);
+                        var y = (float)ExpressionCalculator.Calc(layer.y);
                     
-                        var rotation = layer.r != "0" ? (float)Calc(layer.r) : 0.0F;
+                        var rotation = layer.r != "0" ? (float)ExpressionCalculator.Calc(layer.r) : 0.0F;
 
                         g.TranslateTransform(x, y);
                         g.RotateTransform(rotation);
@@ -246,13 +220,13 @@ namespace WatchfaceStudio.Entities
                                 imageAtt.SetColorMatrix(colorMatrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
                             }
 
-                            width = (int)Calc(layer.width);
-                            height = (int)Calc(layer.height);
+                            width = (int)ExpressionCalculator.Calc(layer.width);
+                            height = (int)ExpressionCalculator.Calc(layer.height);
                             alp = AlignedPoint(width, height, layer.alignment.Value);
 
                             if (!watchface.Images.ContainsKey(layer.hash))
                             {
-                                throw new Exception("Project doesn't contain image: " + layer.hash);
+                                throw new Exception("The image \"" + layer.hash + "\" was not found in the images folder.");
                             }
                             var img = watchface.Images[layer.hash];
                             outRect = new Rectangle((int)alp.X, (int)alp.Y, width, height);
@@ -261,14 +235,18 @@ namespace WatchfaceStudio.Entities
                         else if (layer.type == "text")
                         {
                             var colorToUse = Properties.Settings.Default.LowPowerMode ? layer.low_power_color : layer.color;
-                            var foreColor = Color.FromArgb(((int)Calc(colorToUse) & 0xFFFFFF) + ((int)(opacity * 255) << 24));
-                            var fontSize = DpToPx((float)Calc(layer.size));
+                            var foreColor = Color.FromArgb(((int)ExpressionCalculator.Calc(colorToUse) & 0xFFFFFF) + ((int)(opacity * 255) << 24));
+                            var fontSize = DpToPx((float)ExpressionCalculator.Calc(layer.size));
                             var fontStyle = (layer.bold ?? false) && (layer.italic ?? false) ? FontStyle.Bold | FontStyle.Italic :
                                 ((layer.bold ?? false) && !(layer.italic ?? false) ? FontStyle.Bold :
                                 (!(layer.bold ?? false) && (layer.italic ?? false) ? FontStyle.Italic : FontStyle.Regular));
                             Font layerFont;
                             if (layer.font_family == (int)FacerFont.Custom)
                             {
+                                if (!watchface.CustomFonts.ContainsKey(layer.font_hash))
+                                {
+                                    throw new Exception("The font \"" + layer.hash + "\" was not found in the fonts folder.");
+                                }
                                 var customFont = watchface.CustomFonts[layer.font_hash];
                                 layerFont = new Font(customFont.FontFamily, fontSize, customFont.FontStyle);
                             }
@@ -314,10 +292,11 @@ namespace WatchfaceStudio.Entities
                         }
                         else if (layer.type == "shape")
                         {
-                            var foreColor = Color.FromArgb(((int)Calc(layer.color) & 0xFFFFFF) + ((int)(opacity * 255) << 24));
-                            var radius = string.IsNullOrEmpty(layer.radius) ? 0 : (float)Calc(layer.radius);
+                            var foreColor = Color.FromArgb(((int)ExpressionCalculator.Calc(layer.color) & 0xFFFFFF) + ((int)(opacity * 255) << 24));
+                            var radius = string.IsNullOrEmpty(layer.radius) ? 0 : (float)ExpressionCalculator.Calc(layer.radius);
                             var shapeOptions = layer.shape_opt == ((int)FacerShapeOptions.Stroke).ToString(CultureInfo.InvariantCulture) ? FacerShapeOptions.Stroke : FacerShapeOptions.Fill;
-                            Pen penToUse = shapeOptions == FacerShapeOptions.Stroke ? new Pen(foreColor, (float)Calc(layer.stroke_size) / 2) : null;
+                            var strokeSize = (float)ExpressionCalculator.Calc(layer.stroke_size) / 2;
+                            Pen penToUse = shapeOptions == FacerShapeOptions.Stroke ? new Pen(foreColor, strokeSize) : null;
                             Brush brushToUse = shapeOptions == FacerShapeOptions.Fill ? new SolidBrush(foreColor) : null;
 
                             switch (layer.shape_type)
@@ -327,6 +306,8 @@ namespace WatchfaceStudio.Entities
                                     if (shapeOptions == FacerShapeOptions.Stroke)
                                     {
                                         g.DrawEllipse(penToUse, outRect);
+                                        outRect.Inflate((int)strokeSize, (int)strokeSize);
+                                        outRect.Offset((int)(-strokeSize/2f + 0.5f), (int)(-strokeSize/2f + 0.5f));
                                     }
                                     else
                                     {
@@ -335,8 +316,8 @@ namespace WatchfaceStudio.Entities
                                     break;
                                 case (int)FacerShapeType.Line:
                                 case (int)FacerShapeType.Square:
-                                    width = (int)Calc(layer.width);
-                                    height = (int)Calc(layer.height);
+                                    width = (int)ExpressionCalculator.Calc(layer.width);
+                                    height = (int)ExpressionCalculator.Calc(layer.height);
 
                                     outRect = new Rectangle(0, 0, width, height);
                                     if (shapeOptions == FacerShapeOptions.Stroke)
@@ -351,7 +332,7 @@ namespace WatchfaceStudio.Entities
                                 case (int)FacerShapeType.Triangle:
                                 case (int)FacerShapeType.Polygon:
                                     outRect = new Rectangle((int)(-radius), (int)(-radius), (int)(2 * radius), (int)(2 * radius));
-                                    var polyN = layer.shape_type == (int)FacerShapeType.Triangle ? 3 : (int)Calc(layer.sides);
+                                    var polyN = layer.shape_type == (int)FacerShapeType.Triangle ? 3 : (int)ExpressionCalculator.Calc(layer.sides);
                                     var polyPoints = new Point[polyN];
                                     for (var i = 0; i < polyN; i++)
                                     {
@@ -362,6 +343,8 @@ namespace WatchfaceStudio.Entities
                                     if (shapeOptions == FacerShapeOptions.Stroke)
                                     {
                                         g.DrawPolygon(penToUse, polyPoints);
+                                        outRect.Inflate((int)strokeSize, (int)strokeSize);
+                                        outRect.Offset((int)(-strokeSize / 2f + 0.5f), (int)(-strokeSize / 2f + 0.5f));
                                     }
                                     else
                                     {
@@ -380,15 +363,25 @@ namespace WatchfaceStudio.Entities
 
                         g.ResetTransform();
                     }
-                    catch (NullReferenceException nrex)
+                    catch (NullReferenceException)
                     {
-                        errorsFound = true;
-                        firstErrorMessage = "General Error";
+                        if (checkForErrors)
+                            errors.Add(new WatchfaceRendererError
+                            {
+                                Severity = WatchfaceRendererErrorSeverity.Error,
+                                Object = layer.GetIdentifier(),
+                                Message = "General Error"
+                            });
                     }
                     catch (Exception ex)
-                    { 
-                        errorsFound = true;
-                        firstErrorMessage = ex.Message;
+                    {
+                        if (checkForErrors)
+                            errors.Add(new WatchfaceRendererError
+                            {   
+                                Severity = WatchfaceRendererErrorSeverity.Error,
+                                Object = layer.GetIdentifier(),
+                                Message = ex.Message
+                            });
                     }
                 }
 

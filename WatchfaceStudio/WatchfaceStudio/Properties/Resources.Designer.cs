@@ -111,16 +111,6 @@ namespace WatchfaceStudio.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap IconAlert {
-            get {
-                object obj = ResourceManager.GetObject("IconAlert", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
         internal static System.Drawing.Icon IconApplication {
@@ -146,6 +136,16 @@ namespace WatchfaceStudio.Properties {
         internal static System.Drawing.Bitmap IconClose16 {
             get {
                 object obj = ResourceManager.GetObject("IconClose16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap IconError {
+            get {
+                object obj = ResourceManager.GetObject("IconError", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -293,6 +293,16 @@ namespace WatchfaceStudio.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap IconMessage {
+            get {
+                object obj = ResourceManager.GetObject("IconMessage", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap IconNewWatchface16 {
             get {
                 object obj = ResourceManager.GetObject("IconNewWatchface16", resourceCulture);
@@ -376,6 +386,16 @@ namespace WatchfaceStudio.Properties {
         internal static System.Drawing.Bitmap IconSpeed16 {
             get {
                 object obj = ResourceManager.GetObject("IconSpeed16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap IconWarning {
+            get {
+                object obj = ResourceManager.GetObject("IconWarning", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

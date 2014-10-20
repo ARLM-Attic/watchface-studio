@@ -101,6 +101,13 @@
             this.toolbarSeperator1 = new System.Windows.Forms.ToolStripSeparator();
             this.toolbarAppendixWindow = new System.Windows.Forms.ToolStripButton();
             this.backgroundWorkerCheckForUpdates = new System.ComponentModel.BackgroundWorker();
+            this.panelErrors = new System.Windows.Forms.Panel();
+            this.tableLayoutPanelErrors = new System.Windows.Forms.TableLayoutPanel();
+            this.labelErrors = new System.Windows.Forms.Label();
+            this.listViewErrors = new System.Windows.Forms.ListView();
+            this.columnHeaderComponent = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderErrorDescription = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.imageListErrors = new System.Windows.Forms.ImageList(this.components);
             this.menuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerRight)).BeginInit();
             this.splitContainerRight.Panel1.SuspendLayout();
@@ -113,6 +120,8 @@
             this.panelLeft.SuspendLayout();
             this.tableLayoutPanelAppendix.SuspendLayout();
             this.toolStrip1.SuspendLayout();
+            this.panelErrors.SuspendLayout();
+            this.tableLayoutPanelErrors.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip
@@ -410,8 +419,8 @@
             // 
             this.splitContainerRight.Panel2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.splitContainerRight.Panel2.Controls.Add(this.tableLayoutPanelProperties);
-            this.splitContainerRight.Size = new System.Drawing.Size(300, 490);
-            this.splitContainerRight.SplitterDistance = 236;
+            this.splitContainerRight.Size = new System.Drawing.Size(300, 555);
+            this.splitContainerRight.SplitterDistance = 267;
             this.splitContainerRight.TabIndex = 2;
             // 
             // tableLayoutPanelExplorer
@@ -427,7 +436,7 @@
             this.tableLayoutPanelExplorer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanelExplorer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanelExplorer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanelExplorer.Size = new System.Drawing.Size(300, 236);
+            this.tableLayoutPanelExplorer.Size = new System.Drawing.Size(300, 267);
             this.tableLayoutPanelExplorer.TabIndex = 0;
             // 
             // labelWatchfaceExplorer
@@ -449,7 +458,7 @@
             this.panelExplorer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelExplorer.Location = new System.Drawing.Point(3, 23);
             this.panelExplorer.Name = "panelExplorer";
-            this.panelExplorer.Size = new System.Drawing.Size(294, 210);
+            this.panelExplorer.Size = new System.Drawing.Size(294, 241);
             this.panelExplorer.TabIndex = 1;
             // 
             // treeViewExplorer
@@ -460,7 +469,7 @@
             this.treeViewExplorer.Location = new System.Drawing.Point(0, 25);
             this.treeViewExplorer.Name = "treeViewExplorer";
             this.treeViewExplorer.SelectedImageIndex = 0;
-            this.treeViewExplorer.Size = new System.Drawing.Size(294, 185);
+            this.treeViewExplorer.Size = new System.Drawing.Size(294, 216);
             this.treeViewExplorer.TabIndex = 1;
             this.treeViewExplorer.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewExplorer_AfterSelect);
             // 
@@ -570,7 +579,7 @@
             this.tableLayoutPanelProperties.RowCount = 2;
             this.tableLayoutPanelProperties.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanelProperties.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanelProperties.Size = new System.Drawing.Size(300, 250);
+            this.tableLayoutPanelProperties.Size = new System.Drawing.Size(300, 284);
             this.tableLayoutPanelProperties.TabIndex = 1;
             // 
             // labelProperties
@@ -590,7 +599,7 @@
             this.propertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.propertyGrid.Location = new System.Drawing.Point(3, 23);
             this.propertyGrid.Name = "propertyGrid";
-            this.propertyGrid.Size = new System.Drawing.Size(294, 224);
+            this.propertyGrid.Size = new System.Drawing.Size(294, 258);
             this.propertyGrid.TabIndex = 2;
             this.propertyGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid_PropertyValueChanged);
             // 
@@ -599,7 +608,7 @@
             this.splitterRight.Dock = System.Windows.Forms.DockStyle.Right;
             this.splitterRight.Location = new System.Drawing.Point(840, 49);
             this.splitterRight.Name = "splitterRight";
-            this.splitterRight.Size = new System.Drawing.Size(3, 490);
+            this.splitterRight.Size = new System.Drawing.Size(3, 555);
             this.splitterRight.TabIndex = 4;
             this.splitterRight.TabStop = false;
             // 
@@ -609,7 +618,7 @@
             this.panelLeft.Dock = System.Windows.Forms.DockStyle.Left;
             this.panelLeft.Location = new System.Drawing.Point(0, 49);
             this.panelLeft.Name = "panelLeft";
-            this.panelLeft.Size = new System.Drawing.Size(231, 490);
+            this.panelLeft.Size = new System.Drawing.Size(231, 555);
             this.panelLeft.TabIndex = 5;
             // 
             // tableLayoutPanelAppendix
@@ -625,7 +634,7 @@
             this.tableLayoutPanelAppendix.RowCount = 2;
             this.tableLayoutPanelAppendix.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
             this.tableLayoutPanelAppendix.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanelAppendix.Size = new System.Drawing.Size(231, 490);
+            this.tableLayoutPanelAppendix.Size = new System.Drawing.Size(231, 555);
             this.tableLayoutPanelAppendix.TabIndex = 1;
             // 
             // labelAppendix
@@ -650,7 +659,7 @@
             this.listViewTagAppendix.GridLines = true;
             this.listViewTagAppendix.Location = new System.Drawing.Point(3, 27);
             this.listViewTagAppendix.Name = "listViewTagAppendix";
-            this.listViewTagAppendix.Size = new System.Drawing.Size(225, 460);
+            this.listViewTagAppendix.Size = new System.Drawing.Size(225, 525);
             this.listViewTagAppendix.TabIndex = 0;
             this.listViewTagAppendix.UseCompatibleStateImageBehavior = false;
             this.listViewTagAppendix.View = System.Windows.Forms.View.Details;
@@ -668,7 +677,7 @@
             // 
             this.splitterLeft.Location = new System.Drawing.Point(231, 49);
             this.splitterLeft.Name = "splitterLeft";
-            this.splitterLeft.Size = new System.Drawing.Size(3, 490);
+            this.splitterLeft.Size = new System.Drawing.Size(3, 555);
             this.splitterLeft.TabIndex = 6;
             this.splitterLeft.TabStop = false;
             // 
@@ -787,12 +796,82 @@
             this.backgroundWorkerCheckForUpdates.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerCheckForUpdates_DoWork);
             this.backgroundWorkerCheckForUpdates.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorkerCheckForUpdates_RunWorkerCompleted);
             // 
+            // panelErrors
+            // 
+            this.panelErrors.Controls.Add(this.tableLayoutPanelErrors);
+            this.panelErrors.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panelErrors.Location = new System.Drawing.Point(234, 462);
+            this.panelErrors.Name = "panelErrors";
+            this.panelErrors.Size = new System.Drawing.Size(606, 142);
+            this.panelErrors.TabIndex = 8;
+            // 
+            // tableLayoutPanelErrors
+            // 
+            this.tableLayoutPanelErrors.ColumnCount = 1;
+            this.tableLayoutPanelErrors.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanelErrors.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanelErrors.Controls.Add(this.labelErrors, 0, 0);
+            this.tableLayoutPanelErrors.Controls.Add(this.listViewErrors, 0, 1);
+            this.tableLayoutPanelErrors.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanelErrors.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanelErrors.Name = "tableLayoutPanelErrors";
+            this.tableLayoutPanelErrors.RowCount = 2;
+            this.tableLayoutPanelErrors.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 24F));
+            this.tableLayoutPanelErrors.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanelErrors.Size = new System.Drawing.Size(606, 142);
+            this.tableLayoutPanelErrors.TabIndex = 1;
+            // 
+            // labelErrors
+            // 
+            this.labelErrors.AutoSize = true;
+            this.labelErrors.BackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            this.labelErrors.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labelErrors.Location = new System.Drawing.Point(3, 0);
+            this.labelErrors.Name = "labelErrors";
+            this.labelErrors.Size = new System.Drawing.Size(600, 24);
+            this.labelErrors.TabIndex = 2;
+            this.labelErrors.Text = "Errors";
+            this.labelErrors.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // listViewErrors
+            // 
+            this.listViewErrors.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeaderComponent,
+            this.columnHeaderErrorDescription});
+            this.listViewErrors.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listViewErrors.FullRowSelect = true;
+            this.listViewErrors.GridLines = true;
+            this.listViewErrors.Location = new System.Drawing.Point(3, 27);
+            this.listViewErrors.Name = "listViewErrors";
+            this.listViewErrors.Size = new System.Drawing.Size(600, 112);
+            this.listViewErrors.SmallImageList = this.imageListErrors;
+            this.listViewErrors.TabIndex = 0;
+            this.listViewErrors.UseCompatibleStateImageBehavior = false;
+            this.listViewErrors.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeaderComponent
+            // 
+            this.columnHeaderComponent.Text = "Component";
+            this.columnHeaderComponent.Width = 100;
+            // 
+            // columnHeaderErrorDescription
+            // 
+            this.columnHeaderErrorDescription.Text = "Description";
+            this.columnHeaderErrorDescription.Width = 478;
+            // 
+            // imageListErrors
+            // 
+            this.imageListErrors.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
+            this.imageListErrors.ImageSize = new System.Drawing.Size(16, 16);
+            this.imageListErrors.TransparentColor = System.Drawing.Color.Transparent;
+            // 
             // StudioForm
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1143, 539);
+            this.ClientSize = new System.Drawing.Size(1143, 604);
+            this.Controls.Add(this.panelErrors);
             this.Controls.Add(this.splitterLeft);
             this.Controls.Add(this.panelLeft);
             this.Controls.Add(this.splitterRight);
@@ -827,6 +906,9 @@
             this.tableLayoutPanelAppendix.PerformLayout();
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
+            this.panelErrors.ResumeLayout(false);
+            this.tableLayoutPanelErrors.ResumeLayout(false);
+            this.tableLayoutPanelErrors.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -905,6 +987,13 @@
         private System.Windows.Forms.ToolStripMenuItem menuHelpCheckForUpdate;
         private System.Windows.Forms.ToolStripSeparator menuHelpSeperator0;
         private System.ComponentModel.BackgroundWorker backgroundWorkerCheckForUpdates;
+        private System.Windows.Forms.Panel panelErrors;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanelErrors;
+        private System.Windows.Forms.Label labelErrors;
+        private System.Windows.Forms.ListView listViewErrors;
+        private System.Windows.Forms.ColumnHeader columnHeaderComponent;
+        private System.Windows.Forms.ColumnHeader columnHeaderErrorDescription;
+        private System.Windows.Forms.ImageList imageListErrors;
     }
 }
 

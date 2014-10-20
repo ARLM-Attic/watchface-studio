@@ -181,9 +181,6 @@
   <data name="IconFonts16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\IconFonts16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="IconAlert" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\IconAlert.gif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="IconWatchface" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\IconWatchface.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -219,5 +216,14 @@
   </data>
   <data name="IconSpeed16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\IconSpeed16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IconError" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\IconError.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IconMessage" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\IconMessage.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="IconWarning" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\IconWarning.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

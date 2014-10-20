@@ -31,13 +31,15 @@
             this.listViewTags = new System.Windows.Forms.ListView();
             this.columnHeaderTag = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderDescription = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderExample = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.labelExpression = new System.Windows.Forms.Label();
             this.textBoxExpression = new System.Windows.Forms.TextBox();
             this.buttonOK = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.buttonInsertCondition = new System.Windows.Forms.Button();
             this.buttonClear = new System.Windows.Forms.Button();
-            this.columnHeaderExample = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.labelResult = new System.Windows.Forms.Label();
+            this.buttonEvaluate = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // listViewTags
@@ -68,6 +70,10 @@
             this.columnHeaderDescription.Text = "Description";
             this.columnHeaderDescription.Width = 103;
             // 
+            // columnHeaderExample
+            // 
+            this.columnHeaderExample.Text = "Example";
+            // 
             // labelExpression
             // 
             this.labelExpression.AutoSize = true;
@@ -85,6 +91,7 @@
             this.textBoxExpression.Name = "textBoxExpression";
             this.textBoxExpression.Size = new System.Drawing.Size(517, 20);
             this.textBoxExpression.TabIndex = 3;
+            this.textBoxExpression.TextChanged += new System.EventHandler(this.textBoxExpression_TextChanged);
             // 
             // buttonOK
             // 
@@ -111,10 +118,9 @@
             // 
             // buttonInsertCondition
             // 
-            this.buttonInsertCondition.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonInsertCondition.Location = new System.Drawing.Point(12, 38);
             this.buttonInsertCondition.Name = "buttonInsertCondition";
-            this.buttonInsertCondition.Size = new System.Drawing.Size(132, 23);
+            this.buttonInsertCondition.Size = new System.Drawing.Size(90, 23);
             this.buttonInsertCondition.TabIndex = 6;
             this.buttonInsertCondition.Text = "Insert Condition";
             this.buttonInsertCondition.UseVisualStyleBackColor = true;
@@ -122,8 +128,7 @@
             // 
             // buttonClear
             // 
-            this.buttonClear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonClear.Location = new System.Drawing.Point(150, 38);
+            this.buttonClear.Location = new System.Drawing.Point(108, 38);
             this.buttonClear.Name = "buttonClear";
             this.buttonClear.Size = new System.Drawing.Size(58, 23);
             this.buttonClear.TabIndex = 7;
@@ -131,9 +136,25 @@
             this.buttonClear.UseVisualStyleBackColor = true;
             this.buttonClear.Click += new System.EventHandler(this.buttonClear_Click);
             // 
-            // columnHeaderExample
+            // labelResult
             // 
-            this.columnHeaderExample.Text = "Example";
+            this.labelResult.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.labelResult.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.labelResult.Location = new System.Drawing.Point(260, 38);
+            this.labelResult.Name = "labelResult";
+            this.labelResult.Size = new System.Drawing.Size(174, 23);
+            this.labelResult.TabIndex = 9;
+            // 
+            // buttonEvaluate
+            // 
+            this.buttonEvaluate.Location = new System.Drawing.Point(172, 38);
+            this.buttonEvaluate.Name = "buttonEvaluate";
+            this.buttonEvaluate.Size = new System.Drawing.Size(82, 23);
+            this.buttonEvaluate.TabIndex = 10;
+            this.buttonEvaluate.Text = "Try Evaluate";
+            this.buttonEvaluate.UseVisualStyleBackColor = true;
+            this.buttonEvaluate.Click += new System.EventHandler(this.buttonEvaluate_Click);
             // 
             // FacerExpressionEditorForm
             // 
@@ -142,6 +163,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size(608, 305);
+            this.Controls.Add(this.buttonEvaluate);
+            this.Controls.Add(this.labelResult);
             this.Controls.Add(this.buttonClear);
             this.Controls.Add(this.buttonInsertCondition);
             this.Controls.Add(this.buttonCancel);
@@ -172,5 +195,7 @@
         private System.Windows.Forms.Button buttonInsertCondition;
         private System.Windows.Forms.Button buttonClear;
         private System.Windows.Forms.ColumnHeader columnHeaderExample;
+        private System.Windows.Forms.Label labelResult;
+        private System.Windows.Forms.Button buttonEvaluate;
     }
 }

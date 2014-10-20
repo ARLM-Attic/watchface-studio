@@ -35,6 +35,23 @@ namespace WatchfaceStudio.Entities
             _dctd.CategorySortOrder = CustomSortOrder.DescendingById;
         }
 
+        private string _identifier;
+        public string GetIdentifier()
+        {
+            if (_identifier == null)
+            {
+                if (_type == "image")
+                    _identifier = "Image (" + _hash + ")";
+                else if (_type == "text")
+                    _identifier = "Text (" + _text + ")";
+                else if (_type == "shape")
+                    _identifier = "Shape (" + ((FacerShapeType)_shape_type).ToString() + ")";
+                else
+                    _identifier = "N/A";
+            }
+            return _identifier;
+        }
+
         private void SetBasicProperties()
         {
             if (_type != "image")

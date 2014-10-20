@@ -40,6 +40,7 @@ namespace WatchfaceStudio
             EditorContext.SelectedWatchface.Changed = true;
             if (!EditorContext.SelectedWatchface.EditorForm.Text.StartsWith("*"))
                 EditorContext.SelectedWatchface.EditorForm.Text = string.Concat("*", EditorContext.SelectedWatchface.EditorForm.Text);
+            CheckForErrors();
         }
 
         private static ToolStripMenuItem CloneToolStripMenuItem(ToolStripMenuItem source, EventHandler onClick)
@@ -95,6 +96,10 @@ namespace WatchfaceStudio
             imageListExplorer.Images.Add(Properties.Resources.IconLayerText16);
             imageListExplorer.Images.Add(Properties.Resources.IconLayerShape16);
 
+            imageListErrors.Images.Add(Properties.Resources.IconMessage);
+            imageListErrors.Images.Add(Properties.Resources.IconWarning);
+            imageListErrors.Images.Add(Properties.Resources.IconError);
+
             TempFolder = Path.Combine(Path.GetTempPath(), "WatchfaceStudio/");
             try
             {
@@ -114,6 +119,58 @@ namespace WatchfaceStudio
             backgroundWorkerCheckForUpdates.RunWorkerAsync(false);
 #endif
         }
+
+        public List<WatchfaceRendererError> CheckForErrors()
+        {
+            var errorsList = new List<WatchfaceRendererError>();
+            
+            //emptyness
+            if (EditorContext.SelectedWatchface.Layers.Count == 0)
+                errorsList.Add(new WatchfaceRendererError
+                {
+                    Severity = WatchfaceRendererErrorSeverity.Error,
+                    Object = "Layers",
+                    Message = "There are no layers in the project"
+                });
+
+            //render errors
+            FacerWatcfaceRenderer.Render(EditorContext.SelectedWatchface, WatchType.Current, true, errorsList);
+
+            //check if there are unused images
+            foreach (var img in EditorContext.SelectedWatchface.Images)
+            {
+                if (!EditorContext.SelectedWatchface.Layers.Any(lyr => lyr.hash == img.Key))
+                    errorsList.Add(new WatchfaceRendererError
+                        {
+                            Severity = WatchfaceRendererErrorSeverity.Warning,
+                            Object = img.Key,
+                            Message = "The image is not being used by any layer"
+                        });
+            }
+
+            //check if there are unused fonts
+            foreach (var fnt in EditorContext.SelectedWatchface.CustomFonts)
+            {
+                if (!EditorContext.SelectedWatchface.Layers.Any(lyr => lyr.font_hash == fnt.Key && lyr.font_family == (int)FacerFont.Custom))
+                    errorsList.Add(new WatchfaceRendererError
+                    {
+                        Severity = WatchfaceRendererErrorSeverity.Warning,
+                        Object = fnt.Key,
+                        Message = "The font is not being used by any layer"
+                    });
+            }
+
+            listViewErrors.Items.Clear();
+            foreach (var err in errorsList)
+            {
+                listViewErrors.Items.Add(err.Object, (int)err.Severity).SubItems.Add(err.Message);
+            }
+            listViewErrors.Columns[0].Width = -1;
+            if (listViewErrors.Columns[0].Width < 100) listViewErrors.Columns[0].Width = 100;
+
+            return errorsList;
+        }
+
 
         private void LoadSettings()
         {
@@ -141,6 +198,7 @@ namespace WatchfaceStudio
                 menuViewWTSamsungGL.Image;
 
             menuViewAppendixWindow.Checked = Properties.Settings.Default.AppendixVisible;
+            toolbarAppendixWindow.Checked = menuViewAppendixWindow.Checked;
             panelLeft.Visible = menuViewAppendixWindow.Checked;
             splitterLeft.Visible = menuViewAppendixWindow.Checked;
 
@@ -185,6 +243,8 @@ namespace WatchfaceStudio
             newForm.DroppedFile += EditorFormDroppedFile;
             newForm.DraggedFile += EditorFormDraggedFile;
             newForm.Show();
+
+            CheckForErrors();
         }
 
         void EditorFormDraggedFile(object sender, DragEventArgs e)
@@ -229,15 +289,10 @@ namespace WatchfaceStudio
         private TreeNode AddLayerToTree(TreeNode layersNode, FacerLayer lyr)
         {
             TreeNode newNode = null;
-            if (lyr.type == "image")
-                newNode = layersNode.Nodes.Add("layer_" + Guid.NewGuid().ToString("N").ToLower(),
-                    "Image (" + lyr.hash + ")", 6, 6);
-            else if (lyr.type == "text")
-                newNode = layersNode.Nodes.Add("layer_" + Guid.NewGuid().ToString("N").ToLower(),
-                    "Text (" + lyr.text + ")", 7, 7);
-            else if (lyr.type == "shape")
-                newNode = layersNode.Nodes.Add("layer_" + Guid.NewGuid().ToString("N").ToLower(),
-                    "Shape (" + ((FacerShapeType)lyr.shape_type).ToString() + ")", 8, 8);
+            var imageIndex = lyr.type == "image" ? 6 :
+                lyr.type == "text" ? 7 : 8;
+            newNode = layersNode.Nodes.Add("layer_" + Guid.NewGuid().ToString("N").ToLower(),
+                    lyr.GetIdentifier(), imageIndex, imageIndex);
             newNode.Tag = lyr;
             return newNode;
         }
@@ -277,37 +332,28 @@ namespace WatchfaceStudio
         private void SaveWatch(string zipFile)
         {
             var wf = EditorContext.SelectedWatchface;
-            var success = false;
-
+            
             try
             {
                 var folderPath = Path.Combine(TempFolder, zipFile.GetHashCode().ToString().Replace('-', '_') + "_" + DateTime.Now.Ticks);
                 Directory.CreateDirectory(folderPath);
 
-                success = !wf.SaveTo(folderPath);
+                var okToContinue = wf.SaveTo(folderPath);
 
-                if (success)
+                if (okToContinue)
                 {
                     if (File.Exists(zipFile))
                         File.Delete(zipFile);
                     ZipFile.CreateFromDirectory(folderPath, zipFile);
-                    success = true;
+
+                    wf.Changed = false;
+                    if (wf.EditorForm.Text.StartsWith("*"))
+                        wf.EditorForm.Text = wf.EditorForm.Text.Substring(1);
                 }
             }
             catch (Exception ex)
             {
-                ShowException(ex);
-            }
-
-            if (success)
-            {
-                wf.Changed = false;
-                if (wf.EditorForm.Text.StartsWith("*"))
-                    wf.EditorForm.Text = wf.EditorForm.Text.Substring(1);
-            }
-
-            if (!success)
-            {
+                //ShowException(ex);
                 MessageBox.Show("There was somthing wrong while saving the file.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
@@ -441,6 +487,30 @@ namespace WatchfaceStudio
                 EditorContext.SelectedWatchface.EditorForm.Close();
         }
 
+        private bool CheckBeforeSave()
+        {
+            var errors = CheckForErrors();
+            if (errors.Count > 0)
+            {
+                var firstError = errors.FirstOrDefault(e => e.Severity == WatchfaceRendererErrorSeverity.Error);
+                if (firstError != null)
+                {
+                    MessageBox.Show(string.Format("There are still errors in the project (i.e. {0} - {1}). Fix the errors and try again.", firstError.Object, firstError.Message),
+                        "Errors found", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return false;
+                }
+                var warningsFound = errors.Any(e => e.Severity == WatchfaceRendererErrorSeverity.Warning);
+
+                if (warningsFound &&
+                    MessageBox.Show("There are warnings in the project. Are you sure you want to continue?",
+                        "Warnings found", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
         private void menuFileSave_Click(object sender, EventArgs e)
         {
             if (EditorContext.SelectedWatchface != null)
@@ -453,7 +523,8 @@ namespace WatchfaceStudio
                     return;
                 }
 
-                SaveWatch(wf.EditorForm.ZipFilePath);
+                if (CheckBeforeSave())
+                    SaveWatch(wf.EditorForm.ZipFilePath);
             }
         }
 
@@ -463,6 +534,7 @@ namespace WatchfaceStudio
             {
                 var wf = EditorContext.SelectedWatchface;
 
+                if (CheckBeforeSave())
                 using (var sfd = new SaveFileDialog { Title = "Save Watchface", Filter = "Face Files|*.face|Zip files|*.zip" })
                 {
                     if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -522,6 +594,7 @@ namespace WatchfaceStudio
         private void menuViewAppendixWindow_Click(object sender, EventArgs e)
         {
             menuViewAppendixWindow.Checked = !menuViewAppendixWindow.Checked;
+            toolbarAppendixWindow.Checked = menuViewAppendixWindow.Checked;
 
             panelLeft.Visible = menuViewAppendixWindow.Checked;
             splitterLeft.Visible = menuViewAppendixWindow.Checked;
@@ -692,11 +765,12 @@ namespace WatchfaceStudio
                 EditorContext.SelectedWatchface.Images.Remove(treeViewExplorer.SelectedNode.Text);
                 treeViewExplorer.SelectedNode.Remove();
             }
-            else if (treeViewExplorer.SelectedNode.Tag is Image)
+            else if (treeViewExplorer.SelectedNode.Tag is FacerCustomFont)
             {
                 EditorContext.SelectedWatchface.CustomFonts.Remove(treeViewExplorer.SelectedNode.Text);
                 treeViewExplorer.SelectedNode.Remove();
             }
+            UpdateChanged();
         }
 
         private void StudioForm_Resize(object sender, EventArgs e)

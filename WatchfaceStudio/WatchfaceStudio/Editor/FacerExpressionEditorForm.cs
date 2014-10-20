@@ -45,12 +45,32 @@ namespace WatchfaceStudio.Editor
         private void listViewTags_ItemActivate(object sender, EventArgs e)
         {
             if (listViewTags.SelectedItems.Count > 0 && listViewTags.SelectedItems[0].Text.StartsWith("#"))
+            {
                 textBoxExpression.Text += listViewTags.SelectedItems[0].Text;
+            }
         }
 
         private void buttonOK_Click(object sender, EventArgs e)
         {
             Expression = textBoxExpression.Text;
+        }
+
+        private void buttonEvaluate_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var val = ExpressionCalculator.Calc(textBoxExpression.Text);
+                MessageBox.Show(string.Format("Value is [{0:f2}]", val), "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch
+            {
+                MessageBox.Show(string.Format("Error parsing [{0}]", textBoxExpression.Text), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void textBoxExpression_TextChanged(object sender, EventArgs e)
+        {
+labelResult.Text = FacerTags.ResolveTags(textBoxExpression.Text);
         }
     }
 }

@@ -34,7 +34,7 @@ namespace WatchfaceStudio.Editor
 
         public override object EditValue(System.ComponentModel.ITypeDescriptorContext context, IServiceProvider provider, object value)
         {
-            var _svc = (IWindowsFormsEditorService)provider.GetService(typeof(IWindowsFormsEditorService));
+            _svc = (IWindowsFormsEditorService)provider.GetService(typeof(IWindowsFormsEditorService));
 
             if (_svc != null)
             {

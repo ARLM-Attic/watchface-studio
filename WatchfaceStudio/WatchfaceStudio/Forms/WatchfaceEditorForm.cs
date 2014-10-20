@@ -63,16 +63,7 @@ namespace WatchfaceStudio.Forms
                 timerClock.Interval = 1000;
             }
 
-            bool errorsFound;
-            string firstErrorMessage;
-            var watchBmp = FacerWatcfaceRenderer.Render(Watchface, WatchType.Current, out errorsFound, out firstErrorMessage);
-            pictureBoxAlert.Visible = errorsFound;
-            labelError.Visible = errorsFound;
-            if (!string.IsNullOrEmpty(firstErrorMessage))
-            {
-                labelError.Text = firstErrorMessage;
-                toolTip.SetToolTip(labelError, firstErrorMessage);
-            }
+            var watchBmp = FacerWatcfaceRenderer.Render(Watchface, WatchType.Current, false, null);
             pictureWatch.Image = watchBmp;
         }
 

@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -20,6 +21,7 @@ namespace WatchfaceStudio.Entities
         public readonly Dictionary<string, Image> Images;
         public readonly Dictionary<string, FacerCustomFont> CustomFonts;
         public readonly List<FacerLayer> Layers;
+        public readonly Dictionary<int, WatchfaceRendererError> Errors = new Dictionary<int, WatchfaceRendererError>();
 
         private Image _badImage;
 
@@ -128,66 +130,52 @@ namespace WatchfaceStudio.Entities
 
         internal bool SaveTo(string folderPath)
         {
-            bool errorsFound;
-            string firstErrorMessage = null;
-            try
+            //fix layers
+            for (var i = 0; i < Layers.Count; i++)
             {
-                //fix layers
-                for (var i = 0; i < Layers.Count; i++)
+                Layers[i].id = i + 1;
+                if (Layers[i].type == "text")
                 {
-                    Layers[i].id = i + 1;
-                    if (Layers[i].type == "text")
-                    {
-                        if (string.IsNullOrEmpty(Layers[i].low_power_color))
-                            Layers[i].low_power_color = "0";
-                        if (string.IsNullOrEmpty(Layers[i].bgcolor))
-                            Layers[i].bgcolor = "0";
-                    }
-                }
-
-                var preview = FacerWatcfaceRenderer.Render(this, WatchType.Current, out errorsFound, out firstErrorMessage);
-
-                var watchfileContent = JsonConvert.SerializeObject(Layers, new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore, StringEscapeHandling = StringEscapeHandling.EscapeNonAscii });
-                File.WriteAllText(Path.Combine(folderPath, "watchface.json"), watchfileContent);
-
-                var descriptionContent = JsonConvert.SerializeObject(Description, new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore, StringEscapeHandling = StringEscapeHandling.EscapeNonAscii });
-                File.WriteAllText(Path.Combine(folderPath, "description.json"), descriptionContent);
-
-                var savedSelectedLayer = SelectedLayer;
-                SelectedLayer = null;
-
-                SelectedLayer = savedSelectedLayer;
-                preview.Save(Path.Combine(folderPath, "preview.png"), System.Drawing.Imaging.ImageFormat.Png);
-
-                if (CustomFonts.Count > 0)
-                {
-                    Directory.CreateDirectory(Path.Combine(folderPath, "fonts"));
-                    foreach (var kvp in CustomFonts)
-                    {
-                        File.WriteAllBytes(Path.Combine(folderPath, "fonts", kvp.Key), kvp.Value.FileBytes);
-                    }
-                }
-
-                if (Images.Count > 0)
-                {
-                    Directory.CreateDirectory(Path.Combine(folderPath, "images"));
-                    foreach (var kvp in Images)
-                    {
-                        kvp.Value.Save(Path.Combine(folderPath, "images", kvp.Key), System.Drawing.Imaging.ImageFormat.Png);
-                    }
+                    if (string.IsNullOrEmpty(Layers[i].low_power_color))
+                        Layers[i].low_power_color = "0";
+                    if (string.IsNullOrEmpty(Layers[i].bgcolor))
+                        Layers[i].bgcolor = "0";
                 }
             }
-            catch (Exception ex)
+                
+            var preview = FacerWatcfaceRenderer.Render(this, WatchType.Current, false, null);
+            
+            var watchfileContent = JsonConvert.SerializeObject(Layers, new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore, StringEscapeHandling = StringEscapeHandling.EscapeNonAscii });
+            File.WriteAllText(Path.Combine(folderPath, "watchface.json"), watchfileContent);
+
+            var descriptionContent = JsonConvert.SerializeObject(Description, new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore, StringEscapeHandling = StringEscapeHandling.EscapeNonAscii });
+            File.WriteAllText(Path.Combine(folderPath, "description.json"), descriptionContent);
+
+            var savedSelectedLayer = SelectedLayer;
+            SelectedLayer = null;
+
+            SelectedLayer = savedSelectedLayer;
+            preview.Save(Path.Combine(folderPath, "preview.png"), System.Drawing.Imaging.ImageFormat.Png);
+
+            if (CustomFonts.Count > 0)
             {
-                errorsFound = true;
-                #if DEBUG
-                    MessageBox.Show(ex.Message  + ex.StackTrace + (ex.InnerException != null ? ex.InnerException.Message + ex.InnerException.StackTrace : string.Empty)
-                        , "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                #endif
+                Directory.CreateDirectory(Path.Combine(folderPath, "fonts"));
+                foreach (var kvp in CustomFonts)
+                {
+                    File.WriteAllBytes(Path.Combine(folderPath, "fonts", kvp.Key), kvp.Value.FileBytes);
+                }
             }
-            if (errorsFound)
-                throw new Exception(firstErrorMessage);
-            return errorsFound;
+
+            if (Images.Count > 0)
+            {
+                Directory.CreateDirectory(Path.Combine(folderPath, "images"));
+                foreach (var kvp in Images)
+                {
+                    kvp.Value.Save(Path.Combine(folderPath, "images", kvp.Key), System.Drawing.Imaging.ImageFormat.Png);
+                }
+            }
+
+            return true;
         }
     }
 }
