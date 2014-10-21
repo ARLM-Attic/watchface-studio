@@ -10,6 +10,7 @@ namespace WatchfaceStudio.Entities
 {
     public static class ExpressionCalculator
     {
+        //private static Regex IsNumeric = new Regex(@"\d*\.?\d+");
         private static Regex ConditionalRegex = new Regex(@"\$([^\$]+)\$");
 
         public static double Calc(string formula)
@@ -21,7 +22,8 @@ namespace WatchfaceStudio.Entities
                 double dblVal;
                 if (double.TryParse(resolvedFormula, out dblVal))
                     return dblVal;
-
+                else if (!formula.Contains('#') && !formula.Contains('$'))
+                    throw new Exception("Not Numeric");
                 //convert formula to c#
                 resolvedFormula = ConditionalRegex.Replace(resolvedFormula, "($1)");
                 resolvedFormula = resolvedFormula
