@@ -252,6 +252,8 @@
     <Content Include="lib\Newtonsoft.Json.dll" />
     <Content Include="lib\Newtonsoft.Json.pdb" />
     <Content Include="lib\Newtonsoft.Json.xml" />
+    <None Include="Resources\IconUp16.png" />
+    <None Include="Resources\IconDown16.png" />
     <None Include="Resources\IconMessage.png" />
     <None Include="Resources\IconWarning.png" />
     <None Include="Resources\IconError.png" />

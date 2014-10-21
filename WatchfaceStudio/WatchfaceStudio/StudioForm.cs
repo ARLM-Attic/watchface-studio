@@ -15,6 +15,7 @@ using System.Net;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
 using WatchfaceStudio.Imaging;
+using System.Drawing.Drawing2D;
 
 namespace WatchfaceStudio
 {
@@ -26,6 +27,9 @@ namespace WatchfaceStudio
 
         public static int UntitledCounter = 1;
         
+        //Dragging
+        private bool _isDragging = false;
+
         //Clones
         private ToolStripMenuItem menuViewUnitsFahrenheitClone;
         private ToolStripMenuItem menuViewUnitsCelsiusClone;
@@ -422,6 +426,14 @@ namespace WatchfaceStudio
 
         private void treeViewExplorer_AfterSelect(object sender, TreeViewEventArgs e)
         {
+            if (_isDragging) return; //only for ui purposes
+
+            var isComponent = e.Node.Tag != null;
+            buttonRemoveItem.Enabled = isComponent;
+            var isLayer = e.Node.Parent == treeViewExplorer.TopNode.Nodes["layers"];
+            buttonMoveDown.Enabled = isLayer;
+            buttonMoveUp.Enabled = isLayer;
+
             propertyGrid.SelectedObject = e.Node.Tag;
             propertyGrid.Tag = e.Node;
             if (e.Node.Tag is FacerLayer)
@@ -884,5 +896,120 @@ Would you like to open the browser to download it?",
                 OpenArchivedWatchface(file);
         }
 
+        private void treeViewExplorer_ItemDrag(object sender, ItemDragEventArgs e)
+        {
+            //picking the node up
+            var draggedNode = (TreeNode)e.Item;
+            var undraggable = draggedNode == null || draggedNode.Parent == null || draggedNode.Parent.Text != "Layers";
+            if (!undraggable)
+                DoDragDrop(draggedNode, DragDropEffects.Move);
+        }
+
+        private void treeViewExplorer_DragEnter(object sender, DragEventArgs e)
+        {
+            //drag start
+            _isDragging = true;
+            e.Effect = DragDropEffects.Move;
+        }
+
+        private void treeViewExplorer_DragLeave(object sender, EventArgs e)
+        {
+            _isDragging = false;
+            treeViewExplorer.Refresh();
+        }
+
+        private void treeViewExplorer_DragDrop(object sender, DragEventArgs e)
+        {
+            //dropped object
+            if (!e.Data.GetDataPresent("System.Windows.Forms.TreeNode", false)) return;
+            
+            var draggedNode = (TreeNode)e.Data.GetData("System.Windows.Forms.TreeNode");
+            var targetNode = treeViewExplorer.GetNodeAt(treeViewExplorer.PointToClient(new Point(e.X, e.Y)));
+            var currentIndex = draggedNode.Parent.Nodes.IndexOf(draggedNode);
+            if (targetNode == draggedNode || //no where to move
+                targetNode == null || targetNode.Parent == null || targetNode.Parent.Text != "Layers")
+            {
+                e.Effect = DragDropEffects.None;
+                treeViewExplorer.Refresh();
+                _isDragging = false;
+            }
+            else
+            {
+                var parentNode = draggedNode.Parent;
+                
+                var targetIndex = parentNode.Nodes.IndexOf(targetNode);
+                draggedNode.Remove();
+                parentNode.Nodes.Insert(targetIndex - (targetIndex > currentIndex ? 1 : 0), draggedNode);
+
+                UpdateChanged();
+
+                _isDragging = false;
+
+                treeViewExplorer.Refresh();
+                treeViewExplorer.SelectedNode = draggedNode;
+            }
+         
+        }
+
+        private void treeViewExplorer_DragOver(object sender, DragEventArgs e)
+        {
+            //the ui effect
+            var targetNode = treeViewExplorer.GetNodeAt(treeViewExplorer.PointToClient(new Point(e.X, e.Y)));
+            if (targetNode == null || targetNode.Parent == null || targetNode.Parent.Text != "Layers")
+            {
+                e.Effect = DragDropEffects.None;
+                return;
+            }
+            e.Effect = DragDropEffects.Move;
+            treeViewExplorer.SelectedNode = targetNode;
+            
+            treeViewExplorer.Refresh();
+            using (var g = treeViewExplorer.CreateGraphics())
+            {
+                var leftPt = new Point(targetNode.Bounds.Location.X - 20, targetNode.Bounds.Location.Y - 2);
+                var rightPt = new Point(targetNode.Bounds.Location.X + targetNode.Bounds.Width + 6, targetNode.Bounds.Location.Y - 2);
+                g.DrawLine(new Pen(Brushes.Black, 2) { StartCap = LineCap.ArrowAnchor, EndCap = LineCap.ArrowAnchor }, leftPt, rightPt);
+            }
+        }
+
+        private void buttonMoveDown_Click(object sender, EventArgs e)
+        {
+            var selectedNode = treeViewExplorer.SelectedNode;
+            if (selectedNode == null) return;
+
+            var nodeParent = selectedNode.Parent;
+            if (nodeParent != treeViewExplorer.TopNode.Nodes["layers"]) return;
+
+            var currentIndex = nodeParent.Nodes.IndexOf(selectedNode);
+            if (currentIndex == nodeParent.Nodes.Count - 1) return; //no where to move
+
+            _isDragging = true;
+            selectedNode.Remove();
+            nodeParent.Nodes.Insert(currentIndex + 1, selectedNode);
+            _isDragging = false;
+            treeViewExplorer.SelectedNode = selectedNode;
+
+            UpdateChanged();
+        }
+
+        private void buttonMoveUp_Click(object sender, EventArgs e)
+        {
+            var selectedNode = treeViewExplorer.SelectedNode;
+            if (selectedNode == null) return;
+
+            var nodeParent = selectedNode.Parent;
+            if (nodeParent != treeViewExplorer.TopNode.Nodes["layers"]) return;
+
+            var currentIndex = nodeParent.Nodes.IndexOf(selectedNode);
+            if (currentIndex == 0) return; //no where to move
+
+            _isDragging = true;
+            selectedNode.Remove();
+            nodeParent.Nodes.Insert(currentIndex - 1, selectedNode);
+            _isDragging = false;
+            treeViewExplorer.SelectedNode = selectedNode;
+
+            UpdateChanged();
+        }
     }
 }

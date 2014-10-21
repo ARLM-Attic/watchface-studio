@@ -79,7 +79,7 @@ namespace WatchfaceStudio.Editor
         public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
         {
             if (destinationType == typeof(string))
-                return EnumDictionary[(TSource)GetKey((int)Enum.Parse(EnumType, value.ToString()))];
+                return value == null ? string.Empty : EnumDictionary[(TSource)GetKey((int)Enum.Parse(EnumType, value.ToString()))];
 
             return base.ConvertTo(context, culture, value, destinationType);
         }

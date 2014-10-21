@@ -78,6 +78,9 @@
             this.buttonAddLayerShape = new System.Windows.Forms.ToolStripButton();
             this.toolStripExplorerSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.buttonRemoveItem = new System.Windows.Forms.ToolStripButton();
+            this.toolStripExplorerSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.buttonMoveDown = new System.Windows.Forms.ToolStripButton();
+            this.buttonMoveUp = new System.Windows.Forms.ToolStripButton();
             this.tableLayoutPanelProperties = new System.Windows.Forms.TableLayoutPanel();
             this.labelProperties = new System.Windows.Forms.Label();
             this.propertyGrid = new System.Windows.Forms.PropertyGrid();
@@ -463,6 +466,7 @@
             // 
             // treeViewExplorer
             // 
+            this.treeViewExplorer.AllowDrop = true;
             this.treeViewExplorer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeViewExplorer.ImageIndex = 0;
             this.treeViewExplorer.ImageList = this.imageListExplorer;
@@ -471,7 +475,12 @@
             this.treeViewExplorer.SelectedImageIndex = 0;
             this.treeViewExplorer.Size = new System.Drawing.Size(294, 216);
             this.treeViewExplorer.TabIndex = 1;
+            this.treeViewExplorer.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.treeViewExplorer_ItemDrag);
             this.treeViewExplorer.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewExplorer_AfterSelect);
+            this.treeViewExplorer.DragDrop += new System.Windows.Forms.DragEventHandler(this.treeViewExplorer_DragDrop);
+            this.treeViewExplorer.DragEnter += new System.Windows.Forms.DragEventHandler(this.treeViewExplorer_DragEnter);
+            this.treeViewExplorer.DragOver += new System.Windows.Forms.DragEventHandler(this.treeViewExplorer_DragOver);
+            this.treeViewExplorer.DragLeave += new System.EventHandler(this.treeViewExplorer_DragLeave);
             // 
             // imageListExplorer
             // 
@@ -490,7 +499,10 @@
             this.buttonAddLayerImage,
             this.buttonAddLayerShape,
             this.toolStripExplorerSeparator1,
-            this.buttonRemoveItem});
+            this.buttonRemoveItem,
+            this.toolStripExplorerSeparator2,
+            this.buttonMoveDown,
+            this.buttonMoveUp});
             this.toolStripExplorer.Location = new System.Drawing.Point(0, 0);
             this.toolStripExplorer.Name = "toolStripExplorer";
             this.toolStripExplorer.Size = new System.Drawing.Size(294, 25);
@@ -560,12 +572,40 @@
             // buttonRemoveItem
             // 
             this.buttonRemoveItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.buttonRemoveItem.Enabled = false;
             this.buttonRemoveItem.Image = global::WatchfaceStudio.Properties.Resources.IconRemove16;
             this.buttonRemoveItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.buttonRemoveItem.Name = "buttonRemoveItem";
             this.buttonRemoveItem.Size = new System.Drawing.Size(23, 22);
             this.buttonRemoveItem.Text = "Remove Item";
             this.buttonRemoveItem.Click += new System.EventHandler(this.buttonRemoveItem_Click);
+            // 
+            // toolStripExplorerSeparator2
+            // 
+            this.toolStripExplorerSeparator2.Name = "toolStripExplorerSeparator2";
+            this.toolStripExplorerSeparator2.Size = new System.Drawing.Size(6, 25);
+            // 
+            // buttonMoveDown
+            // 
+            this.buttonMoveDown.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.buttonMoveDown.Enabled = false;
+            this.buttonMoveDown.Image = global::WatchfaceStudio.Properties.Resources.IconDown16;
+            this.buttonMoveDown.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.buttonMoveDown.Name = "buttonMoveDown";
+            this.buttonMoveDown.Size = new System.Drawing.Size(23, 22);
+            this.buttonMoveDown.Text = "Move Down";
+            this.buttonMoveDown.Click += new System.EventHandler(this.buttonMoveDown_Click);
+            // 
+            // buttonMoveUp
+            // 
+            this.buttonMoveUp.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.buttonMoveUp.Enabled = false;
+            this.buttonMoveUp.Image = global::WatchfaceStudio.Properties.Resources.IconUp16;
+            this.buttonMoveUp.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.buttonMoveUp.Name = "buttonMoveUp";
+            this.buttonMoveUp.Size = new System.Drawing.Size(23, 22);
+            this.buttonMoveUp.Text = "Move Up";
+            this.buttonMoveUp.Click += new System.EventHandler(this.buttonMoveUp_Click);
             // 
             // tableLayoutPanelProperties
             // 
@@ -994,6 +1034,9 @@
         private System.Windows.Forms.ColumnHeader columnHeaderComponent;
         private System.Windows.Forms.ColumnHeader columnHeaderErrorDescription;
         private System.Windows.Forms.ImageList imageListErrors;
+        private System.Windows.Forms.ToolStripSeparator toolStripExplorerSeparator2;
+        private System.Windows.Forms.ToolStripButton buttonMoveDown;
+        private System.Windows.Forms.ToolStripButton buttonMoveUp;
     }
 }
 
