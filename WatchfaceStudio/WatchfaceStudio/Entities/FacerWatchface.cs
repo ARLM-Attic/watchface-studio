@@ -133,7 +133,7 @@ namespace WatchfaceStudio.Entities
             //fix layers
             for (var i = 0; i < Layers.Count; i++)
             {
-                Layers[i].id = i + 1;
+                Layers[i].id = i;
                 if (Layers[i].type == "text")
                 {
                     if (string.IsNullOrEmpty(Layers[i].low_power_color))

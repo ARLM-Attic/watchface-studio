@@ -703,6 +703,7 @@
             this.listViewTagAppendix.TabIndex = 0;
             this.listViewTagAppendix.UseCompatibleStateImageBehavior = false;
             this.listViewTagAppendix.View = System.Windows.Forms.View.Details;
+            this.listViewTagAppendix.ItemActivate += new System.EventHandler(this.listViewTagAppendix_ItemActivate);
             // 
             // columnHeaderTag
             // 

@@ -23,7 +23,6 @@ namespace WatchfaceStudio
     {
         private FormWindowState _lastWindowState;
         public static string TempFolder;
-        public static string CodePlexUrl = "https://watchfacestudio.codeplex.com/";
 
         public static int UntitledCounter = 1;
         
@@ -333,6 +332,27 @@ namespace WatchfaceStudio
             layersNode.ExpandAll();
         }
 
+        public static void CreateFromDirectoryWithFixedSlashes(string sourceDirectoryName, string destinationArchiveFileName)
+        {
+            using (var archive = ZipFile.Open(destinationArchiveFileName, ZipArchiveMode.Create))
+            {
+                var rootDirectory = sourceDirectoryName.TrimEnd('\\');
+                var files = Directory.GetFiles(rootDirectory, "*.*", SearchOption.AllDirectories);
+                foreach (var fileName in files)
+                {
+                    string relativePath = fileName.Substring(rootDirectory.Length + 1).Replace("\\", "/"); 
+                    var entry = archive.CreateEntry(relativePath);
+                    using (var destination = entry.Open())
+                    {
+                        using (var source = File.OpenRead(fileName))
+                        {
+                            source.CopyTo(destination);
+                        }
+                    }
+                }
+            }
+        }
+
         private void SaveWatch(string zipFile)
         {
             var wf = EditorContext.SelectedWatchface;
@@ -348,7 +368,7 @@ namespace WatchfaceStudio
                 {
                     if (File.Exists(zipFile))
                         File.Delete(zipFile);
-                    ZipFile.CreateFromDirectory(folderPath, zipFile);
+                    CreateFromDirectoryWithFixedSlashes(folderPath, zipFile);
 
                     wf.Changed = false;
                     if (wf.EditorForm.Text.StartsWith("*"))
@@ -833,19 +853,25 @@ namespace WatchfaceStudio
 
         private void backgroundWorkerCheckForUpdates_DoWork(object sender, DoWorkEventArgs e)
         {
-            var wc = new WebClient();
-            var str = wc.DownloadString(CodePlexUrl);
-            var regex = new Regex(@"Watchface Studio v([\d]+\.[\d]+)");
-            var match = regex.Match(str);
             var manual = (bool)e.Argument;
-            e.Result = string.Concat(manual ? 'M' : 'A',  match.Success ? match.Groups[1].ToString() : string.Empty);
+
+            string version = null, releaseNotes = null;
+            try
+            {
+                UpdateChecker.CheckForUpdates(out version, out releaseNotes);
+            }
+            catch (Exception ex)
+            { MessageBox.Show(ex.Message); }
+            e.Result = new string[] { manual ? "M" : "A", version, releaseNotes };
         }
 
         private void backgroundWorkerCheckForUpdates_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            var mode = e.Result.ToString()[0];
-            var result = e.Result.ToString().Substring(1);
-            if (result.Length == 0)
+            var output = (string[])e.Result;
+            var mode = output[0][0];
+            var version = output[1];
+            var releaseNotes = output[2];
+            if (version == null || releaseNotes == null)
             {
                 if (mode == 'M')
                     MessageBox.Show("Couldn't figure out the version.");
@@ -853,18 +879,22 @@ namespace WatchfaceStudio
             }
             var currentVersion = Application.ProductVersion.Substring(0,
                 Application.ProductVersion.IndexOf('.', Application.ProductVersion.IndexOf('.') + 1));
-            if (currentVersion != result)
+            if (currentVersion != version)
             {
                 if (MessageBox.Show(string.Format(
 @"There's a more updated version on the server.
-Server version: {0}
-Your version: {1}
+Your version: {0}
+
+Server version: {1}
+
+Release Notes:
+{2}
 Would you like to open the browser to download it?",
-                    result, currentVersion),
+                    currentVersion, version, releaseNotes),
                     "Update Available", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1)
                     == System.Windows.Forms.DialogResult.Yes)
                 {
-                    Process.Start(CodePlexUrl);
+                    Process.Start(UpdateChecker.CodePlexUrl);
                 }
             }
             else
@@ -1010,6 +1040,14 @@ Would you like to open the browser to download it?",
             treeViewExplorer.SelectedNode = selectedNode;
 
             UpdateChanged();
+        }
+
+        private void listViewTagAppendix_ItemActivate(object sender, EventArgs e)
+        {
+            if (listViewTagAppendix.SelectedItems.Count == 0) return;
+            var tag = listViewTagAppendix.SelectedItems[0].Text;
+            if (!tag.StartsWith("#")) return;
+            Clipboard.SetText(tag);
         }
     }
 }

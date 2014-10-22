@@ -53,6 +53,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>lib\ExpressionEvaluator.dll</HintPath>
     </Reference>
+    <Reference Include="HtmlAgilityPack">
+      <HintPath>lib\HtmlAgilityPack.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>lib\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -60,6 +63,7 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Design" />
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -145,6 +149,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UpdateChecker.cs" />
     <EmbeddedResource Include="Editor\ColorDialogForm.resx">
       <DependentUpon>ColorDialogForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -249,9 +254,14 @@
     <Content Include="lib\Antlr3.Runtime.dll" />
     <Content Include="lib\ExpressionEvaluator.dll" />
     <Content Include="lib\ExpressionEvaluator.pdb" />
+    <Content Include="lib\HtmlAgilityPack.dll" />
+    <Content Include="lib\HtmlAgilityPack.pdb" />
+    <Content Include="lib\HtmlAgilityPack.XML" />
     <Content Include="lib\Newtonsoft.Json.dll" />
     <Content Include="lib\Newtonsoft.Json.pdb" />
     <Content Include="lib\Newtonsoft.Json.xml" />
+    <None Include="Resources\TestWearStatus.png" />
+    <None Include="Resources\TestCard.png" />
     <None Include="Resources\IconUp16.png" />
     <None Include="Resources\IconDown16.png" />
     <None Include="Resources\IconMessage.png" />
