@@ -860,8 +860,8 @@ namespace WatchfaceStudio
             {
                 UpdateChecker.CheckForUpdates(out version, out releaseNotes);
             }
-            catch (Exception ex)
-            { MessageBox.Show(ex.Message); }
+            catch
+            { }
             e.Result = new string[] { manual ? "M" : "A", version, releaseNotes };
         }
 
