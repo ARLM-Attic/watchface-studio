@@ -450,6 +450,11 @@ namespace WatchfaceStudio
             propertyGrid.SelectedObject = null;
         }
 
+        public void RefreshPropertyGrid()
+        {
+            propertyGrid.SelectedObject = ((TreeNode)propertyGrid.Tag).Tag;
+        }
+
         private void treeViewExplorer_AfterSelect(object sender, TreeViewEventArgs e)
         {
             if (_isDragging) return; //only for ui purposes

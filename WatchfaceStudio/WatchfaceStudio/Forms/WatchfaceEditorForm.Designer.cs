@@ -33,6 +33,7 @@
             this.pictureWatch = new System.Windows.Forms.PictureBox();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.buttonPlayPause = new System.Windows.Forms.Button();
+            this.checkBoxUnlock = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureWatch)).BeginInit();
             this.SuspendLayout();
             // 
@@ -48,6 +49,9 @@
             this.pictureWatch.Size = new System.Drawing.Size(320, 320);
             this.pictureWatch.TabIndex = 0;
             this.pictureWatch.TabStop = false;
+            this.pictureWatch.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureWatch_MouseDown);
+            this.pictureWatch.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureWatch_MouseMove);
+            this.pictureWatch.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pictureWatch_MouseUp);
             // 
             // buttonPlayPause
             // 
@@ -60,8 +64,23 @@
             this.buttonPlayPause.Name = "buttonPlayPause";
             this.buttonPlayPause.Size = new System.Drawing.Size(20, 20);
             this.buttonPlayPause.TabIndex = 3;
+            this.toolTip.SetToolTip(this.buttonPlayPause, "Pause");
             this.buttonPlayPause.UseVisualStyleBackColor = true;
             this.buttonPlayPause.Click += new System.EventHandler(this.buttonPlayPause_Click);
+            // 
+            // checkBoxUnlock
+            // 
+            this.checkBoxUnlock.Appearance = System.Windows.Forms.Appearance.Button;
+            this.checkBoxUnlock.AutoSize = true;
+            this.checkBoxUnlock.FlatAppearance.BorderSize = 0;
+            this.checkBoxUnlock.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.checkBoxUnlock.Image = global::WatchfaceStudio.Properties.Resources.IconLock16;
+            this.checkBoxUnlock.Location = new System.Drawing.Point(28, 2);
+            this.checkBoxUnlock.Name = "checkBoxUnlock";
+            this.checkBoxUnlock.Size = new System.Drawing.Size(22, 22);
+            this.checkBoxUnlock.TabIndex = 5;
+            this.toolTip.SetToolTip(this.checkBoxUnlock, "Toggle Edit Mode");
+            this.checkBoxUnlock.UseVisualStyleBackColor = true;
             // 
             // WatchfaceEditorForm
             // 
@@ -70,6 +89,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.WindowFrame;
             this.ClientSize = new System.Drawing.Size(344, 358);
+            this.Controls.Add(this.checkBoxUnlock);
             this.Controls.Add(this.buttonPlayPause);
             this.Controls.Add(this.pictureWatch);
             this.Name = "WatchfaceEditorForm";
@@ -78,6 +98,7 @@
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.WatchfaceEditorForm_DragEnter);
             ((System.ComponentModel.ISupportInitialize)(this.pictureWatch)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -87,5 +108,6 @@
         private System.Windows.Forms.Timer timerClock;
         private System.Windows.Forms.ToolTip toolTip;
         private System.Windows.Forms.Button buttonPlayPause;
+        private System.Windows.Forms.CheckBox checkBoxUnlock;
     }
 }

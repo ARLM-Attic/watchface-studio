@@ -46,10 +46,10 @@ namespace WatchfaceStudio.Entities
             }
         }
 
-        public string AddImageFile(string imageFile)
+        public string AddImageFile(string imageFile, bool newImage = false)
         {
-            var fileName = Path.GetFileNameWithoutExtension(imageFile) ?? string.Empty;
-            var key = string.Concat(fileName, ".png");
+            var fileName = Path.GetFileName(imageFile) ?? string.Empty;
+            var key = newImage ? string.Concat(Path.GetFileNameWithoutExtension(fileName), ".png") : fileName;
             var i = 0;
             while (Images.ContainsKey(key))
                 key = string.Concat(fileName, "(", i++, ").png");
@@ -108,7 +108,7 @@ namespace WatchfaceStudio.Entities
                         Directory.EnumerateFiles(imagesFolder)
                         .Where(x => imageExtensions.Any(f => f==Path.GetExtension(x))))
                     {
-                        AddImageFile(imageFile);
+                        AddImageFile(imageFile, false);
                     }
                 CustomFonts = new Dictionary<string, FacerCustomFont>();
                 var fontsFolder = Path.Combine(folder, "fonts");
