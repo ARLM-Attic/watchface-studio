@@ -58,6 +58,8 @@
             this.menuViewDateCustomDate = new System.Windows.Forms.ToolStripTextBox();
             this.menuViewSeparator0 = new System.Windows.Forms.ToolStripSeparator();
             this.menuViewAppendixWindow = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuViewTestWearIcons = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuViewTestCard = new System.Windows.Forms.ToolStripMenuItem();
             this.menuWindow = new System.Windows.Forms.ToolStripMenuItem();
             this.menuHelp = new System.Windows.Forms.ToolStripMenuItem();
             this.menuHelpCheckForUpdate = new System.Windows.Forms.ToolStripMenuItem();
@@ -103,6 +105,8 @@
             this.toolbarWatchType = new System.Windows.Forms.ToolStripDropDownButton();
             this.toolbarSeperator1 = new System.Windows.Forms.ToolStripSeparator();
             this.toolbarAppendixWindow = new System.Windows.Forms.ToolStripButton();
+            this.toolbarTestWearIcons = new System.Windows.Forms.ToolStripButton();
+            this.toolbarTestCard = new System.Windows.Forms.ToolStripButton();
             this.backgroundWorkerCheckForUpdates = new System.ComponentModel.BackgroundWorker();
             this.panelErrors = new System.Windows.Forms.Panel();
             this.tableLayoutPanelErrors = new System.Windows.Forms.TableLayoutPanel();
@@ -231,7 +235,9 @@
             this.menuViewWatchType,
             this.menuViewDate,
             this.menuViewSeparator0,
-            this.menuViewAppendixWindow});
+            this.menuViewAppendixWindow,
+            this.menuViewTestWearIcons,
+            this.menuViewTestCard});
             this.menuView.Name = "menuView";
             this.menuView.Size = new System.Drawing.Size(44, 20);
             this.menuView.Text = "&View";
@@ -371,6 +377,22 @@
             this.menuViewAppendixWindow.Size = new System.Drawing.Size(195, 22);
             this.menuViewAppendixWindow.Text = "&Appendix Window";
             this.menuViewAppendixWindow.Click += new System.EventHandler(this.menuViewAppendixWindow_Click);
+            // 
+            // menuViewTestWearIcons
+            // 
+            this.menuViewTestWearIcons.Image = global::WatchfaceStudio.Properties.Resources.IconWearIcons16;
+            this.menuViewTestWearIcons.Name = "menuViewTestWearIcons";
+            this.menuViewTestWearIcons.Size = new System.Drawing.Size(195, 22);
+            this.menuViewTestWearIcons.Text = "Test &Wear Icons";
+            this.menuViewTestWearIcons.Click += new System.EventHandler(this.menuViewTestWearIcons_Click);
+            // 
+            // menuViewTestCard
+            // 
+            this.menuViewTestCard.Image = global::WatchfaceStudio.Properties.Resources.IconCard16;
+            this.menuViewTestCard.Name = "menuViewTestCard";
+            this.menuViewTestCard.Size = new System.Drawing.Size(195, 22);
+            this.menuViewTestCard.Text = "Test &Card";
+            this.menuViewTestCard.Click += new System.EventHandler(this.menuViewTestCard_Click);
             // 
             // menuWindow
             // 
@@ -734,7 +756,9 @@
             this.toolbarTemperatureUnits,
             this.toolbarWatchType,
             this.toolbarSeperator1,
-            this.toolbarAppendixWindow});
+            this.toolbarAppendixWindow,
+            this.toolbarTestWearIcons,
+            this.toolbarTestCard});
             this.toolStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
             this.toolStrip1.Location = new System.Drawing.Point(0, 24);
             this.toolStrip1.Name = "toolStrip1";
@@ -831,6 +855,26 @@
             this.toolbarAppendixWindow.Size = new System.Drawing.Size(23, 22);
             this.toolbarAppendixWindow.Text = "Appendix Window";
             this.toolbarAppendixWindow.Click += new System.EventHandler(this.menuViewAppendixWindow_Click);
+            // 
+            // toolbarTestWearIcons
+            // 
+            this.toolbarTestWearIcons.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolbarTestWearIcons.Image = global::WatchfaceStudio.Properties.Resources.IconWearIcons16;
+            this.toolbarTestWearIcons.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolbarTestWearIcons.Name = "toolbarTestWearIcons";
+            this.toolbarTestWearIcons.Size = new System.Drawing.Size(23, 22);
+            this.toolbarTestWearIcons.Text = "Test Wear Icons";
+            this.toolbarTestWearIcons.Click += new System.EventHandler(this.menuViewTestWearIcons_Click);
+            // 
+            // toolbarTestCard
+            // 
+            this.toolbarTestCard.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolbarTestCard.Image = global::WatchfaceStudio.Properties.Resources.IconCard16;
+            this.toolbarTestCard.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolbarTestCard.Name = "toolbarTestCard";
+            this.toolbarTestCard.Size = new System.Drawing.Size(23, 22);
+            this.toolbarTestCard.Text = "Test Card";
+            this.toolbarTestCard.Click += new System.EventHandler(this.menuViewTestCard_Click);
             // 
             // backgroundWorkerCheckForUpdates
             // 
@@ -1038,6 +1082,10 @@
         private System.Windows.Forms.ToolStripSeparator toolStripExplorerSeparator2;
         private System.Windows.Forms.ToolStripButton buttonMoveDown;
         private System.Windows.Forms.ToolStripButton buttonMoveUp;
+        private System.Windows.Forms.ToolStripMenuItem menuViewTestWearIcons;
+        private System.Windows.Forms.ToolStripMenuItem menuViewTestCard;
+        private System.Windows.Forms.ToolStripButton toolbarTestWearIcons;
+        private System.Windows.Forms.ToolStripButton toolbarTestCard;
     }
 }
 

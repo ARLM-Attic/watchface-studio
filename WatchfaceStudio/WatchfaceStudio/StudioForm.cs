@@ -87,6 +87,12 @@ namespace WatchfaceStudio
 
             toolbarLowPowerMode.Checked = menuViewLowPowerMode.Checked;
 
+            var overlay = EditorContext.Overlay;
+            menuViewTestWearIcons.Checked = overlay.HasFlag(EWatchfaceOverlay.WearIcons);
+            toolbarTestWearIcons.Checked = menuViewTestWearIcons.Checked;
+            menuViewTestCard.Checked = overlay.HasFlag(EWatchfaceOverlay.Card);
+            toolbarTestCard.Checked = menuViewTestCard.Checked;
+
             Icon = Properties.Resources.IconApplication;
 
             imageListExplorer.Images.Add(Properties.Resources.IconWatchface16);
@@ -137,7 +143,7 @@ namespace WatchfaceStudio
                 });
 
             //render errors
-            FacerWatcfaceRenderer.Render(EditorContext.SelectedWatchface, WatchType.Current, true, errorsList);
+            FacerWatcfaceRenderer.Render(EditorContext.SelectedWatchface, EditorContext.WatchType, EWatchfaceOverlay.None, true, errorsList);
 
             //check if there are unused images
             foreach (var img in EditorContext.SelectedWatchface.Images)
@@ -450,9 +456,10 @@ namespace WatchfaceStudio
 
             var isComponent = e.Node.Tag != null;
             buttonRemoveItem.Enabled = isComponent;
-            var isLayer = e.Node.Parent == treeViewExplorer.TopNode.Nodes["layers"];
-            buttonMoveDown.Enabled = isLayer;
-            buttonMoveUp.Enabled = isLayer;
+            var layersNode = treeViewExplorer.TopNode.Nodes["layers"];
+            var isLayer = e.Node.Parent == layersNode;
+            buttonMoveDown.Enabled = isLayer && layersNode.Nodes.IndexOf(e.Node) < layersNode.Nodes.Count - 1;
+            buttonMoveUp.Enabled = isLayer && layersNode.Nodes.IndexOf(e.Node) > 0;
 
             propertyGrid.SelectedObject = e.Node.Tag;
             propertyGrid.Tag = e.Node;
@@ -592,7 +599,7 @@ namespace WatchfaceStudio
             menuViewWTSamsungGLClone.Checked = menuViewWTSamsungGL.Checked = watchType == EWatchType.Samsung_Gear_Live;
             toolbarWatchType.Image = ((ToolStripMenuItem)sender).Image;
 
-            WatchType.Current = watchType;
+            EditorContext.WatchType = watchType;
         }
 
         private void menuViewUnits_Click(object sender, EventArgs e)
@@ -621,8 +628,6 @@ namespace WatchfaceStudio
             new AboutBox().ShowDialog();
         }
 
-        #endregion
-
         private void menuViewAppendixWindow_Click(object sender, EventArgs e)
         {
             menuViewAppendixWindow.Checked = !menuViewAppendixWindow.Checked;
@@ -635,6 +640,36 @@ namespace WatchfaceStudio
             Properties.Settings.Default.Save();
         }
 
+        private void menuViewTestWearIcons_Click(object sender, EventArgs e)
+        {
+            menuViewTestWearIcons.Checked = !menuViewTestWearIcons.Checked;
+            toolbarTestWearIcons.Checked = menuViewTestWearIcons.Checked;
+            var ol = EditorContext.Overlay;
+            if (ol.HasFlag(EWatchfaceOverlay.WearIcons))
+            {
+                EditorContext.Overlay = ol ^ EWatchfaceOverlay.WearIcons;
+            }
+            else
+            {
+                EditorContext.Overlay = ol | EWatchfaceOverlay.WearIcons;
+            }
+        }
+
+        private void menuViewTestCard_Click(object sender, EventArgs e)
+        {
+            menuViewTestCard.Checked = !menuViewTestCard.Checked;
+            toolbarTestCard.Checked = menuViewTestCard.Checked;
+            var ol = EditorContext.Overlay;
+            if (ol.HasFlag(EWatchfaceOverlay.Card))
+            {
+                EditorContext.Overlay = ol & ~EWatchfaceOverlay.Card;
+            }
+            else
+            {
+                EditorContext.Overlay = ol | EWatchfaceOverlay.Card;
+            }
+        }
+
         private void menuViewSmoothSeconds_Click(object sender, EventArgs e)
         {
             menuViewSmoothSecondHands.Checked = !menuViewSmoothSecondHands.Checked;
@@ -642,6 +677,9 @@ namespace WatchfaceStudio
             Properties.Settings.Default.SmoothSeconds = menuViewSmoothSecondHands.Checked;
             Properties.Settings.Default.Save();
         }
+
+        #endregion
+
 
         private void AddNewFont(string fileName)
         {
@@ -1049,5 +1087,6 @@ Would you like to open the browser to download it?",
             if (!tag.StartsWith("#")) return;
             Clipboard.SetText(tag);
         }
+
     }
 }

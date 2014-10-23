@@ -160,9 +160,13 @@ namespace WatchfaceStudio.Entities
             dest.UnlockBits(bdDst);
         }
 
-        public static Bitmap Render(FacerWatchface watchface, EWatchType watchtype, bool checkForErrors, List<WatchfaceRendererError> errors)
+        public static Bitmap Render(FacerWatchface watchface, EWatchType watchtype, EWatchfaceOverlay overlay, bool checkForErrors, List<WatchfaceRendererError> errors)
         {
-            var bmp = new Bitmap(320, 320);
+            Size dimensions;
+            if (!WatchType.Dimensions.TryGetValue(watchtype, out dimensions))
+                dimensions = new Size(320, 320); //unknown
+
+            var bmp = new Bitmap(dimensions.Width, dimensions.Height);
             using (var g = Graphics.FromImage(bmp))
             {
                 g.InterpolationMode = InterpolationMode.HighQualityBicubic;
@@ -385,16 +389,31 @@ namespace WatchfaceStudio.Entities
                     }
                 }
 
+                g.ResetTransform();
+
                 if (selectedRectangle != Rectangle.Empty)
-                {
-                    g.ResetTransform();
+                {   
                     g.Transform = selectedTransform;
                     g.DrawXorRectangle(bmp, selectedRectangle);
+                    g.ResetTransform();
                 }
 
+                if (overlay.HasFlag(EWatchfaceOverlay.Card))
+                {
+                    var card = Properties.Resources.TestCard;
+                    g.DrawImage(card, 0, 0, dimensions.Width, dimensions.Height);
+                }
+                if (overlay.HasFlag(EWatchfaceOverlay.WearIcons))
+                {
+                    var icons = Properties.Resources.TestWearStatus;
+                    g.DrawImage(icons, dimensions.Width / 2f - icons.Width / 2f, 0.05f * dimensions.Height, 
+                        icons.Width * dimensions.Width / 320f, icons.Height * dimensions.Height / 320f);
+                }
                 Bitmap mask;
                 if (WatchType.Masks.TryGetValue(watchtype, out mask))
                     CopyChannel(mask, bmp, ChannelARGB.Alpha, ChannelARGB.Alpha);
+
+                
             }
 
             

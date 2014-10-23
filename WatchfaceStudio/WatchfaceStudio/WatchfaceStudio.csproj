@@ -105,6 +105,7 @@
     </Compile>
     <Compile Include="Editor\WatchfaceImageTypeConverter.cs" />
     <Compile Include="Editor\WatchfaceFontTypeConverter.cs" />
+    <Compile Include="Entities\EWatchfaceOverlay.cs" />
     <Compile Include="Entities\EWatchType.cs" />
     <Compile Include="Entities\ExpressionCalculator.cs" />
     <Compile Include="Entities\FacerEnums.cs" />
@@ -150,6 +151,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UpdateChecker.cs" />
+    <Compile Include="Utils\EnumExtensions.cs" />
     <EmbeddedResource Include="Editor\ColorDialogForm.resx">
       <DependentUpon>ColorDialogForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -260,6 +262,8 @@
     <Content Include="lib\Newtonsoft.Json.dll" />
     <Content Include="lib\Newtonsoft.Json.pdb" />
     <Content Include="lib\Newtonsoft.Json.xml" />
+    <None Include="Resources\IconCard16.png" />
+    <None Include="Resources\IconWearIcons16.png" />
     <None Include="Resources\TestWearStatus.png" />
     <None Include="Resources\TestCard.png" />
     <None Include="Resources\IconUp16.png" />

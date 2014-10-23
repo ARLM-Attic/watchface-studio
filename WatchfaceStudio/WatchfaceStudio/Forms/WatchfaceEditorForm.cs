@@ -7,6 +7,7 @@ using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using WatchfaceStudio.Editor;
 using WatchfaceStudio.Entities;
 
 namespace WatchfaceStudio.Forms
@@ -63,7 +64,7 @@ namespace WatchfaceStudio.Forms
                 timerClock.Interval = 1000;
             }
 
-            var watchBmp = FacerWatcfaceRenderer.Render(Watchface, WatchType.Current, false, null);
+            var watchBmp = FacerWatcfaceRenderer.Render(Watchface, EditorContext.WatchType, EditorContext.Overlay, false, null);
             pictureWatch.Image = watchBmp;
         }
 

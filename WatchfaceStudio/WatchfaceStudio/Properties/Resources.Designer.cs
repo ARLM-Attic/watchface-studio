@@ -123,6 +123,16 @@ namespace WatchfaceStudio.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap IconCard16 {
+            get {
+                object obj = ResourceManager.GetObject("IconCard16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap IconCelsius16 {
             get {
                 object obj = ResourceManager.GetObject("IconCelsius16", resourceCulture);
@@ -436,6 +446,16 @@ namespace WatchfaceStudio.Properties {
         internal static System.Drawing.Bitmap IconWatchface16 {
             get {
                 object obj = ResourceManager.GetObject("IconWatchface16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap IconWearIcons16 {
+            get {
+                object obj = ResourceManager.GetObject("IconWearIcons16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -6,6 +6,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using WatchfaceStudio.Editor;
 
 namespace WatchfaceStudio.Entities
 {
@@ -142,8 +143,8 @@ namespace WatchfaceStudio.Entities
                         Layers[i].bgcolor = "0";
                 }
             }
-                
-            var preview = FacerWatcfaceRenderer.Render(this, WatchType.Current, false, null);
+
+            var preview = FacerWatcfaceRenderer.Render(this, EditorContext.WatchType, EWatchfaceOverlay.None, false, null);
             
             var watchfileContent = JsonConvert.SerializeObject(Layers, new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore, StringEscapeHandling = StringEscapeHandling.EscapeNonAscii });
             File.WriteAllText(Path.Combine(folderPath, "watchface.json"), watchfileContent);

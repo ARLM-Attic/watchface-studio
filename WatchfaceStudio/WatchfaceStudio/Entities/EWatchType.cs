@@ -17,27 +17,13 @@ namespace WatchfaceStudio.Entities
 
     public static class WatchType
     {
-        public static EWatchType Current
-        {
-            get
-            {
-                var wt = Properties.Settings.Default.Watchtype;
-                if (!Enum.IsDefined(typeof(EWatchType), wt))
-                    wt = (int)default(EWatchType);
-                return (EWatchType)wt;
-            }
-            set
-            {
-                Properties.Settings.Default.Watchtype = (int)value;
-                Properties.Settings.Default.Save();
-            }
-        }
-
         public static Dictionary<EWatchType, Bitmap> Masks;
+        public static Dictionary<EWatchType, Size> Dimensions;
 
         static WatchType()
         {
             Masks = new Dictionary<EWatchType, Bitmap>();
+            Dimensions = new Dictionary<EWatchType, Size>();
 
             //Moto 360
             var moto360face = new Bitmap(320, 290);
@@ -51,6 +37,10 @@ namespace WatchfaceStudio.Entities
                 g.DrawImage(moto360face, 0, 0);
             }
             Masks.Add(EWatchType.Moto_360, mask);
+            Dimensions.Add(EWatchType.Moto_360, new Size(320,320));
+
+            // Samsung Gear Live
+            Dimensions.Add(EWatchType.Samsung_Gear_Live, new Size(320, 320));
 
             // LG G-Watch R
             mask = new Bitmap(320, 320);
@@ -60,16 +50,10 @@ namespace WatchfaceStudio.Entities
                 g.FillEllipse(Brushes.Black, 0, 0, mask.Width, mask.Height);
             }
             Masks.Add(EWatchType.LG_G_Watch_R, mask);
+            Dimensions.Add(EWatchType.LG_G_Watch_R, new Size(320, 320));
 
             // LG G-Watch
-            mask = new Bitmap(320, 320);
-            using (var g = Graphics.FromImage(mask))
-            {
-                g.Clear(Color.Transparent);
-                g.FillRectangle(Brushes.Black, 0, 0, 280, 280);
-            }
-            Masks.Add(EWatchType.LG_G_Watch, mask);
-
+            Dimensions.Add(EWatchType.LG_G_Watch, new Size(280, 280));
         }
     }
 }
