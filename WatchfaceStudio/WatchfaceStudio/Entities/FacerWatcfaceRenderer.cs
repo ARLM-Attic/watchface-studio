@@ -160,7 +160,7 @@ namespace WatchfaceStudio.Entities
             dest.UnlockBits(bdDst);
         }
 
-        public static Bitmap Render(FacerWatchface watchface, EWatchType watchtype, EWatchfaceOverlay overlay, bool checkForErrors, List<WatchfaceRendererError> errors)
+        public static Bitmap Render(FacerWatchface watchface, EWatchType watchtype, EWatchfaceOverlay overlay, bool checkForErrors, List<WatchfaceRendererError> errors, bool showSelected = true)
         {
             Size dimensions;
             if (!WatchType.Dimensions.TryGetValue(watchtype, out dimensions))
@@ -391,7 +391,7 @@ namespace WatchfaceStudio.Entities
 
                 g.ResetTransform();
 
-                if (selectedRectangle != Rectangle.Empty)
+                if (showSelected && selectedRectangle != Rectangle.Empty)
                 {   
                     g.Transform = selectedTransform;
                     g.DrawXorRectangle(bmp, selectedRectangle);

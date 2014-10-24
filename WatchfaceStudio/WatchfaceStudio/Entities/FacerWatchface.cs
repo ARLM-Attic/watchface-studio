@@ -144,19 +144,14 @@ namespace WatchfaceStudio.Entities
                 }
             }
 
-            var preview = FacerWatcfaceRenderer.Render(this, EditorContext.WatchType, EWatchfaceOverlay.None, false, null);
-            
+            var preview = FacerWatcfaceRenderer.Render(this, EditorContext.WatchType, EWatchfaceOverlay.None, false, null, false);
+            preview.Save(Path.Combine(folderPath, "preview.png"), System.Drawing.Imaging.ImageFormat.Png);
+
             var watchfileContent = JsonConvert.SerializeObject(Layers, new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore, StringEscapeHandling = StringEscapeHandling.EscapeNonAscii });
             File.WriteAllText(Path.Combine(folderPath, "watchface.json"), watchfileContent);
 
             var descriptionContent = JsonConvert.SerializeObject(Description, new JsonSerializerSettings() { NullValueHandling = NullValueHandling.Ignore, StringEscapeHandling = StringEscapeHandling.EscapeNonAscii });
             File.WriteAllText(Path.Combine(folderPath, "description.json"), descriptionContent);
-
-            var savedSelectedLayer = SelectedLayer;
-            SelectedLayer = null;
-
-            SelectedLayer = savedSelectedLayer;
-            preview.Save(Path.Combine(folderPath, "preview.png"), System.Drawing.Imaging.ImageFormat.Png);
 
             if (CustomFonts.Count > 0)
             {

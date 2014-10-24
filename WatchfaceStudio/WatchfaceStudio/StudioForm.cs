@@ -1014,6 +1014,10 @@ Would you like to open the browser to download it?",
                 draggedNode.Remove();
                 parentNode.Nodes.Insert(targetIndex - (targetIndex > currentIndex ? 1 : 0), draggedNode);
 
+                var selectedLayer = EditorContext.SelectedWatchface.Layers[currentIndex];
+                EditorContext.SelectedWatchface.Layers.RemoveAt(currentIndex);
+                EditorContext.SelectedWatchface.Layers.Insert(targetIndex - (targetIndex > currentIndex ? 1 : 0), selectedLayer);
+
                 UpdateChanged();
 
                 _isDragging = false;
@@ -1062,6 +1066,10 @@ Would you like to open the browser to download it?",
             _isDragging = false;
             treeViewExplorer.SelectedNode = selectedNode;
 
+            var selectedLayer = EditorContext.SelectedWatchface.Layers[currentIndex];
+            EditorContext.SelectedWatchface.Layers.RemoveAt(currentIndex);
+            EditorContext.SelectedWatchface.Layers.Insert(currentIndex + 1, selectedLayer);
+
             UpdateChanged();
         }
 
@@ -1081,6 +1089,10 @@ Would you like to open the browser to download it?",
             nodeParent.Nodes.Insert(currentIndex - 1, selectedNode);
             _isDragging = false;
             treeViewExplorer.SelectedNode = selectedNode;
+
+            var selectedLayer = EditorContext.SelectedWatchface.Layers[currentIndex];
+            EditorContext.SelectedWatchface.Layers.RemoveAt(currentIndex);
+            EditorContext.SelectedWatchface.Layers.Insert(currentIndex - 1, selectedLayer);
 
             UpdateChanged();
         }
