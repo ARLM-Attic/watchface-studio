@@ -9,10 +9,10 @@ namespace WatchfaceStudio.Entities
     {
         private PrivateFontCollection _pfc;
         public FontFamily FontFamily {get; set; }
-        private FontStyle _fontStyle;
-        public FontStyle FontStyle
+        private FontStyle _regularFontStyle;
+        public FontStyle RegularFontStyle
         {
-            get { return _fontStyle; }
+            get { return _regularFontStyle; }
         }
 
         public byte[] FileBytes;
@@ -22,10 +22,18 @@ namespace WatchfaceStudio.Entities
             _pfc = new PrivateFontCollection();
             _pfc.AddFontFile(path);
             FontFamily = _pfc.Families.Last();
-            _fontStyle = default(FontStyle);
-            while (!FontFamily.IsStyleAvailable(_fontStyle))
-                _fontStyle++;
+            _regularFontStyle = default(FontStyle);
+            while (!FontFamily.IsStyleAvailable(_regularFontStyle))
+                _regularFontStyle++;
             FileBytes = File.ReadAllBytes(path);
+        }
+
+        public FontStyle GetAvailableFontStyle(FontStyle wantedFontStyle)
+        {
+            var suggestedFontStyle = _regularFontStyle | wantedFontStyle;
+            if (!FontFamily.IsStyleAvailable(suggestedFontStyle))
+                return _regularFontStyle;
+            return suggestedFontStyle;
         }
     }
 }

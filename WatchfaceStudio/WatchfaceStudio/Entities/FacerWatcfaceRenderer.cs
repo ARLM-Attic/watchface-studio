@@ -27,6 +27,29 @@ namespace WatchfaceStudio.Entities
             return dp * ScreenDPI / DefaultScreenDPI;
         }
 
+        private static Image _imageNotFound;
+
+        public static Image ImageNotFound
+        {
+            get
+            {
+                if (_imageNotFound == null)
+                {
+                    var bmp = new Bitmap(100, 100);
+                    using (var g = Graphics.FromImage(bmp))
+                    {
+                        g.Clear(Color.White);
+                        g.DrawLine(Pens.Red, 0, 0, 99, 99);
+                        g.DrawLine(Pens.Red, 0, 99, 99, 0);
+                        g.DrawString("Image\nNot\nFound", new Font("Arial", 14), Brushes.Black, 50, 50, 
+                            new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
+                    }
+                    _imageNotFound = bmp;
+                }
+                return _imageNotFound;
+            }
+        }
+
         static FacerWatcfaceRenderer()
         {
             FacerFontConfig = new Dictionary<FacerFont, Tuple<PrivateFontCollection, FontStyle>>();
@@ -160,6 +183,17 @@ namespace WatchfaceStudio.Entities
             dest.UnlockBits(bdDst);
         }
 
+        public static void AppendError(bool checkForErrors, List<WatchfaceRendererError> errors, WatchfaceRendererErrorSeverity severity, string objectName, string message)
+        {
+            if (!checkForErrors) return;
+            errors.Add(new WatchfaceRendererError
+                {
+                    Severity = severity,
+                    Object = objectName,
+                    Message = message
+                });
+        }
+
         public static Bitmap Render(FacerWatchface watchface, EWatchType watchtype, EWatchfaceOverlay overlay, bool checkForErrors, List<WatchfaceRendererError> errors, bool showSelected = true)
         {
             Size dimensions;
@@ -228,11 +262,15 @@ namespace WatchfaceStudio.Entities
                             height = (int)ExpressionCalculator.Calc(layer.height);
                             alp = AlignedPoint(width, height, layer.alignment.Value);
 
-                            if (!watchface.Images.ContainsKey(layer.hash))
+                            Image img;
+                            if (!watchface.Images.TryGetValue(layer.hash, out img))
                             {
-                                throw new Exception("The image \"" + layer.hash + "\" was not found in the images folder.");
+                                AppendError(checkForErrors, errors,
+                                    WatchfaceRendererErrorSeverity.Error,
+                                    layer.GetIdentifier(),
+                                    "The image \"" + layer.hash + "\" was not found in the images folder.");
+                                img = ImageNotFound;
                             }
-                            var img = watchface.Images[layer.hash];
                             outRect = new Rectangle((int)alp.X, (int)alp.Y, width, height);
                             g.DrawImage(img, outRect, 0, 0, img.Width, img.Height, GraphicsUnit.Pixel, imageAtt);
                         }
@@ -241,18 +279,26 @@ namespace WatchfaceStudio.Entities
                             var colorToUse = Properties.Settings.Default.LowPowerMode ? layer.low_power_color : layer.color;
                             var foreColor = Color.FromArgb(((int)ExpressionCalculator.Calc(colorToUse) & 0xFFFFFF) + ((int)(opacity * 255) << 24));
                             var fontSize = DpToPx((float)ExpressionCalculator.Calc(layer.size));
-                            var fontStyle = (layer.bold ?? false) && (layer.italic ?? false) ? FontStyle.Bold | FontStyle.Italic :
-                                ((layer.bold ?? false) && !(layer.italic ?? false) ? FontStyle.Bold :
-                                (!(layer.bold ?? false) && (layer.italic ?? false) ? FontStyle.Italic : FontStyle.Regular));
+                            
                             Font layerFont;
                             if (layer.font_family == (int)FacerFont.Custom)
                             {
-                                if (!watchface.CustomFonts.ContainsKey(layer.font_hash))
+                                FacerCustomFont customFont;
+                                if (!watchface.CustomFonts.TryGetValue(layer.font_hash, out customFont))
                                 {
-                                    throw new Exception("The font \"" + layer.hash + "\" was not found in the fonts folder.");
+                                    AppendError(checkForErrors, errors, WatchfaceRendererErrorSeverity.Error,
+                                        layer.GetIdentifier(),
+                                        "The font \"" + layer.hash + "\" was not found in the fonts folder.");
+                                    var fontPair = FacerFontConfig[FacerFont.Roboto];
+                                    layerFont = new Font(fontPair.Item1.Families[0], fontSize, fontPair.Item2, GraphicsUnit.Point);
                                 }
-                                var customFont = watchface.CustomFonts[layer.font_hash];
-                                layerFont = new Font(customFont.FontFamily, fontSize, customFont.FontStyle); //TODO: use the right font style
+                                else
+                                {
+                                    var fontStyle = (layer.bold ?? false) && (layer.italic ?? false) ? FontStyle.Bold | FontStyle.Italic :
+                                        ((layer.bold ?? false) && !(layer.italic ?? false) ? FontStyle.Bold :
+                                        (!(layer.bold ?? false) && (layer.italic ?? false) ? FontStyle.Italic : FontStyle.Regular));
+                                    layerFont = new Font(customFont.FontFamily, fontSize, customFont.GetAvailableFontStyle(fontStyle));
+                                }
                             }
                             else
                             {
@@ -369,23 +415,17 @@ namespace WatchfaceStudio.Entities
                     }
                     catch (NullReferenceException)
                     {
-                        if (checkForErrors)
-                            errors.Add(new WatchfaceRendererError
-                            {
-                                Severity = WatchfaceRendererErrorSeverity.Error,
-                                Object = layer.GetIdentifier(),
-                                Message = "General Error"
-                            });
+                        AppendError(checkForErrors, errors, WatchfaceRendererErrorSeverity.Error,
+                            layer.GetIdentifier(),
+                            "General Error"
+                        );
                     }
                     catch (Exception ex)
                     {
-                        if (checkForErrors)
-                            errors.Add(new WatchfaceRendererError
-                            {   
-                                Severity = WatchfaceRendererErrorSeverity.Error,
-                                Object = layer.GetIdentifier(),
-                                Message = ex.Message
-                            });
+                        AppendError(checkForErrors, errors, WatchfaceRendererErrorSeverity.Error,
+                            layer.GetIdentifier(),
+                            ex.Message
+                        );
                     }
                 }
 

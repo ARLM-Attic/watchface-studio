@@ -705,9 +705,13 @@ namespace WatchfaceStudio
             }
         }
 
-        private void AddNewImage(string fileName)
+        private bool AddNewImage(string fileName)
         {
             var key = EditorContext.SelectedWatchface.AddImageFile(fileName);
+            if (key == null)
+            {
+                return false;
+            }
             var tn = AddImageToTree(treeViewExplorer.TopNode.Nodes["images"], key, EditorContext.SelectedWatchface.Images[key]);
             var img = (Image)tn.Tag;
 
@@ -735,6 +739,8 @@ namespace WatchfaceStudio
             EditorContext.SelectedWatchface.Layers.Add(newLayer);
             treeViewExplorer.SelectedNode = AddLayerToTree(treeViewExplorer.TopNode.Nodes["layers"], newLayer);
             UpdateChanged();
+
+            return true;
         }
 
         private void buttonAddImage_Click(object sender, EventArgs e)
@@ -745,7 +751,8 @@ namespace WatchfaceStudio
             {
                 if (ofd.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
 
-                AddNewImage(ofd.FileName);
+                if (!AddNewImage(ofd.FileName))
+                    MessageBox.Show("Error loading image: " + ofd.FileName, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

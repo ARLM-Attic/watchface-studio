@@ -24,28 +24,6 @@ namespace WatchfaceStudio.Entities
         public readonly List<FacerLayer> Layers;
         public readonly Dictionary<int, WatchfaceRendererError> Errors = new Dictionary<int, WatchfaceRendererError>();
 
-        private Image _badImage;
-
-        public Image BadImage
-        {
-            get
-            {
-                if (_badImage == null)
-                {
-                    var bmp = new Bitmap(100, 100);
-                    using (var g = Graphics.FromImage(bmp))
-                    {
-                        g.Clear(Color.White);
-                        g.DrawLine(Pens.Red, 0, 0, 99, 99);
-                        g.DrawLine(Pens.Red, 0, 99, 99, 0);
-                        g.DrawString("BAD\nIMAGE", new Font("Arial", 12), Brushes.Black, 5, 5);
-                    }
-                    _badImage = bmp;
-                }
-                return _badImage;
-            }
-        }
-
         public string AddImageFile(string imageFile, bool newImage = false)
         {
             var fileName = Path.GetFileName(imageFile) ?? string.Empty;
@@ -57,9 +35,8 @@ namespace WatchfaceStudio.Entities
             {
                 Images.Add(key, Image.FromFile(imageFile));
             }
-            catch
-            {
-                Images.Add(key, BadImage);
+            catch {
+                return null;
             }
             return key;
         }
