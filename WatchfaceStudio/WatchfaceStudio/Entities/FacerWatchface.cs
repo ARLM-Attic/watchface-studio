@@ -33,7 +33,10 @@ namespace WatchfaceStudio.Entities
                 key = string.Concat(fileName, "(", i++, ").png");
             try
             {
-                Images.Add(key, Image.FromFile(imageFile));
+                var fs = File.OpenRead(imageFile);
+                var img = Image.FromStream(fs);
+                fs.Close();
+                Images.Add(key, img);
             }
             catch {
                 return null;
@@ -75,7 +78,9 @@ namespace WatchfaceStudio.Entities
                 jsonString = File.ReadAllText(descriptionFile);
                 Description = JsonConvert.DeserializeObject<FacerWatchfaceDescription>(jsonString, new JsonSerializerSettings() { MissingMemberHandling = MissingMemberHandling.Ignore });
 
-                PreviewImage = Image.FromFile(Path.Combine(folder, "preview.png"));
+                var fs = File.OpenRead(Path.Combine(folder, "preview.png"));
+                PreviewImage = Image.FromStream(fs);
+                fs.Close();
 
                 Images = new Dictionary<string, Image>();
                 var imagesFolder = Path.Combine(folder, "images");

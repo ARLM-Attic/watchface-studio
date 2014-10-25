@@ -55,6 +55,24 @@ namespace WatchfaceStudio
             return target;
         }
 
+        protected override void WndProc(ref Message m)
+        {
+            switch (m.Msg)
+            {
+                /*case MessageHelper.WM_USER:
+                    MessageBox.Show("Message recieved: " + m.WParam + " - " + m.LParam);
+                    break;*/
+                case MessageHelper.WM_COPYDATA:
+                    if (m.LParam != IntPtr.Zero)
+                    {
+                        var lParamString = (MessageHelper.COPYDATASTRUCT)m.GetLParam(typeof(MessageHelper.COPYDATASTRUCT));
+                        OpenArchivedWatchface(lParamString.lpData);
+                    }
+                    break;
+            }
+            base.WndProc(ref m);
+        }
+
         public StudioForm()
         {
             InitializeComponent();
@@ -127,6 +145,14 @@ namespace WatchfaceStudio
 #if !DEBUG
             backgroundWorkerCheckForUpdates.RunWorkerAsync(false);
 #endif
+
+        }
+
+        private void StudioForm_Load(object sender, EventArgs e)
+        {
+            string[] args = Environment.GetCommandLineArgs();
+            if (args.Length > 1)
+                OpenArchivedWatchface(args[1]);
         }
 
         public List<WatchfaceRendererError> CheckForErrors()
@@ -584,6 +610,8 @@ namespace WatchfaceStudio
                     if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                     {
                         SaveWatch(sfd.FileName);
+                        wf.EditorForm.ZipFilePath = sfd.FileName;
+                        wf.EditorForm.Text = Path.GetFileName(sfd.FileName);
                     }
                 }
             }
@@ -1111,6 +1139,5 @@ Would you like to open the browser to download it?",
             if (!tag.StartsWith("#")) return;
             Clipboard.SetText(tag);
         }
-
     }
 }

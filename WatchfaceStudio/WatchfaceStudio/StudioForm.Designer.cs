@@ -969,6 +969,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Watchface Studio";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.StudioForm_FormClosed);
+            this.Load += new System.EventHandler(this.StudioForm_Load);
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.StudioForm_DragDrop);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.StudioForm_DragEnter);
             this.Resize += new System.EventHandler(this.StudioForm_Resize);

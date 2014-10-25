@@ -223,7 +223,7 @@ namespace WatchfaceStudio.Entities
                     {
                         if (Properties.Settings.Default.LowPowerMode && !layer.low_power) continue; //don't show on dimmed
 
-                        var opacity = (float)(ExpressionCalculator.Calc(layer.opacity) / 100);
+                        var opacity = (float)ExpressionCalculator.Calc(layer.opacity);
                         if (opacity == 0) continue;
 
                         var x = (float)ExpressionCalculator.Calc(layer.x);
@@ -241,14 +241,14 @@ namespace WatchfaceStudio.Entities
                         {
                             var imageAtt = new ImageAttributes();
 
-                            if (opacity > 0.999 || (layer.is_tinted ?? false))
+                            if (opacity < 100 || (layer.is_tinted ?? false))
                             {
                                 var tint_color = (layer.is_tinted ?? false) && layer.tint_color != null ? Color.FromArgb(layer.tint_color.Value) : Color.Empty;
                                 const float intensity = 0.3f;
 
                                 var colorMatrix = new ColorMatrix();
-                                if (opacity > 0.999)
-                                    colorMatrix.Matrix33 = opacity;
+                                if (opacity < 100)
+                                    colorMatrix.Matrix33 = opacity / 100f;
                                 if (tint_color != Color.Empty)
                                 {
                                     colorMatrix.Matrix40 = tint_color.R / 255 * intensity;
@@ -277,7 +277,7 @@ namespace WatchfaceStudio.Entities
                         else if (layer.type == "text")
                         {
                             var colorToUse = Properties.Settings.Default.LowPowerMode ? layer.low_power_color : layer.color;
-                            var foreColor = Color.FromArgb(((int)ExpressionCalculator.Calc(colorToUse) & 0xFFFFFF) + ((int)(opacity * 255) << 24));
+                            var foreColor = Color.FromArgb(((int)ExpressionCalculator.Calc(colorToUse) & 0xFFFFFF) + ((int)(opacity / 100f * 255) << 24));
                             var fontSize = DpToPx((float)ExpressionCalculator.Calc(layer.size));
                             
                             Font layerFont;
@@ -342,7 +342,7 @@ namespace WatchfaceStudio.Entities
                         }
                         else if (layer.type == "shape")
                         {
-                            var foreColor = Color.FromArgb(((int)ExpressionCalculator.Calc(layer.color) & 0xFFFFFF) + ((int)(opacity * 255) << 24));
+                            var foreColor = Color.FromArgb(((int)ExpressionCalculator.Calc(layer.color) & 0xFFFFFF) + ((int)(opacity / 100f * 255) << 24));
                             var radius = string.IsNullOrEmpty(layer.radius) ? 0 : (float)ExpressionCalculator.Calc(layer.radius);
                             var shapeOptions = layer.shape_opt == ((int)FacerShapeOptions.Stroke).ToString(CultureInfo.InvariantCulture) ? FacerShapeOptions.Stroke : FacerShapeOptions.Fill;
                             var strokeSize = (float)ExpressionCalculator.Calc(layer.stroke_size) / 2;
